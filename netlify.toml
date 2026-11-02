@@ -1,0 +1,27 @@
+# Netlify Deployment Configuration for AuraMart STQA E-Commerce Project
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+  from = "/test-dashboard"
+  to = "/test-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/defect-dashboard"
+  to = "/defect-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/qa-report"
+  to = "/qa-report.html"
+  status = 200

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraMart | Defect Management & QA Module</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="test-dashboard.css">
+  <link rel="stylesheet" href="defect-dashboard.css">
+</head>
+<body class="defect-body">
+
+  <!-- Header / Navigation -->
+  <header class="test-navbar">
+    <div class="test-nav-container">
+      <div class="test-brand">
+        <div class="defect-brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v4a5 5 0 0 0 10 0v-4h1a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"></path>
+            <circle cx="9" cy="10" r="1"></circle>
+            <circle cx="15" cy="10" r="1"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1 class="test-brand-title">AuraMart <span>Defect Management &amp; QA</span></h1>
+          <p class="test-brand-sub">Controlled Bug Exposure, Defect Lifecycle, Root-Cause Fixes &amp; Regression Suite</p>
+        </div>
+      </div>
+
+      <div class="test-nav-actions">
+        <a href="index.html" class="btn btn-outline" title="Return to store">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Store
+        </a>
+        <a href="test-dashboard.html" class="btn btn-outline" title="Open Test Cases Execution Dashboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 2v7.31"></path>
+            <path d="M14 9.3V2"></path>
+            <path d="M8.5 2h7"></path>
+            <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+            <path d="M5.52 16h12.96"></path>
+          </svg>
+          Test Dashboard
+        </a>
+        <a href="qa-report.html" class="btn btn-outline" title="Open Final QA Report">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          QA Report
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="test-main">
+    <div class="container">
+
+      <!-- Executive Quality Assurance Metrics -->
+      <section class="defect-metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Total Test Cases</span>
+          <span id="qa-total-tests" class="metric-val">32</span>
+          <span class="metric-note">Full validation scope</span>
+        </div>
+        <div class="metric-card metric-pass">
+          <span class="metric-label">Passed Tests</span>
+          <span id="qa-passed-tests" class="metric-val">32</span>
+          <span class="metric-note" id="qa-pass-subtitle">Passing without defects</span>
+        </div>
+        <div class="metric-card metric-fail">
+          <span class="metric-label">Failed Tests</span>
+          <span id="qa-failed-tests" class="metric-val">0</span>
+          <span class="metric-note" id="qa-fail-subtitle">0 failing assertions</span>
+        </div>
+        <div class="metric-card metric-open-bugs">
+          <span class="metric-label">Open Bugs</span>
+          <span id="qa-open-bugs" class="metric-val">0</span>
+          <span class="metric-note" id="qa-open-subtitle">0 active regressions</span>
+        </div>
+        <div class="metric-card metric-resolved-bugs">
+          <span class="metric-label">Resolved Bugs</span>
+          <span id="qa-resolved-bugs" class="metric-val">6</span>
+          <span class="metric-note">6 fixed &amp; verified</span>
+        </div>
+        <div class="metric-card metric-rate">
+          <span class="metric-label">Test Pass Percentage</span>
+          <span id="qa-pass-rate" class="metric-val">100%</span>
+          <span class="metric-note" id="qa-system-health">System Health: Optimal</span>
+        </div>
+      </section>
+
+      <!-- Demonstrable STQA Lifecycle Workflow Bar -->
+      <section class="lifecycle-banner">
+        <div class="lifecycle-info">
+          <h3>Defect Lifecycle Demonstration Controller</h3>
+          <p>Demonstrate the full defect lifecycle dynamically: expose bugs in controlled scenarios, verify failed assertions, apply targeted fixes, rerun failed cases, and perform regression testing.</p>
+        </div>
+        <div class="lifecycle-buttons">
+          <button id="btn-expose-bugs" class="btn btn-warning-action" title="Run controlled scenarios that trigger intentional common defects">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            1. Expose Common Bugs (Simulate Pre-Fix)
+          </button>
+          
+          <button id="btn-apply-fixes" class="btn btn-success-action" title="Apply fixes and rerun failed test cases">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+            </svg>
+            2. Apply Fixes &amp; Rerun Failed Tests
+          </button>
+
+          <button id="btn-run-regression" class="btn btn-primary" title="Execute entire 32-test regression suite">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            3. Run Regression Testing
+          </button>
+        </div>
+      </section>
+
+      <!-- Defect Registry & Bug Tracking Table -->
+      <section class="defect-table-section">
+        <div class="defect-table-header">
+          <div>
+            <h2 class="test-table-title">Defect Tracking &amp; Resolution Registry</h2>
+            <p class="text-muted">Dynamic defect inventory showing Bug ID, Severity, Expected vs Actual discrepancies, and verification state.</p>
+          </div>
+          <div class="defect-filter-controls">
+            <select id="severity-filter" class="form-select">
+              <option value="all">All Severities</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+            </select>
+            <select id="status-filter" class="form-select">
+              <option value="all">All Statuses</option>
+              <option value="Open">Open Only</option>
+              <option value="Resolved">Resolved Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="test-table defect-table">
+            <thead>
+              <tr>
+                <th style="width: 105px;">Bug ID</th>
+                <th style="width: 95px;">Severity</th>
+                <th style="width: 130px;">Category</th>
+                <th>Defect Description &amp; Root Cause</th>
+                <th style="width: 110px;">Ref Test</th>
+                <th>Expected Result</th>
+                <th>Actual Result</th>
+                <th style="width: 95px; text-align: center;">Status</th>
+                <th style="width: 90px; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="defect-table-body">
+              <!-- Rendered dynamically by defect-dashboard.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Regression Testing Live Console & Results -->
+      <section id="regression-panel" class="regression-card">
+        <div class="regression-header">
+          <div class="regression-title-group">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <h3>Regression Testing Execution Console</h3>
+            <span id="regression-badge" class="regression-badge">Zero Regressions Detected</span>
+          </div>
+          <div id="regression-summary-text" class="text-muted">
+            All 32 test cases passed in 2.8ms
+          </div>
+        </div>
+
+        <div class="regression-log-box" id="regression-log">
+          <!-- Dynamic execution logs -->
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="ecommerce-core.js"></script>
+  <script src="defect-engine.js"></script>
+  <script src="test-runner.js"></script>
+  <script src="defect-dashboard.js"></script>
+</body>
+</html>

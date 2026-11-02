@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraMart | E-Commerce Store</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand" id="brand-logo" title="Back to all products">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Aura<span>Mart</span></span>
+          <span class="brand-tagline">Pure Vanilla E-Commerce</span>
+        </div>
+      </div>
+
+      <!-- Search bar -->
+      <div class="search-wrapper">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search by product name or description..." autocomplete="off">
+        <button id="clear-search-btn" class="clear-btn" title="Clear search" aria-label="Clear search">&times;</button>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="nav-actions">
+        <a href="test-dashboard.html" id="test-dash-btn" class="btn btn-outline" title="Open Testing Framework Dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10 2v7.31"></path>
+            <path d="M14 9.3V2"></path>
+            <path d="M8.5 2h7"></path>
+            <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+            <path d="M5.52 16h12.96"></path>
+          </svg>
+          <span class="btn-text">Test Suite</span>
+        </a>
+
+        <a href="defect-dashboard.html" id="defect-dash-btn" class="btn btn-outline" title="Open Defect Management & QA Module">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v4a5 5 0 0 0 10 0v-4h1a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"></path>
+            <circle cx="9" cy="10" r="1"></circle>
+            <circle cx="15" cy="10" r="1"></circle>
+          </svg>
+          <span class="btn-text">Defects &amp; QA</span>
+        </a>
+
+        <a href="qa-report.html" id="qa-report-btn" class="btn btn-outline" title="View Final QA & Deployment Report">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span class="btn-text">QA Report</span>
+        </a>
+
+        <button id="orders-btn" class="btn btn-outline" title="View Order History">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span class="btn-text">Orders</span>
+          <span id="orders-badge" class="badge-count hidden">0</span>
+        </button>
+
+        <button id="cart-btn" class="btn btn-primary cart-trigger-btn" title="View Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="btn-text">Cart</span>
+          <span id="cart-badge" class="badge-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub-navigation: Categories & Controls -->
+  <section class="controls-bar">
+    <div class="controls-container">
+      <!-- Category filters -->
+      <div class="category-tabs" id="category-tabs" role="tablist">
+        <button class="tab-btn active" data-category="all" role="tab">All Products</button>
+        <button class="tab-btn" data-category="Electronics" role="tab">Electronics</button>
+        <button class="tab-btn" data-category="Audio" role="tab">Audio</button>
+        <button class="tab-btn" data-category="Wearables" role="tab">Wearables</button>
+        <button class="tab-btn" data-category="Accessories" role="tab">Accessories</button>
+        <button class="tab-btn" data-category="Home" role="tab">Home & Desk</button>
+      </div>
+
+      <!-- Sorting & Stock Filter -->
+      <div class="filters-group">
+        <div class="toggle-stock-wrapper">
+          <label class="checkbox-container">
+            <input type="checkbox" id="stock-filter">
+            <span class="checkmark"></span>
+            In Stock Only
+          </label>
+        </div>
+
+        <div class="sort-wrapper">
+          <label for="sort-select">Sort by:</label>
+          <select id="sort-select" class="form-select">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+            <option value="name-desc">Name: Z to A</option>
+            <option value="stock-desc">Stock: High to Low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Active Filter Info / Results count -->
+      <div class="results-header">
+        <div id="results-count" class="results-count">Showing all products</div>
+        <button id="reset-filters-btn" class="btn-link hidden">Reset all filters</button>
+      </div>
+
+      <!-- Product Grid -->
+      <div id="product-grid" class="product-grid" aria-live="polite">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <!-- Empty State for Filters -->
+      <div id="no-products" class="empty-state hidden">
+        <div class="empty-icon">🔍</div>
+        <h3>No matching products found</h3>
+        <p>Try adjusting your search terms or filters to find what you're looking for.</p>
+        <button id="empty-reset-btn" class="btn btn-primary">Clear Filters</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Cart Slide-out Drawer & Overlay -->
+  <div id="cart-overlay" class="drawer-overlay hidden"></div>
+  <aside id="cart-drawer" class="cart-drawer" aria-labelledby="cart-title" role="dialog" aria-modal="true">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <h2 id="cart-title">Your Cart</h2>
+        <span id="cart-drawer-count" class="item-count-pill">0 items</span>
+      </div>
+      <button id="close-cart-btn" class="close-btn" aria-label="Close cart">&times;</button>
+    </div>
+
+    <!-- Cart items container -->
+    <div id="cart-items-container" class="drawer-body">
+      <!-- Rendered dynamically -->
+    </div>
+
+    <!-- Empty Cart State -->
+    <div id="empty-cart-view" class="empty-cart hidden">
+      <div class="empty-cart-icon">🛒</div>
+      <h3>Your cart is empty</h3>
+      <p>Browse our catalog and add items to your shopping cart!</p>
+      <button id="continue-shopping-btn" class="btn btn-primary">Start Shopping</button>
+    </div>
+
+    <!-- Cart Footer with Pricing & Checkout -->
+    <div id="cart-footer" class="drawer-footer">
+      <div class="price-breakdown">
+        <div class="price-row">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">$0.00</span>
+        </div>
+        <div class="price-row">
+          <span>Standard Tax (5%)</span>
+          <span id="cart-tax">$0.00</span>
+        </div>
+        <div class="price-row">
+          <span>Shipping <small id="shipping-note" class="text-muted">(Free on orders over $50)</small></span>
+          <span id="cart-shipping">$0.00</span>
+        </div>
+        <div class="price-row total-row">
+          <span>Estimated Total</span>
+          <span id="cart-total">$0.00</span>
+        </div>
+      </div>
+
+      <div class="drawer-actions">
+        <button id="proceed-checkout-btn" class="btn btn-primary btn-block">
+          Proceed to Checkout
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+        <button id="clear-cart-btn" class="btn btn-outline-danger btn-block">Clear Cart</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <div class="modal-container checkout-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+          <h2 id="checkout-title">Checkout & Order</h2>
+        </div>
+        <button id="close-checkout-btn" class="close-btn" aria-label="Close checkout">&times;</button>
+      </div>
+
+      <div class="modal-body checkout-layout">
+        <!-- Customer Details Form -->
+        <form id="checkout-form" class="checkout-form" novalidate>
+          <h3 class="form-section-title">1. Customer Information</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cust-name">Full Name <span class="required">*</span></label>
+              <input type="text" id="cust-name" name="name" placeholder="John Doe" autocomplete="name">
+              <span class="field-error" id="cust-name-error"></span>
+            </div>
+            <div class="form-group">
+              <label for="cust-email">Email Address <span class="required">*</span></label>
+              <input type="email" id="cust-email" name="email" placeholder="john.doe@example.com" autocomplete="email">
+              <span class="field-error" id="cust-email-error"></span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cust-phone">Phone Number <span class="required">*</span></label>
+              <input type="tel" id="cust-phone" name="phone" placeholder="10-digit phone (e.g. 9876543210)" autocomplete="tel">
+              <span class="field-error" id="cust-phone-error"></span>
+            </div>
+            <div class="form-group">
+              <label for="cust-city">City <span class="required">*</span></label>
+              <input type="text" id="cust-city" name="city" placeholder="New York" autocomplete="address-level2">
+              <span class="field-error" id="cust-city-error"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cust-address">Street Address <span class="required">*</span></label>
+            <input type="text" id="cust-address" name="address" placeholder="123 Main Street, Apt 4B" autocomplete="street-address">
+            <span class="field-error" id="cust-address-error"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cust-state">State / Province <span class="required">*</span></label>
+              <input type="text" id="cust-state" name="state" placeholder="NY" autocomplete="address-level1">
+              <span class="field-error" id="cust-state-error"></span>
+            </div>
+            <div class="form-group">
+              <label for="cust-zip">Postal / ZIP Code <span class="required">*</span></label>
+              <input type="text" id="cust-zip" name="zip" placeholder="10001" autocomplete="postal-code">
+              <span class="field-error" id="cust-zip-error"></span>
+            </div>
+          </div>
+
+          <h3 class="form-section-title">2. Payment Method</h3>
+          <div class="payment-methods">
+            <label class="radio-card">
+              <input type="radio" name="paymentMethod" value="card" checked>
+              <span class="radio-card-content">
+                <span class="radio-card-title">Credit / Debit Card</span>
+                <span class="radio-card-desc">Visa, MasterCard, Amex</span>
+              </span>
+            </label>
+
+            <label class="radio-card">
+              <input type="radio" name="paymentMethod" value="cod">
+              <span class="radio-card-content">
+                <span class="radio-card-title">Cash on Delivery</span>
+                <span class="radio-card-desc">Pay cash when package arrives</span>
+              </span>
+            </label>
+
+            <label class="radio-card">
+              <input type="radio" name="paymentMethod" value="upi">
+              <span class="radio-card-content">
+                <span class="radio-card-title">UPI / Digital Wallet</span>
+                <span class="radio-card-desc">Google Pay, PhonePe, Paytm</span>
+              </span>
+            </label>
+          </div>
+
+          <!-- Card Details (shown when Card payment selected) -->
+          <div id="card-fields-group" class="card-details-box">
+            <div class="form-group">
+              <label for="card-num">Card Number <span class="required">*</span></label>
+              <input type="text" id="card-num" placeholder="4111 2222 3333 4444" maxlength="19">
+              <span class="field-error" id="card-num-error"></span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="card-expiry">Expiry Date <span class="required">*</span></label>
+                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                <span class="field-error" id="card-expiry-error"></span>
+              </div>
+              <div class="form-group">
+                <label for="card-cvv">CVV <span class="required">*</span></label>
+                <input type="password" id="card-cvv" placeholder="123" maxlength="4">
+                <span class="field-error" id="card-cvv-error"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- UPI Details (shown when UPI payment selected) -->
+          <div id="upi-fields-group" class="card-details-box hidden">
+            <div class="form-group">
+              <label for="upi-id">UPI ID <span class="required">*</span></label>
+              <input type="text" id="upi-id" placeholder="username@upi or username@okaxis">
+              <span class="field-error" id="upi-id-error"></span>
+            </div>
+          </div>
+
+          <div class="checkout-actions">
+            <button type="button" id="back-to-cart-btn" class="btn btn-outline">Back to Cart</button>
+            <button type="submit" id="place-order-btn" class="btn btn-primary">
+              <span id="place-order-text">Place Order ($0.00)</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Order Summary Sidebar in Checkout -->
+        <div class="checkout-summary-box">
+          <h3>Order Summary</h3>
+          <div id="checkout-items-list" class="checkout-items-list">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="checkout-totals">
+            <div class="price-row">
+              <span>Subtotal</span>
+              <span id="checkout-subtotal">$0.00</span>
+            </div>
+            <div class="price-row">
+              <span>Tax (5%)</span>
+              <span id="checkout-tax">$0.00</span>
+            </div>
+            <div class="price-row">
+              <span>Shipping</span>
+              <span id="checkout-shipping">$0.00</span>
+            </div>
+            <div class="price-row total-row">
+              <span>Total Amount</span>
+              <span id="checkout-total">$0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Modal -->
+  <div id="order-success-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="success-title">
+    <div class="modal-container confirmation-card">
+      <div class="success-header">
+        <div class="success-badge">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h2 id="success-title">Order Confirmed!</h2>
+        <p class="success-subtitle">Thank you for your purchase. We have received your order.</p>
+      </div>
+
+      <div class="order-receipt" id="order-receipt">
+        <div class="receipt-header">
+          <div>
+            <div class="receipt-label">Order Number</div>
+            <div class="receipt-id" id="receipt-order-id">#ORD-000000</div>
+          </div>
+          <div class="text-right">
+            <div class="receipt-label">Date & Time</div>
+            <div class="receipt-date" id="receipt-date">--</div>
+          </div>
+        </div>
+
+        <div class="receipt-section">
+          <h4>Customer & Shipping Details</h4>
+          <div class="customer-info-grid">
+            <div><strong>Name:</strong> <span id="receipt-name">--</span></div>
+            <div><strong>Email:</strong> <span id="receipt-email">--</span></div>
+            <div><strong>Phone:</strong> <span id="receipt-phone">--</span></div>
+            <div><strong>Payment:</strong> <span id="receipt-payment">--</span></div>
+            <div class="full-width"><strong>Address:</strong> <span id="receipt-address">--</span></div>
+          </div>
+        </div>
+
+        <div class="receipt-section">
+          <h4>Items Ordered</h4>
+          <div class="receipt-items" id="receipt-items-table">
+            <!-- Dynamic items table -->
+          </div>
+        </div>
+
+        <div class="receipt-totals" id="receipt-totals-table">
+          <!-- Dynamic totals -->
+        </div>
+      </div>
+
+      <div class="confirmation-actions">
+        <button id="print-receipt-btn" class="btn btn-outline">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Print Receipt
+        </button>
+        <button id="finish-shopping-btn" class="btn btn-primary">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Past Orders Modal -->
+  <div id="orders-history-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="history-title">
+    <div class="modal-container history-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <h2 id="history-title">Order History</h2>
+        </div>
+        <button id="close-orders-btn" class="close-btn" aria-label="Close history">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="orders-history-list" class="orders-history-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div class="modal-footer history-footer">
+        <button id="clear-orders-btn" class="btn btn-outline-danger">Clear Order History</button>
+        <button id="close-history-footer-btn" class="btn btn-outline">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <strong>AuraMart E-Commerce</strong> &bull; Pure HTML, CSS & Vanilla JavaScript
+        <p class="footer-note">Cart &amp; Order data are synchronized and stored in browser <code>localStorage</code>.</p>
+      </div>
+      <div class="footer-right">
+        <button id="reset-all-demo-btn" class="btn btn-sm btn-ghost" title="Resets products stock, cart, and orders to initial defaults">
+          Reset All Demo Data
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Scripts -->
+  <script src="ecommerce-core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

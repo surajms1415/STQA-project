@@ -1,0 +1,11 @@
+{
+  "name": "stqa-ecommerce-testing",
+  "version": "1.0.0",
+  "description": "E-Commerce Testing Suite",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:unit": "node --test tests/ecommerce.test.js",
+    "test:defects": "node --test tests/defects.test.js",
+    "test:jest": "jest tests/*.test.js"
+  }
+}

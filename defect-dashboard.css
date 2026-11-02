@@ -1,0 +1,297 @@
+/* ==========================================================================
+   AuraMart Defect Management & QA Module Stylesheet
+   ========================================================================== */
+
+.defect-body {
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+.defect-brand-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #ef4444, #f59e0b);
+  color: #fff;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+
+/* 6-Grid QA Metrics */
+.defect-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card.metric-open-bugs::before {
+  background-color: #ef4444;
+}
+
+.metric-card.metric-resolved-bugs::before {
+  background-color: #10b981;
+}
+
+.metric-card.metric-rate::before {
+  background-color: #6366f1;
+}
+
+.metric-open-bugs .metric-val {
+  color: #ef4444;
+}
+
+.metric-resolved-bugs .metric-val {
+  color: #10b981;
+}
+
+.metric-rate .metric-val {
+  color: #4f46e5;
+}
+
+/* Lifecycle Workflow Banner */
+.lifecycle-banner {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.lifecycle-info h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.lifecycle-info p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 900px;
+}
+
+.lifecycle-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.btn-warning-action {
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #b45309;
+  font-weight: 700;
+}
+
+.btn-warning-action:hover {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.btn-success-action {
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  font-weight: 700;
+}
+
+.btn-success-action:hover {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+/* Defect Table & Details */
+.defect-table-section {
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.defect-table-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.defect-filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.defect-id-badge {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-weight: 800;
+  font-size: 0.775rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  display: inline-block;
+}
+
+.severity-badge {
+  font-size: 0.725rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.severity-badge.critical {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.severity-badge.high {
+  background-color: #ffedd5;
+  color: #9a3412;
+  border: 1px solid #fed7aa;
+}
+
+.severity-badge.medium {
+  background-color: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
+.severity-badge.low {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.defect-title {
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.2rem;
+  font-size: 0.875rem;
+}
+
+.defect-explanation {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.fix-tag {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.725rem;
+  color: #065f46;
+  background-color: #ecfdf5;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #a7f3d0;
+}
+
+.status-badge.open {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  font-weight: 800;
+}
+
+.status-badge.resolved {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  font-weight: 800;
+}
+
+/* Regression Console */
+.regression-card {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.regression-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #1e293b;
+}
+
+.regression-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #38bdf8;
+}
+
+.regression-title-group h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.regression-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  background-color: #065f46;
+  color: #34d399;
+  border: 1px solid #059669;
+}
+
+.regression-log-box {
+  background-color: #020617;
+  border: 1px solid #1e293b;
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  max-height: 260px;
+  overflow-y: auto;
+  color: #cbd5e1;
+}
+
+.log-entry {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.15rem 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.log-pass {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.log-fail {
+  color: #f87171;
+  font-weight: 700;
+}
+
+.log-id {
+  color: #38bdf8;
+  font-weight: 700;
+  margin-right: 0.5rem;
+}

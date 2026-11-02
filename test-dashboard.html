@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraMart | QA Testing Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="test-dashboard.css">
+</head>
+<body class="test-body">
+
+  <!-- Dashboard Navigation -->
+  <header class="test-navbar">
+    <div class="test-nav-container">
+      <div class="test-brand">
+        <div class="test-brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M10 2v7.31"></path>
+            <path d="M14 9.3V2"></path>
+            <path d="M8.5 2h7"></path>
+            <path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path>
+            <path d="M5.52 16h12.96"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="test-brand-title">AuraMart <span>QA Test Suite</span></h1>
+          <p class="test-brand-sub">Live Executable Test Framework &amp; Manual Black-Box Runner</p>
+        </div>
+      </div>
+
+      <div class="test-nav-actions">
+        <a href="index.html" class="btn btn-outline" title="Return to store">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to Store
+        </a>
+        <a href="defect-dashboard.html" class="btn btn-outline" title="Open Defect Management & QA Module">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a4 4 0 0 0-4 4v1H6a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v4a5 5 0 0 0 10 0v-4h1a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"></path>
+            <circle cx="9" cy="10" r="1"></circle>
+            <circle cx="15" cy="10" r="1"></circle>
+          </svg>
+          Defects &amp; QA
+        </a>
+        <a href="qa-report.html" class="btn btn-outline" title="View Final QA & Deployment Report">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          QA Report
+        </a>
+        <button id="run-all-tests-btn" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Run All Tests
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main class="test-main">
+    <div class="container">
+
+      <!-- Executive Test Metrics -->
+      <section class="test-metrics-grid">
+        <div class="metric-card">
+          <span class="metric-label">Total Tests</span>
+          <span id="metric-total" class="metric-val">32</span>
+          <span class="metric-note">Across 4 test suites</span>
+        </div>
+        <div class="metric-card metric-pass">
+          <span class="metric-label">Passed</span>
+          <span id="metric-passed" class="metric-val">0</span>
+          <span class="metric-note" id="metric-pass-rate">0% pass rate</span>
+        </div>
+        <div class="metric-card metric-fail">
+          <span class="metric-label">Failed</span>
+          <span id="metric-failed" class="metric-val">0</span>
+          <span class="metric-note">0 breaking regressions</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Execution Time</span>
+          <span id="metric-time" class="metric-val">0 ms</span>
+          <span class="metric-note" id="metric-status">Ready to execute</span>
+        </div>
+      </section>
+
+      <!-- Suite Filter Tabs & Controls -->
+      <section class="test-controls-card">
+        <div class="test-filter-tabs">
+          <button class="test-tab-btn active" data-category="all">All Tests <span class="tab-count" id="count-all">(32)</span></button>
+          <button class="test-tab-btn" data-category="unit">Unit Testing <span class="tab-count" id="count-unit">(15)</span></button>
+          <button class="test-tab-btn" data-category="integration">Integration Testing <span class="tab-count" id="count-integration">(5)</span></button>
+          <button class="test-tab-btn" data-category="blackbox">Black Box Testing <span class="tab-count" id="count-blackbox">(7)</span></button>
+          <button class="test-tab-btn" data-category="functional">Functional Testing <span class="tab-count" id="count-functional">(5)</span></button>
+        </div>
+
+        <div class="test-search-filter">
+          <input type="text" id="test-search" placeholder="Filter by Test ID or description (e.g. UT-PRICE, stock, checkout)...">
+          <select id="test-status-filter" class="form-select">
+            <option value="all">All Statuses</option>
+            <option value="PASS">PASS only</option>
+            <option value="FAIL">FAIL only</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Interactive Manual Black Box Scenario Runner -->
+      <section class="playground-section">
+        <div class="playground-header">
+          <div>
+            <h2 class="playground-title">Interactive Manual Black Box Scenarios</h2>
+            <p class="playground-subtitle">Execute boundary conditions, malformed payloads, and edge cases with real-time actual output evaluation.</p>
+          </div>
+          <button id="run-all-bb-scenarios" class="btn btn-outline btn-sm">Run All Manual Scenarios</button>
+        </div>
+
+        <div class="scenarios-grid">
+          <!-- Scenario 1 -->
+          <div class="scenario-card" data-scenario="empty-checkout">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-CHK-01</span>
+              <h4>Empty Checkout</h4>
+            </div>
+            <p class="scenario-desc">Attempt to submit order with 0 items in shopping cart.</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-CHK-01">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-CHK-01">Not Run</span>
+            </div>
+          </div>
+
+          <!-- Scenario 2 -->
+          <div class="scenario-card" data-scenario="invalid-cust">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-CUST-01</span>
+              <h4>Invalid Customer Info</h4>
+            </div>
+            <p class="scenario-desc">Submit malformed email, 2-digit phone, and single-letter name.</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-CUST-01">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-CUST-01">Not Run</span>
+            </div>
+          </div>
+
+          <!-- Scenario 3 -->
+          <div class="scenario-card" data-scenario="negative-qty">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-QTY-01</span>
+              <h4>Negative Quantity</h4>
+            </div>
+            <p class="scenario-desc">Attempt to add -3 items to cart.</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-QTY-01">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-QTY-01">Not Run</span>
+            </div>
+          </div>
+
+          <!-- Scenario 4 -->
+          <div class="scenario-card" data-scenario="zero-qty">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-QTY-02</span>
+              <h4>Zero Quantity</h4>
+            </div>
+            <p class="scenario-desc">Update existing item quantity to 0 (verify cleanup).</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-QTY-02">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-QTY-02">Not Run</span>
+            </div>
+          </div>
+
+          <!-- Scenario 5 -->
+          <div class="scenario-card" data-scenario="out-stock">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-STOCK-01</span>
+              <h4>Out-of-Stock Product</h4>
+            </div>
+            <p class="scenario-desc">Attempt to add Leather Tech Sleeve (Stock: 0).</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-STOCK-01">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-STOCK-01">Not Run</span>
+            </div>
+          </div>
+
+          <!-- Scenario 6 -->
+          <div class="scenario-card" data-scenario="invalid-card">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-INP-01</span>
+              <h4>Expired Card &amp; Invalid CVV</h4>
+            </div>
+            <p class="scenario-desc">Checkout with expired year (01/20) and short CVV ("9").</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-INP-01">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-INP-01">Not Run</span>
+            </div>
+          </div>
+
+          <!-- Scenario 7 -->
+          <div class="scenario-card" data-scenario="valid-inputs">
+            <div class="scenario-meta">
+              <span class="test-badge">BB-INP-02</span>
+              <h4>Valid Inputs &amp; Payment</h4>
+            </div>
+            <p class="scenario-desc">Checkout with complete valid customer and card payload.</p>
+            <div class="scenario-actions">
+              <button class="btn btn-sm btn-outline run-scenario-btn" data-id="BB-INP-02">Execute</button>
+              <span class="scenario-result-pill" id="pill-BB-INP-02">Not Run</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Manual Test Execution Studio -->
+      <section class="manual-studio-section">
+        <div class="manual-studio-header">
+          <div>
+            <h2 class="playground-title">Interactive Manual Test Execution Studio</h2>
+            <p class="playground-subtitle">Provide custom test values, trigger validation boundaries, inspect real-time execution traces, and record tester verdicts.</p>
+          </div>
+          <span class="badge-check" style="font-size: 0.8rem;">Manual QA Mode Active</span>
+        </div>
+
+        <div class="manual-studio-grid">
+          <!-- Parameter Input Form -->
+          <div class="manual-form-col">
+            <div class="form-group" style="margin-bottom: 0.85rem;">
+              <label for="manual-scenario-picker" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-bottom: 0.35rem; display: block;">Select Feature / Scenario to Test:</label>
+              <select id="manual-scenario-picker" class="form-select" style="width: 100%;">
+                <option value="price-calc">UT-PRICE: Price Formatting &amp; Precision Rounding</option>
+                <option value="qty-bounds">UT-QTY: Quantity Bounds &amp; Stock Availability</option>
+                <option value="cart-tiers">UT-CART: Subtotal, 5% Tax &amp; Shipping Threshold</option>
+                <option value="empty-checkout">BB-CHK: Empty Cart Checkout Prevention</option>
+                <option value="customer-form">BB-CUST: Customer Details &amp; Regex Sanitization</option>
+                <option value="payment-auth">BB-INP: Credit Card Calendar Expiry &amp; CVV</option>
+              </select>
+            </div>
+
+            <!-- Dynamic Input Fields based on scenario -->
+            <div id="manual-dynamic-inputs" class="manual-inputs-box">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="manual-actions-bar">
+              <button id="btn-exec-manual" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                Execute Manual Test
+              </button>
+              <button id="btn-preset-valid" class="btn btn-outline btn-sm">Load Valid Sample</button>
+              <button id="btn-preset-invalid" class="btn btn-outline-danger btn-sm">Load Boundary Failure</button>
+            </div>
+          </div>
+
+          <!-- Execution Output & Observation Log -->
+          <div class="manual-output-col">
+            <div class="manual-verdict-bar">
+              <span class="manual-verdict-label">Execution Verdict:</span>
+              <span id="manual-status-pill" class="status-badge pending">Awaiting Execution</span>
+            </div>
+
+            <div class="manual-terminal-box" id="manual-terminal">
+              Select a test scenario, adjust input values if desired, and click "Execute Manual Test".
+            </div>
+
+            <div class="manual-notes-area">
+              <label for="manual-tester-notes" style="font-size: 0.775rem; font-weight: 700; color: #64748b; text-transform: uppercase;">QA Tester Observation Notes:</label>
+              <input type="text" id="manual-tester-notes" placeholder="e.g., Verified edge case at decimal boundary; rejected as expected." style="width: 100%; padding: 0.45rem 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; margin-top: 0.25rem;">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Executable Test Results Table -->
+      <section class="test-table-section">
+        <div class="test-table-header">
+          <div>
+            <h3 class="test-table-title">Executable Test Cases Specification</h3>
+            <p class="text-muted">Dynamic results evaluated directly from runtime execution of actual methods.</p>
+          </div>
+          <div class="table-actions">
+            <button id="clear-results-btn" class="btn btn-ghost btn-sm">Reset Results</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="test-table">
+            <thead>
+              <tr>
+                <th style="width: 130px;">Test ID</th>
+                <th style="width: 140px;">Suite</th>
+                <th>Description</th>
+                <th>Expected Result</th>
+                <th>Actual Result</th>
+                <th style="width: 85px;">Time</th>
+                <th style="width: 95px; text-align: center;">Status</th>
+                <th style="width: 75px; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="test-table-body">
+              <!-- Rendered dynamically by test-runner.js -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CLI Test Execution Instructions Card -->
+      <section class="cli-info-card">
+        <div class="cli-info-header">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 17 10 11 4 5"></polyline>
+            <line x1="12" y1="19" x2="20" y2="19"></line>
+          </svg>
+          <h3>Automated CLI Test Runner (Jest &amp; Node Test)</h3>
+        </div>
+        <p>To run automated headless tests via the terminal CLI:</p>
+        <div class="code-terminal">
+          <code>npm test</code>
+          <span class="code-desc"># Runs the comprehensive test suite with Node's native runner (zero-dependency)</span>
+        </div>
+        <div class="code-terminal">
+          <code>npm run test:jest</code>
+          <span class="code-desc"># Runs the suite with Jest or Vitest runner</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Core and Test Runner Scripts -->
+  <script src="ecommerce-core.js"></script>
+  <script src="test-runner.js"></script>
+</body>
+</html>
