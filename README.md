@@ -1,6 +1,7 @@
 # 🛒 AuraMart E-Commerce & STQA Testing Framework
 
-[![Python Tests](https://img.shields.io/badge/Pytest-188%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
+[![Pytest](https://img.shields.io/badge/Pytest-188%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
+[![Playwright](https://img.shields.io/badge/Playwright%20E2E-33%20Passing-success?style=for-the-badge&logo=playwright&logoColor=white)](python_tests/playwright_tests/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](requirements.txt)
 [![Pass Rate](https://img.shields.io/badge/Pass%20Rate-100%25-brightgreen?style=for-the-badge)](qa-report.html)
 [![Defects](https://img.shields.io/badge/Defects-6%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
@@ -445,6 +446,63 @@ python_tests/test_validation.py .....................                [100%]
 
 ---
 
+## 🎭 Playwright Python End-to-End Browser Automation
+
+The project includes an end-to-end browser automation suite built using **Playwright for Python**, driving real Chromium browser sessions directly against the frontend (`index.html`) without altering existing HTML, CSS, or JS.
+
+### 1. Browser Installation
+```bash
+# Install Chromium browser binary for Playwright
+playwright install chromium
+```
+
+### 2. Playwright Test Suite Modules (33 E2E Tests)
+
+| Module | Scope & Browser Interactions | Key Assertions & Scenarios |
+| :--- | :--- | :--- |
+| [`test_homepage_navigation.py`](python_tests/playwright_tests/test_homepage_navigation.py) | Homepage Loading & Navigation | Title verification, brand tagline, navbar action buttons, category tabs, and routing to Test Suite, Defects QA, and QA Report dashboards. |
+| [`test_product_catalog.py`](python_tests/playwright_tests/test_product_catalog.py) | Product Listing & Selection | 10-card catalog rendering, out-of-stock badge detection on `p10`, category filter tabs, live search input, clear button, and price sorting. |
+| [`test_cart_operations.py`](python_tests/playwright_tests/test_cart_operations.py) | Cart Operations & Pricing | Adding items, cart badge count update, slide-out drawer open/close, `+` / `-` quantity controls, subtotal, 5% tax, shipping thresholds, and cart clearing. |
+| [`test_checkout_and_validation.py`](python_tests/playwright_tests/test_checkout_and_validation.py) | Checkout & Error Handling | Modal transitions, empty form rejection with inline field errors, invalid email/phone rejection, payment method toggles (Card, UPI, COD), and confirmed order receipt. |
+| [`test_responsive_ui.py`](python_tests/playwright_tests/test_responsive_ui.py) | Responsive Layout & UI | Multi-viewport testing across Desktop (`1280x800`), Tablet (`768x1024`), and Mobile (`375x667`), verifying drawer sliding, scrolling, and input accessibility. |
+
+### 3. Key Playwright Architecture Features
+- **Zero Frontend Alteration**: Works directly against the existing vanilla HTML/CSS/JS frontend without changing a single line of application code.
+- **Pytest Fixtures**: Isolated `context`, `page`, and `app_page` fixtures manage clean browser sessions and reset `localStorage` before each test.
+- **Automated Failure Screenshots**: Integrated pytest hook (`pytest_runtest_makereport`) captures full-page screenshot artifacts to `reports/screenshots/<test_name>.png` whenever a test fails.
+- **Standalone HTML Report**: Generates dedicated HTML execution report at `reports/playwright_report.html`.
+
+### 4. Running Playwright Tests
+```bash
+# Run all 33 Playwright browser automation tests
+pytest python_tests/playwright_tests/ -v
+
+# Run with Playwright marker:
+pytest -m playwright -v
+
+# Generate self-contained Playwright HTML report:
+pytest python_tests/playwright_tests/ --html=reports/playwright_report.html --self-contained-html
+```
+
+```text
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
+configfile: pytest.ini
+plugins: html-4.2.0, metadata-3.1.1
+collected 33 items
+
+python_tests/playwright_tests/test_cart_operations.py .......            [ 21%]
+python_tests/playwright_tests/test_checkout_and_validation.py .....     [ 36%]
+python_tests/playwright_tests/test_homepage_navigation.py .........     [ 63%]
+python_tests/playwright_tests/test_product_catalog.py ........           [ 87%]
+python_tests/playwright_tests/test_responsive_ui.py ....                [100%]
+
+============================= 33 passed in 29.16s =============================
+```
+
+---
+
 ## 🚀 Static Web Deployment Guide
 
 ### Deploy to GitHub Pages (1-Click)
@@ -504,10 +562,20 @@ STQA-project/
 │   ├── test_boundary.py    # 6. Boundary Value Testing (Min, Max, Limits, Length thresholds)
 │   ├── test_negative.py    # 7. Negative Testing (Malformed data, Missing fields, XSS payloads)
 │   ├── test_validation.py  # 8. Validation Testing (Schema constraints, Field regex, Payment)
-│   └── test_defects.py     # Defect Management lifecycle (BUG-001..006 simulation)
+│   ├── test_defects.py     # Defect Management lifecycle (BUG-001..006 simulation)
+│   │
+│   └── playwright_tests/   # 🎭 Playwright Python End-to-End Browser Automation Suite
+│       ├── __init__.py     # Playwright package marker
+│       ├── conftest.py     # Playwright fixtures (browser, page, failure screenshot hook)
+│       ├── test_homepage_navigation.py       # Homepage loading, brand, navbar routing
+│       ├── test_product_catalog.py           # 10-item grid, stock tags, search & filters
+│       ├── test_cart_operations.py           # Drawer slide-over, qty +/- & pricing
+│       ├── test_checkout_and_validation.py   # Modal checkout, inline errors, receipt
+│       └── test_responsive_ui.py             # Desktop, Tablet, and Mobile viewports
 │
 ├── pytest.ini              # Pytest configuration & category marker definitions
-├── requirements.txt        # Python test dependencies (pytest, pytest-html)
+├── requirements.txt        # Python test dependencies (pytest, pytest-html, playwright)
+
 │
 ├── tests/                  # Legacy Node.js test definitions (retained for backward compatibility)
 │   ├── ecommerce.test.js   # 32 tests (node:test / Jest)
