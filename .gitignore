@@ -4,6 +4,12 @@ backend/data/
 data/
 dist/
 */dist/
+.venv/
+__pycache__/
+*/__pycache__/
+*.pyc
+.pytest_cache/
+reports/
 .DS_Store
 Thumbs.db
 *.log

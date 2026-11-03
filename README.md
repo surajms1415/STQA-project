@@ -1,6 +1,7 @@
 # 🛒 AuraMart E-Commerce & STQA Testing Framework
 
-[![Tests](https://img.shields.io/badge/Tests-35%20Passing-success?style=for-the-badge&logo=node.js)](tests/)
+[![Python Tests](https://img.shields.io/badge/Pytest-35%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
+[![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](requirements.txt)
 [![Pass Rate](https://img.shields.io/badge/Pass%20Rate-100%25-brightgreen?style=for-the-badge)](qa-report.html)
 [![Defects](https://img.shields.io/badge/Defects-6%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
 [![Architecture](https://img.shields.io/badge/Stack-Vanilla%20HTML%20%7C%20CSS%20%7C%20ES6-orange?style=for-the-badge)](index.html)
@@ -355,52 +356,96 @@ Testers can demonstrate the complete defect life cycle with three dedicated acti
 
 ---
 
-## 💻 Automated CLI Test Execution
+## 🐍 Automated Python / Pytest Test Execution
 
-The automated test suite runs natively on **Node.js v18+** using the built-in `node:test` runner (zero external dependencies required):
+The primary test automation infrastructure is implemented in **Python** using the industry-standard **Pytest** testing framework.
+
+### 1. Environment Setup
 
 ```bash
-# Run all test suites (35 tests: 32 functional + 3 defect lifecycle)
-npm test
+# 1. Create a Python virtual environment
+python -m venv .venv
 
-# Run only the 32 functional & unit tests
-npm run test:unit
+# 2. Activate virtual environment
+# Windows (PowerShell):
+.\.venv\Scripts\Activate.ps1
+# Windows (Command Prompt):
+.\.venv\Scripts\activate.bat
+# Linux / macOS:
+source .venv/bin/activate
 
-# Run only the defect lifecycle & regression suite
-npm run test:defects
-
-# Run with Jest or Vitest (if installed)
-npm run test:jest
+# 3. Install required test dependencies
+pip install -r requirements.txt
 ```
 
-### CLI Output Preview:
+### 2. Running Pytest Test Suites
+
+```bash
+# Run the complete test suite (35 tests: 32 core + 3 defect lifecycle)
+pytest -v
+
+# Run with stdout logging (displaying test ID, Expected, Actual, PASS/FAIL status)
+pytest -v -s
+
+# Run specific test categories using markers:
+pytest -m unit              # 15 Unit tests (Price, Quantity, Cart, Stock)
+pytest -m integration       # 5 Integration tests (Cart, Qty, Order, Storage)
+pytest -m blackbox          # 7 Black-Box tests (Empty cart, Malformed inputs, Limits)
+pytest -m functional        # 5 Functional tests (Search, Add/Remove, E2E workflow)
+pytest -m defects           # 3 Defect lifecycle & full regression tests
+
+# Generate a self-contained HTML test report:
+pytest --html=reports/report.html --self-contained-html
+```
+
+### 3. Pytest Terminal Output Preview:
+
 ```text
-> node --test tests/*.test.js
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
+configfile: pytest.ini
+testpaths: python_tests
+plugins: html-4.2.0, metadata-3.1.1
+collected 35 items
 
---- EXPOSING BUGS IN CONTROLLED SCENARIOS ---
-[BUG DETECTED] BUG-001 | Severity: High | Status: Open -> FAIL
-[BUG DETECTED] BUG-002 | Severity: Critical | Status: Open -> FAIL
-[BUG DETECTED] BUG-003 | Severity: High | Status: Open -> FAIL
-[BUG DETECTED] BUG-004 | Severity: Critical | Status: Open -> FAIL
-[BUG DETECTED] BUG-005 | Severity: Medium | Status: Open -> FAIL
-[BUG DETECTED] BUG-006 | Severity: High | Status: Open -> FAIL
-[PRE-FIX QA METRICS] Total: 32 | Passed: 26 | Failed: 6 | Pass Rate: 81%
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_chk_01_empty_checkout_blocked PASSED
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_cust_01_rejects_invalid_customer PASSED
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_qty_01_rejects_negative_quantity PASSED
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_qty_02_zero_quantity_removes_item PASSED
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_stock_01_out_of_stock_addition_blocked PASSED
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_inp_01_rejects_invalid_card_payment PASSED
+python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_inp_02_accepts_valid_customer_and_card PASSED
+python_tests/test_defects.py::TestDefectManagementAndRegression::test_defect_01_controlled_scenarios_expose_bugs PASSED
+python_tests/test_defects.py::TestDefectManagementAndRegression::test_defect_02_fix_bugs_and_rerun_failed_tests PASSED
+python_tests/test_defects.py::TestDefectManagementAndRegression::test_defect_03_perform_full_regression_testing PASSED
+python_tests/test_functional.py::TestFunctionalScenarios::test_ft_srch_01_search_matches_query PASSED
+python_tests/test_functional.py::TestFunctionalScenarios::test_ft_srch_02_search_nonexistent_query PASSED
+python_tests/test_functional.py::TestFunctionalScenarios::test_ft_cart_01_add_to_cart_updates_count PASSED
+python_tests/test_functional.py::TestFunctionalScenarios::test_ft_cart_02_remove_from_cart_deletes_item PASSED
+python_tests/test_functional.py::TestFunctionalScenarios::test_ft_e2e_01_full_purchasing_workflow PASSED
+python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_cart_01_add_product_to_cart PASSED
+python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_qty_01_update_quantity_recalculates_total PASSED
+python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_order_01_checkout_and_cart_clearing PASSED
+python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_store_01_localstorage_cart_synchronization PASSED
+python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_store_02_inventory_reduction_persisted_to_storage PASSED
+python_tests/test_unit.py::TestPriceCalculation::test_ut_price_01_format_price PASSED
+python_tests/test_unit.py::TestPriceCalculation::test_ut_price_02_line_total PASSED
+python_tests/test_unit.py::TestPriceCalculation::test_ut_price_03_floating_point_rounding PASSED
+python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_01_valid_positive_integer PASSED
+python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_02_rejects_non_integer_or_decimal PASSED
+python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_03_rejects_zero_quantity PASSED
+python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_04_rejects_negative_quantity PASSED
+python_tests/test_unit.py::TestCartCalculations::test_ut_cart_01_subtotal_calculation PASSED
+python_tests/test_unit.py::TestCartCalculations::test_ut_cart_02_sales_tax PASSED
+python_tests/test_unit.py::TestCartCalculations::test_ut_cart_03_standard_shipping_under_50 PASSED
+python_tests/test_unit.py::TestCartCalculations::test_ut_cart_04_free_shipping_at_or_above_50 PASSED
+python_tests/test_unit.py::TestCartCalculations::test_ut_cart_05_grand_total PASSED
+python_tests/test_unit.py::TestStockValidation::test_ut_stock_01_detects_in_stock PASSED
+python_tests/test_unit.py::TestStockValidation::test_ut_stock_02_detects_out_of_stock PASSED
+python_tests/test_unit.py::TestStockValidation::test_ut_stock_03_available_remaining_stock PASSED
 
---- APPLYING FIXES & RERUNNING FAILED TEST CASES ---
-[BUG RESOLVED] BUG-001 | Status: Resolved -> PASS
-[BUG RESOLVED] BUG-002 | Status: Resolved -> PASS
-[BUG RESOLVED] BUG-003 | Status: Resolved -> PASS
-[BUG RESOLVED] BUG-004 | Status: Resolved -> PASS
-[BUG RESOLVED] BUG-005 | Status: Resolved -> PASS
-[BUG RESOLVED] BUG-006 | Status: Resolved -> PASS
-[POST-FIX QA METRICS] Total: 32 | Passed: 32 | Failed: 0 | Pass Rate: 100%
-
---- PERFORMING FULL REGRESSION TESTING ---
-ℹ tests 35
-ℹ suites 9
-ℹ pass 35
-ℹ fail 0
-ℹ duration_ms 230.5ms
+============================= 35 passed in 0.35s ==============================
 ```
 
 ---
@@ -452,11 +497,24 @@ STQA-project/
 │
 ├── ecommerce-core.js       # Core business logic, validators & calculation algorithms (UMD)
 │
-├── tests/
-│   ├── ecommerce.test.js   # 32 automated tests (Unit, Integration, Black Box, Functional)
-│   └── defects.test.js     # Automated defect lifecycle & regression tests
+├── python_tests/           # 🐍 Python / Pytest Automated Test Suite
+│   ├── __init__.py         # Python package marker
+│   ├── stqa_core.py        # Python business logic & defect simulation engine
+│   ├── conftest.py         # Shared Pytest fixtures & diagnostic logging hooks
+│   ├── test_unit.py        # 15 Unit tests (UT-PRICE-01..03, UT-QTY-01..04, UT-CART-01..05, UT-STOCK-01..03)
+│   ├── test_integration.py # 5 Integration tests (IT-CART-01, IT-QTY-01, IT-ORDER-01, IT-STORE-01..02)
+│   ├── test_blackbox.py    # 7 Black-box tests (BB-CHK-01, BB-CUST-01, BB-QTY-01..02, BB-STOCK-01, BB-INP-01..02)
+│   ├── test_functional.py  # 5 Functional tests (FT-SRCH-01..02, FT-CART-01..02, FT-E2E-01)
+│   └── test_defects.py     # 3 Defect lifecycle & regression tests (BUG-001..BUG-006)
 │
-├── package.json            # NPM test runner scripts
+├── pytest.ini              # Pytest configuration & marker definitions
+├── requirements.txt        # Python test dependencies (pytest, pytest-html)
+│
+├── tests/                  # Legacy Node.js test definitions (retained for backward compatibility)
+│   ├── ecommerce.test.js   # 32 tests (node:test / Jest)
+│   └── defects.test.js     # Defect lifecycle tests (node:test / Jest)
+│
+├── package.json            # NPM scripts & metadata
 ├── netlify.toml            # Netlify deployment configuration
 ├── _redirects              # Netlify SPA/clean routing rules
 ├── .nojekyll               # GitHub Pages static asset bypass
