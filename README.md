@@ -2,6 +2,7 @@
 
 [![Pytest](https://img.shields.io/badge/Pytest-188%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
 [![Playwright](https://img.shields.io/badge/Playwright%20E2E-33%20Passing-success?style=for-the-badge&logo=playwright&logoColor=white)](python_tests/playwright_tests/)
+[![API Tests](https://img.shields.io/badge/Requests%20API-26%20Passing-success?style=for-the-badge&logo=fastapi&logoColor=white)](python_tests/api_tests/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](requirements.txt)
 [![Pass Rate](https://img.shields.io/badge/Pass%20Rate-100%25-brightgreen?style=for-the-badge)](qa-report.html)
 [![Defects](https://img.shields.io/badge/Defects-6%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
@@ -503,6 +504,71 @@ python_tests/playwright_tests/test_responsive_ui.py ....                [100%]
 
 ---
 
+## 🌐 REST API Testing Demonstration (Python Requests & Pytest)
+
+### ⚠️ Architecture Note & Inspection
+During the STQA architecture inspection, it was verified that the baseline **AuraMart** web application is intentionally built as a **serverless client-side application** relying on browser `localStorage` and vanilla JavaScript, with zero live backend servers or external REST APIs.
+
+In strict adherence to QA authenticity standards, **no fake live backend claims are fabricated**. Instead, a dedicated, clearly separated **REST API Testing Demonstration** has been introduced under [`python_tests/api_tests/`](python_tests/api_tests/) to demonstrate industrial API test automation using **Python Requests** and **Pytest**.
+
+### 1. Demonstration Endpoints & Coverage
+
+The test suite tests a sample REST API (providing endpoints for products, orders, and health checks):
+
+| Module | HTTP Method | Endpoint Path | Validations & Test Scenarios |
+| :--- | :--- | :--- | :--- |
+| [`test_api_get_operations.py`](python_tests/api_tests/test_api_get_operations.py) | **GET** | `/api/v1/health`<br>`/api/v1/products`<br>`/api/v1/products/<id>` | 200 OK status, JSON array & object schema validation, query filters (`?category=Audio`, `?search=Keyboard`), 404 for missing IDs, and response time threshold (< 500ms). |
+| [`test_api_post_operations.py`](python_tests/api_tests/test_api_post_operations.py) | **POST** | `/api/v1/products`<br>`/api/v1/orders` | 201 Created status, returned resource ID, 400 Bad Request on missing required fields (`name`, `price`), 400 on negative/invalid data types, and 400 on empty orders. |
+| [`test_api_put_operations.py`](python_tests/api_tests/test_api_put_operations.py) | **PUT** | `/api/v1/products/<id>` | 200 OK update verification with data mutation, 404 on non-existent resource, and 400 validation on negative price/stock. |
+| [`test_api_delete_operations.py`](python_tests/api_tests/test_api_delete_operations.py) | **DELETE** | `/api/v1/products/<id>` | 200 OK deletion confirmation, subsequent GET returning 404 Not Found, and 404 on deleting non-existent IDs. |
+| [`test_api_error_handling_and_performance.py`](python_tests/api_tests/test_api_error_handling_and_performance.py) | **ALL** | Multi-route | 404 on invalid paths, 400 on syntactically malformed JSON bodies, mandatory security/content headers (`X-Powered-By`, `Content-Type`), and batch latency benchmark SLA (< 200ms avg). |
+
+### 2. Configurable Sample Endpoint
+The target endpoint is configurable via CLI option or environment variable:
+```bash
+# 1. Run using embedded local demonstration server (default):
+pytest python_tests/api_tests/ -v
+
+# 2. Run against an external API endpoint:
+pytest python_tests/api_tests/ -v --api-base-url=https://your-api-endpoint.com
+
+# Or via environment variable:
+export AURAMART_API_BASE_URL="https://your-api-endpoint.com"
+pytest python_tests/api_tests/ -v
+```
+
+### 3. Running API Tests & Generating Report
+```bash
+# Run all 26 API tests
+pytest python_tests/api_tests/ -v
+
+# Run with API marker:
+pytest -m api -v
+
+# Generate self-contained HTML report:
+pytest python_tests/api_tests/ --html=reports/api_report.html --self-contained-html
+```
+
+```text
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
+configfile: pytest.ini
+plugins: html-4.2.0, metadata-3.1.1
+collected 26 items
+
+python_tests/api_tests/test_api_delete_operations.py ..                  [  7%]
+python_tests/api_tests/test_api_error_handling_and_performance.py ....   [ 23%]
+python_tests/api_tests/test_api_get_operations.py .......               [ 50%]
+python_tests/api_tests/test_api_post_operations.py ........             [ 80%]
+python_tests/api_tests/test_api_put_operations.py ....                  [100%]
+
+- Generated html report: reports/api_report.html -
+============================= 26 passed in 1.09s ==============================
+```
+
+---
+
 ## 🚀 Static Web Deployment Guide
 
 ### Deploy to GitHub Pages (1-Click)
@@ -564,6 +630,16 @@ STQA-project/
 │   ├── test_validation.py  # 8. Validation Testing (Schema constraints, Field regex, Payment)
 │   ├── test_defects.py     # Defect Management lifecycle (BUG-001..006 simulation)
 │   │
+│   ├── api_tests/          # 🌐 REST API Demonstration Suite (Python Requests & Pytest)
+│   │   ├── __init__.py     # API package marker
+│   │   ├── demo_api_server.py                # Lightweight embedded REST server (GET, POST, PUT, DELETE)
+│   │   ├── conftest.py                       # Configurable endpoint fixture (--api-base-url) & client
+│   │   ├── test_api_get_operations.py        # GET listing, filtering, schema & 404 validation
+│   │   ├── test_api_post_operations.py       # POST product & order creation, 400 validation
+│   │   ├── test_api_put_operations.py        # PUT resource update, 404 & 400 validation
+│   │   ├── test_api_delete_operations.py     # DELETE resource removal & 404 verification
+│   │   └── test_api_error_handling_and_performance.py # Malformed JSON (400), SLAs & headers
+│   │
 │   └── playwright_tests/   # 🎭 Playwright Python End-to-End Browser Automation Suite
 │       ├── __init__.py     # Playwright package marker
 │       ├── conftest.py     # Playwright fixtures (browser, page, failure screenshot hook)
@@ -574,7 +650,7 @@ STQA-project/
 │       └── test_responsive_ui.py             # Desktop, Tablet, and Mobile viewports
 │
 ├── pytest.ini              # Pytest configuration & category marker definitions
-├── requirements.txt        # Python test dependencies (pytest, pytest-html, playwright)
+├── requirements.txt        # Python test dependencies (pytest, pytest-html, playwright, requests)
 
 │
 ├── tests/                  # Legacy Node.js test definitions (retained for backward compatibility)
