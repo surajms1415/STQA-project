@@ -1,6 +1,12 @@
 """
 Functional Testing Suite for AuraMart E-Commerce Application.
-Validates end-to-end user journeys: catalog search, cart operations, checkout processing, and stock updates.
+Validates all major e-commerce features according to requirements:
+1. Product catalog browsing, searching, and category filtering.
+2. Sorting by price, name, and stock.
+3. In-stock availability filtering.
+4. Cart drawer operations (add, remove, quantity update).
+5. Customer checkout and payment methods (Card, UPI, COD).
+6. Complete End-to-End order fulfillment.
 """
 
 import copy
@@ -10,8 +16,8 @@ from python_tests.conftest import verify
 
 
 @pytest.mark.functional
-class TestFunctionalScenarios:
-    """End-to-end and functional user journey test suite."""
+class TestFunctionalCatalogAndSearch:
+    """Functional tests for product search, categorization, and sorting."""
 
     def test_ft_srch_01_search_matches_query(self, initial_products):
         """FT-SRCH-01: Search returns relevant products matching query string."""
@@ -36,6 +42,48 @@ class TestFunctionalScenarios:
             f"{len(results)} items",
             pass_cond,
         )
+
+    @pytest.mark.parametrize(
+        "category_name, min_expected",
+        [
+            ("Audio", 2),
+            ("Electronics", 3),
+            ("Wearables", 1),
+            ("Home", 2),
+            ("Accessories", 2),
+        ],
+    )
+    def test_ft_filter_by_category(self, initial_products, category_name, min_expected):
+        """FT-CAT-01: Category filter returns only products belonging to that category."""
+        filtered = Core.filter_and_sort_products(initial_products, {"category": category_name})
+        assert len(filtered) >= min_expected
+        assert all(p["category"] == category_name for p in filtered)
+
+    def test_ft_in_stock_only_filter(self, initial_products):
+        """FT-FLTR-01: In-stock only filter eliminates out-of-stock items (stock == 0)."""
+        filtered = Core.filter_and_sort_products(initial_products, {"inStockOnly": True})
+        assert all(p["stock"] > 0 for p in filtered)
+        assert not any(p["id"] == "p10" for p in filtered)  # p10 is intentionally out of stock
+
+    @pytest.mark.parametrize(
+        "sort_key, validator",
+        [
+            ("price-asc", lambda res: all(res[i]["price"] <= res[i + 1]["price"] for i in range(len(res) - 1))),
+            ("price-desc", lambda res: all(res[i]["price"] >= res[i + 1]["price"] for i in range(len(res) - 1))),
+            ("name-asc", lambda res: all(res[i]["name"].lower() <= res[i + 1]["name"].lower() for i in range(len(res) - 1))),
+            ("stock-desc", lambda res: all(res[i]["stock"] >= res[i + 1]["stock"] for i in range(len(res) - 1))),
+        ],
+    )
+    def test_ft_sort_catalog_options(self, initial_products, sort_key, validator):
+        """FT-SORT-01: Catalog sorting arranges items correctly by price, name, or stock."""
+        sorted_res = Core.filter_and_sort_products(initial_products, {"sortBy": sort_key})
+        assert len(sorted_res) == len(initial_products)
+        assert validator(sorted_res)
+
+
+@pytest.mark.functional
+class TestFunctionalCartAndOrderWorkflow:
+    """Functional tests for cart operations and end-to-end checkout."""
 
     def test_ft_cart_01_add_to_cart_updates_count(self, initial_products):
         """FT-CART-01: Functional Add to Cart updates item and count correctly."""
@@ -73,25 +121,24 @@ class TestFunctionalScenarios:
             pass_cond,
         )
 
-    def test_ft_e2e_01_full_purchasing_workflow(self, initial_products):
-        """FT-E2E-01: End-to-End full purchasing workflow."""
-        # 1. Catalog & Initial State
+    def test_ft_e2e_01_full_purchasing_workflow_upi(self, initial_products):
+        """FT-E2E-01: End-to-End full purchasing workflow with UPI payment."""
         products = copy.deepcopy(initial_products)
         cart = []
 
-        # 2. Search product
+        # 1. Search product
         search_results = Core.filter_and_sort_products(products, {"search": "Mouse"})
         selected_product = search_results[0]  # p4
         initial_stock = selected_product["stock"]
 
-        # 3. Add to Cart
+        # 2. Add to Cart
         add_res = Core.add_to_cart(cart, products, selected_product["id"], 2)
         cart = add_res["cart"]
 
-        # 4. Validate Cart Totals
+        # 3. Validate Cart Totals
         totals = Core.calculate_cart_totals(cart, products)
 
-        # 5. Customer Checkout
+        # 4. Customer Checkout
         customer = {
             "name": "Alexander Graham",
             "email": "alex@telecom.org",
@@ -105,7 +152,7 @@ class TestFunctionalScenarios:
 
         order_res = Core.process_order(cart, products, customer, payment)
 
-        # 6. Verify End State
+        # 5. Verify End State
         order_created = order_res["success"] is True and order_res["order"]["total"] == totals["total"]
         updated_p = next(p for p in order_res["updatedProducts"] if p["id"] == selected_product["id"])
         stock_reduced = updated_p["stock"] == (initial_stock - 2)
@@ -119,3 +166,20 @@ class TestFunctionalScenarios:
             f"order: {order_res['success']}, stockReduced: {stock_reduced}, cartCleared: {cart_emptied}",
             pass_cond,
         )
+
+    def test_ft_e2e_02_full_purchasing_workflow_card(self, initial_products, valid_customer, valid_card_payment):
+        """FT-E2E-02: End-to-End full purchasing workflow with Credit/Debit card payment."""
+        products = copy.deepcopy(initial_products)
+        cart = []
+
+        # Add p1 (Headphones: $99.99, stock: 8)
+        add_res = Core.add_to_cart(cart, products, "p1", 1)
+        cart = add_res["cart"]
+
+        # Process order
+        order_res = Core.process_order(cart, products, valid_customer, valid_card_payment)
+        assert order_res["success"] is True
+        assert order_res["order"]["status"] == "Confirmed"
+        assert order_res["order"]["paymentMethod"] == "Credit/Debit Card"
+        assert order_res["order"]["subtotal"] == 99.99
+        assert order_res["order"]["shipping"] == 0.0  # Free shipping >= $50

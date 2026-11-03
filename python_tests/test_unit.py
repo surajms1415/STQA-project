@@ -1,6 +1,7 @@
 """
 Unit Testing Suite for AuraMart E-Commerce Application.
-Tests price calculation, quantity validation, cart totals, and stock constraints.
+Tests individual functions such as product calculations, cart operations, price calculations,
+validation rules, and independent logic.
 """
 
 import pytest
@@ -35,6 +36,38 @@ class TestPriceCalculation:
         expected = 139.93
         verify("UT-PRICE-03", "Float arithmetic precision (19.99 * 7)", expected, actual, actual == expected)
 
+    @pytest.mark.parametrize(
+        "raw_val, expected_formatted",
+        [
+            (0, "$0.00"),
+            (0.5, "$0.50"),
+            (12.345, "$12.35"),
+            (100, "$100.00"),
+            (129.5, "$129.50"),
+            ("49.99", "$49.99"),
+            ("invalid", "$0.00"),
+            (None, "$0.00"),
+        ],
+    )
+    def test_format_price_parametrized(self, raw_val, expected_formatted):
+        """Unit test price formatting across varied inputs and fallbacks."""
+        assert Core.format_price(raw_val) == expected_formatted
+
+    @pytest.mark.parametrize(
+        "price, quantity, expected_total",
+        [
+            (10.0, 1, 10.0),
+            (25.50, 2, 51.0),
+            (99.99, 4, 399.96),
+            (0.0, 5, 0.0),
+            (15.0, 0, 0.0),
+            (15.0, -1, 0.0),
+        ],
+    )
+    def test_calculate_line_total_parametrized(self, price, quantity, expected_total):
+        """Unit test line total calculation with multiple pricing points."""
+        assert Core.calculate_line_total(price, quantity) == expected_total
+
 
 @pytest.mark.unit
 class TestQuantityValidation:
@@ -60,6 +93,25 @@ class TestQuantityValidation:
         is_valid = Core.ValidationRules.validate_quantity(-2, 5)
         verify("UT-QTY-04", "Quantity -2 rejected", False, is_valid, is_valid is False)
 
+    @pytest.mark.parametrize(
+        "qty, stock, expected_valid",
+        [
+            (1, 10, True),
+            (5, 5, True),
+            (6, 5, False),
+            (0, 10, False),
+            (-1, 10, False),
+            ("3", 10, False),
+            (True, 10, False),
+            (False, 10, False),
+            (None, 10, False),
+            (3.14, 10, False),
+        ],
+    )
+    def test_validate_quantity_parametrized(self, qty, stock, expected_valid):
+        """Unit test quantity validation with valid, invalid, boolean, and non-integer types."""
+        assert Core.ValidationRules.validate_quantity(qty, stock) is expected_valid
+
 
 @pytest.mark.unit
 class TestCartCalculations:
@@ -69,14 +121,12 @@ class TestCartCalculations:
         """UT-CART-01: Computes accurate subtotal for varied items."""
         cart = [{"id": "p1", "quantity": 2}, {"id": "p2", "quantity": 3}]
         totals = Core.calculate_cart_totals(cart, sample_products)
-        # (100.00 * 2) + (20.00 * 3) = 260.00
         verify("UT-CART-01", "Subtotal calculation (200 + 60)", 260.00, totals["subtotal"], totals["subtotal"] == 260.00)
 
     def test_ut_cart_02_sales_tax(self, sample_products):
         """UT-CART-02: Computes standard 5% tax accurately."""
         cart = [{"id": "p1", "quantity": 1}]  # subtotal = 100.00
         totals = Core.calculate_cart_totals(cart, sample_products)
-        # 5% of 100 = 5.00
         verify("UT-CART-02", "5% Tax on $100", 5.00, totals["tax"], totals["tax"] == 5.00)
 
     def test_ut_cart_03_standard_shipping_under_50(self, sample_products):
@@ -96,6 +146,15 @@ class TestCartCalculations:
         cart = [{"id": "p2", "quantity": 1}]  # subtotal = 20, tax = 1.00, shipping = 5.00 -> total = 26.00
         totals = Core.calculate_cart_totals(cart, sample_products)
         verify("UT-CART-05", "Total computation: 20 + 1 + 5", 26.00, totals["total"], totals["total"] == 26.00)
+
+    def test_cart_empty_totals(self, sample_products):
+        """Unit test empty cart produces zero amounts across all fields."""
+        totals = Core.calculate_cart_totals([], sample_products)
+        assert totals["subtotal"] == 0.0
+        assert totals["tax"] == 0.0
+        assert totals["shipping"] == 0.0
+        assert totals["total"] == 0.0
+        assert totals["itemCount"] == 0
 
 
 @pytest.mark.unit
@@ -120,3 +179,18 @@ class TestStockValidation:
         cart = [{"id": "p1", "quantity": 2}]
         available = Core.get_available_stock(prod, cart)
         verify("UT-STOCK-03", "Available stock (5 - 2 in cart)", 3, available, available == 3)
+
+    @pytest.mark.parametrize(
+        "prod, expected_result",
+        [
+            ({"id": "a", "stock": 10}, True),
+            ({"id": "b", "stock": 1}, True),
+            ({"id": "c", "stock": 0}, False),
+            ({"id": "d", "stock": -5}, False),
+            (None, False),
+            ({}, False),
+        ],
+    )
+    def test_is_product_in_stock_parametrized(self, prod, expected_result):
+        """Parametrized stock checking across boundary states."""
+        assert Core.is_product_in_stock(prod) is expected_result

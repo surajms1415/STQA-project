@@ -126,6 +126,37 @@ def invalid_card_payment() -> Dict[str, str]:
 
 
 @pytest.fixture
+def upi_payment() -> Dict[str, str]:
+    """Valid UPI payment payload."""
+    return {"method": "upi", "upiId": "user@bank"}
+
+
+@pytest.fixture
+def cod_payment() -> Dict[str, str]:
+    """Cash on Delivery payment payload."""
+    return {"method": "cod"}
+
+
+@pytest.fixture
+def customer_factory():
+    """Factory fixture for generating custom customer records."""
+    def _create(**overrides):
+        base = {
+            "name": "Jane Doe",
+            "email": "jane@example.com",
+            "phone": "9876543210",
+            "address": "742 Evergreen Terrace",
+            "city": "Springfield",
+            "state": "IL",
+            "zip": "62704",
+        }
+        base.update(overrides)
+        return base
+    return _create
+
+
+@pytest.fixture
 def defect_manager() -> Core.DefectManager:
     """Instance of the Defect Lifecycle and Regression Manager."""
     return Core.DefectManager()
+

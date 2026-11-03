@@ -1,6 +1,6 @@
 # 🛒 AuraMart E-Commerce & STQA Testing Framework
 
-[![Python Tests](https://img.shields.io/badge/Pytest-35%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
+[![Python Tests](https://img.shields.io/badge/Pytest-188%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](requirements.txt)
 [![Pass Rate](https://img.shields.io/badge/Pass%20Rate-100%25-brightgreen?style=for-the-badge)](qa-report.html)
 [![Defects](https://img.shields.io/badge/Defects-6%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
@@ -378,27 +378,48 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Running Pytest Test Suites
+### 2. Comprehensive Test Architecture & Categories
+
+The Python test framework covers all 8 foundational software testing categories, mapped to dedicated test modules:
+
+| # | Testing Category | Python Test Module | Test Focus & Scope | Marker |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | **Unit Testing** | [`python_tests/test_unit.py`](python_tests/test_unit.py) | Mathematical calculations, pricing formulas, line totals, tax computation, stock bounds, and quantity checks. | `pytest -m unit` |
+| **2** | **Integration Testing** | [`python_tests/test_integration.py`](python_tests/test_integration.py) | Cross-component workflows: catalog selection &rarr; cart updates &rarr; checkout payload &rarr; order snapshot &rarr; storage sync. | `pytest -m integration` |
+| **3** | **Functional Testing** | [`python_tests/test_functional.py`](python_tests/test_functional.py) | User journey verification: live search, category filtering, multi-attribute sorting, cart modifications, and payment channels. | `pytest -m functional` |
+| **4** | **Black-Box Testing** | [`python_tests/test_blackbox.py`](python_tests/test_blackbox.py) | Specification-based testing evaluating external contracts, valid/invalid inputs, and expected outcomes without whitebox access. | `pytest -m blackbox` |
+| **5** | **Regression Testing** | [`python_tests/test_regression.py`](python_tests/test_regression.py) | Non-regression verification for historical bugs (`BUG-001` through `BUG-006`), calculation idempotency, and state persistence. | `pytest -m regression` |
+| **6** | **Boundary Value Testing** | [`python_tests/test_boundary.py`](python_tests/test_boundary.py) | Min/max bounds: quantities (1, stock, stock+1), shipping thresholds ($49.99 vs $50.00), string lengths, and card digits. | `pytest -m boundary` |
+| **7** | **Negative Testing** | [`python_tests/test_negative.py`](python_tests/test_negative.py) | Malformed quantities, missing customer fields, invalid regex patterns, ghost products, unsupported payment methods, and XSS. | `pytest -m negative` |
+| **8** | **Validation Testing** | [`python_tests/test_validation.py`](python_tests/test_validation.py) | Catalog data schema integrity, field-level regular expressions, expiry calendar dates, and comprehensive payload validation. | `pytest -m validation` |
+
+---
+
+### 3. Running Pytest Test Suites
 
 ```bash
-# Run the complete test suite (35 tests: 32 core + 3 defect lifecycle)
+# Run the complete test suite (188 tests across all categories)
 pytest -v
 
 # Run with stdout logging (displaying test ID, Expected, Actual, PASS/FAIL status)
 pytest -v -s
 
-# Run specific test categories using markers:
-pytest -m unit              # 15 Unit tests (Price, Quantity, Cart, Stock)
-pytest -m integration       # 5 Integration tests (Cart, Qty, Order, Storage)
-pytest -m blackbox          # 7 Black-Box tests (Empty cart, Malformed inputs, Limits)
-pytest -m functional        # 5 Functional tests (Search, Add/Remove, E2E workflow)
-pytest -m defects           # 3 Defect lifecycle & full regression tests
+# Run individual testing categories via markers:
+pytest -m unit              # Unit testing suite
+pytest -m integration       # Integration testing suite
+pytest -m functional        # Functional testing suite
+pytest -m blackbox          # Black-box testing suite
+pytest -m regression        # Regression testing suite
+pytest -m boundary          # Boundary value testing suite
+pytest -m negative          # Negative testing suite
+pytest -m validation        # Validation testing suite
+pytest -m defects           # Defect simulation & lifecycle suite
 
-# Generate a self-contained HTML test report:
+# Generate self-contained HTML test report:
 pytest --html=reports/report.html --self-contained-html
 ```
 
-### 3. Pytest Terminal Output Preview:
+### 4. Pytest Execution Summary:
 
 ```text
 ============================= test session starts =============================
@@ -407,45 +428,19 @@ rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
 configfile: pytest.ini
 testpaths: python_tests
 plugins: html-4.2.0, metadata-3.1.1
-collected 35 items
+collected 188 items
 
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_chk_01_empty_checkout_blocked PASSED
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_cust_01_rejects_invalid_customer PASSED
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_qty_01_rejects_negative_quantity PASSED
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_qty_02_zero_quantity_removes_item PASSED
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_stock_01_out_of_stock_addition_blocked PASSED
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_inp_01_rejects_invalid_card_payment PASSED
-python_tests/test_blackbox.py::TestBlackBoxScenarios::test_bb_inp_02_accepts_valid_customer_and_card PASSED
-python_tests/test_defects.py::TestDefectManagementAndRegression::test_defect_01_controlled_scenarios_expose_bugs PASSED
-python_tests/test_defects.py::TestDefectManagementAndRegression::test_defect_02_fix_bugs_and_rerun_failed_tests PASSED
-python_tests/test_defects.py::TestDefectManagementAndRegression::test_defect_03_perform_full_regression_testing PASSED
-python_tests/test_functional.py::TestFunctionalScenarios::test_ft_srch_01_search_matches_query PASSED
-python_tests/test_functional.py::TestFunctionalScenarios::test_ft_srch_02_search_nonexistent_query PASSED
-python_tests/test_functional.py::TestFunctionalScenarios::test_ft_cart_01_add_to_cart_updates_count PASSED
-python_tests/test_functional.py::TestFunctionalScenarios::test_ft_cart_02_remove_from_cart_deletes_item PASSED
-python_tests/test_functional.py::TestFunctionalScenarios::test_ft_e2e_01_full_purchasing_workflow PASSED
-python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_cart_01_add_product_to_cart PASSED
-python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_qty_01_update_quantity_recalculates_total PASSED
-python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_order_01_checkout_and_cart_clearing PASSED
-python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_store_01_localstorage_cart_synchronization PASSED
-python_tests/test_integration.py::TestCartAndOrderIntegration::test_it_store_02_inventory_reduction_persisted_to_storage PASSED
-python_tests/test_unit.py::TestPriceCalculation::test_ut_price_01_format_price PASSED
-python_tests/test_unit.py::TestPriceCalculation::test_ut_price_02_line_total PASSED
-python_tests/test_unit.py::TestPriceCalculation::test_ut_price_03_floating_point_rounding PASSED
-python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_01_valid_positive_integer PASSED
-python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_02_rejects_non_integer_or_decimal PASSED
-python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_03_rejects_zero_quantity PASSED
-python_tests/test_unit.py::TestQuantityValidation::test_ut_qty_04_rejects_negative_quantity PASSED
-python_tests/test_unit.py::TestCartCalculations::test_ut_cart_01_subtotal_calculation PASSED
-python_tests/test_unit.py::TestCartCalculations::test_ut_cart_02_sales_tax PASSED
-python_tests/test_unit.py::TestCartCalculations::test_ut_cart_03_standard_shipping_under_50 PASSED
-python_tests/test_unit.py::TestCartCalculations::test_ut_cart_04_free_shipping_at_or_above_50 PASSED
-python_tests/test_unit.py::TestCartCalculations::test_ut_cart_05_grand_total PASSED
-python_tests/test_unit.py::TestStockValidation::test_ut_stock_01_detects_in_stock PASSED
-python_tests/test_unit.py::TestStockValidation::test_ut_stock_02_detects_out_of_stock PASSED
-python_tests/test_unit.py::TestStockValidation::test_ut_stock_03_available_remaining_stock PASSED
+python_tests/test_blackbox.py ...................................... [ 18%]
+python_tests/test_boundary.py ...................................... [ 37%]
+python_tests/test_defects.py ...                                     [ 39%]
+python_tests/test_functional.py .................                    [ 48%]
+python_tests/test_integration.py .....                               [ 51%]
+python_tests/test_negative.py ...................................... [ 71%]
+python_tests/test_regression.py .........                            [ 76%]
+python_tests/test_unit.py .......................................... [ 89%]
+python_tests/test_validation.py .....................                [100%]
 
-============================= 35 passed in 0.35s ==============================
+============================= 188 passed in 0.82s =============================
 ```
 
 ---
@@ -497,17 +492,21 @@ STQA-project/
 │
 ├── ecommerce-core.js       # Core business logic, validators & calculation algorithms (UMD)
 │
-├── python_tests/           # 🐍 Python / Pytest Automated Test Suite
+├── python_tests/           # 🐍 Comprehensive Python / Pytest Automated Test Suite
 │   ├── __init__.py         # Python package marker
 │   ├── stqa_core.py        # Python business logic & defect simulation engine
-│   ├── conftest.py         # Shared Pytest fixtures & diagnostic logging hooks
-│   ├── test_unit.py        # 15 Unit tests (UT-PRICE-01..03, UT-QTY-01..04, UT-CART-01..05, UT-STOCK-01..03)
-│   ├── test_integration.py # 5 Integration tests (IT-CART-01, IT-QTY-01, IT-ORDER-01, IT-STORE-01..02)
-│   ├── test_blackbox.py    # 7 Black-box tests (BB-CHK-01, BB-CUST-01, BB-QTY-01..02, BB-STOCK-01, BB-INP-01..02)
-│   ├── test_functional.py  # 5 Functional tests (FT-SRCH-01..02, FT-CART-01..02, FT-E2E-01)
-│   └── test_defects.py     # 3 Defect lifecycle & regression tests (BUG-001..BUG-006)
+│   ├── conftest.py         # Shared Pytest fixtures, mock storage & verification helpers
+│   ├── test_unit.py        # 1. Unit Testing (Pricing, Calculations, Quantity, Stock)
+│   ├── test_integration.py # 2. Integration Testing (Cart workflow, Orders, Storage sync)
+│   ├── test_functional.py  # 3. Functional Testing (Search, Categories, Sort, E2E)
+│   ├── test_blackbox.py    # 4. Black-Box Testing (Contract & specification validation)
+│   ├── test_regression.py  # 5. Regression Testing (BUG-001..06 fix stability, idempotency)
+│   ├── test_boundary.py    # 6. Boundary Value Testing (Min, Max, Limits, Length thresholds)
+│   ├── test_negative.py    # 7. Negative Testing (Malformed data, Missing fields, XSS payloads)
+│   ├── test_validation.py  # 8. Validation Testing (Schema constraints, Field regex, Payment)
+│   └── test_defects.py     # Defect Management lifecycle (BUG-001..006 simulation)
 │
-├── pytest.ini              # Pytest configuration & marker definitions
+├── pytest.ini              # Pytest configuration & category marker definitions
 ├── requirements.txt        # Python test dependencies (pytest, pytest-html)
 │
 ├── tests/                  # Legacy Node.js test definitions (retained for backward compatibility)
