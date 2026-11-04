@@ -133,29 +133,44 @@ def calculate_line_total(price: float, quantity: int) -> float:
     try:
         p = float(price)
         q = int(quantity)
-        if q <= 0:
+        if q <= 0 or math.isnan(p) or math.isinf(p) or p < 0 or abs(p) > 1e12:
             return 0.0
         return round_money(p * q)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, OverflowError):
         return 0.0
 
 
-def calculate_cart_totals(cart: List[Dict[str, Any]], products: List[Dict[str, Any]]) -> Dict[str, Any]:
+def calculate_cart_totals(cart: Any, products: Any) -> Dict[str, Any]:
     """
     Calculate subtotal, 5% standard tax, tiered shipping ($5 if subtotal < $50, Free if >= $50),
     and grand total.
     """
+    if not isinstance(cart, list) or not isinstance(products, list):
+        return {
+            "subtotal": 0.0,
+            "tax": 0.0,
+            "shipping": 0.0,
+            "total": 0.0,
+            "itemCount": 0,
+        }
+
     subtotal = 0.0
     item_count = 0
-    prod_map = {p["id"]: p for p in products}
+    prod_map = {p["id"]: p for p in products if isinstance(p, dict) and "id" in p}
 
     for item in cart:
+        if not isinstance(item, dict):
+            continue
         pid = item.get("id")
-        qty = int(item.get("quantity", 0))
+        try:
+            qty = int(item.get("quantity", 0))
+        except (ValueError, TypeError):
+            continue
         if pid in prod_map and qty > 0:
             p_price = float(prod_map[pid].get("price", 0.0))
-            subtotal += p_price * qty
-            item_count += qty
+            if not math.isnan(p_price) and not math.isinf(p_price):
+                subtotal += p_price * qty
+                item_count += qty
 
     subtotal = round_money(subtotal)
     tax = round_money(subtotal * 0.05)  # 5% Standard Sales Tax
@@ -309,24 +324,27 @@ def filter_and_sort_products(products: List[Dict[str, Any]], filters: Optional[D
 
 
 class ValidationRules:
-    """Regex and business input validators matching frontend ValidationRules."""
+    """Regex and business input validators matching frontend ValidationRules with defensive sanitization."""
 
     @staticmethod
     def validate_name(val: Any) -> bool:
-        if not isinstance(val, str):
+        if not isinstance(val, str) or any(ord(c) < 32 for c in val):
             return False
         trimmed = val.strip()
-        return len(trimmed) >= 3 and bool(re.match(r"^[a-zA-Z\s.'-]+$", trimmed))
+        # Disallow non-breaking spaces or non-ascii control spaces
+        if "\xa0" in trimmed:
+            return False
+        return 3 <= len(trimmed) <= 100 and bool(re.match(r"^[a-zA-Z\s.'-]+$", trimmed))
 
     @staticmethod
     def validate_email(val: Any) -> bool:
-        if not isinstance(val, str):
+        if not isinstance(val, str) or any(ord(c) < 32 for c in val) or len(val) > 254:
             return False
         return bool(re.match(r"^[^\s@]+@[^\s@]+\.[^\s@]{2,}$", val.strip()))
 
     @staticmethod
     def validate_phone(val: Any) -> bool:
-        if not isinstance(val, (str, int)):
+        if not isinstance(val, (str, int)) or any(ord(c) < 32 for c in str(val)):
             return False
         digits = re.sub(r"\D", "", str(val))
         return 10 <= len(digits) <= 15
@@ -442,10 +460,15 @@ def process_order(
     if not cart or not isinstance(cart, list) or len(cart) == 0:
         return {"success": False, "error": "Cannot checkout with an empty cart"}
 
-    prod_map = {p["id"]: p for p in products}
+    prod_map = {p["id"]: p for p in products if isinstance(p, dict) and "id" in p}
     for item in cart:
+        if not isinstance(item, dict):
+            return {"success": False, "error": "Invalid item structure in cart"}
         pid = item.get("id")
-        qty = item.get("quantity", 0)
+        raw_qty = item.get("quantity", 0)
+        if not isinstance(raw_qty, int) or isinstance(raw_qty, bool) or raw_qty <= 0:
+            return {"success": False, "error": f'Invalid quantity for item "{pid}"'}
+        qty = raw_qty
         prod = prod_map.get(pid)
         if not prod:
             return {"success": False, "error": f'Product ID "{pid}" does not exist'}
