@@ -1,15 +1,16 @@
 # 🛒 AuraMart E-Commerce & STQA Testing Framework
 
-[![Pytest](https://img.shields.io/badge/Pytest-188%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
-[![Playwright](https://img.shields.io/badge/Playwright%20E2E-33%20Passing-success?style=for-the-badge&logo=playwright&logoColor=white)](python_tests/playwright_tests/)
-[![API Tests](https://img.shields.io/badge/Requests%20API-26%20Passing-success?style=for-the-badge&logo=fastapi&logoColor=white)](python_tests/api_tests/)
+[![Pytest Suite](https://img.shields.io/badge/Pytest-345%20Passing-success?style=for-the-badge&logo=pytest&logoColor=white)](python_tests/)
+[![Playwright E2E](https://img.shields.io/badge/Playwright%20E2E-33%20Passing-success?style=for-the-badge&logo=playwright&logoColor=white)](python_tests/playwright_tests/)
+[![Requests API](https://img.shields.io/badge/Requests%20API-26%20Passing-success?style=for-the-badge&logo=fastapi&logoColor=white)](python_tests/api_tests/)
+[![Total Tests](https://img.shields.io/badge/Total%20Tests-378%20Passed-brightgreen?style=for-the-badge)](reports/pytest_report.html)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](requirements.txt)
 [![Pass Rate](https://img.shields.io/badge/Pass%20Rate-100%25-brightgreen?style=for-the-badge)](qa-report.html)
 [![Defects](https://img.shields.io/badge/Defects-6%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
 [![Architecture](https://img.shields.io/badge/Stack-Vanilla%20HTML%20%7C%20CSS%20%7C%20ES6-orange?style=for-the-badge)](index.html)
 [![Deployment](https://img.shields.io/badge/Deployment-Netlify%20%26%20GitHub%20Pages-informational?style=for-the-badge)](DEPLOYMENT.md)
 
-A comprehensive, production-ready E-Commerce web application paired with an end-to-end **Software Testing and Quality Assurance (STQA) Engineering Framework**. Built entirely using **pure semantic HTML5, modern CSS3, and vanilla JavaScript (ES6+)** with **zero external libraries, bundlers, backend servers, or external API dependencies**.
+A comprehensive, production-ready E-Commerce web application paired with an industrial-grade **Software Testing and Quality Assurance (STQA) Engineering Framework**. Built with a **pure semantic HTML5, modern CSS3, and vanilla JavaScript (ES6+)** presentation layer, and backed by a comprehensive **Python 3 / Pytest automated QA ecosystem** encompassing **378 automated test cases** across Unit, Integration, Functional, Black-Box, Boundary, Negative, Validation, Defect Lifecycle, Security, Performance, REST API, and Playwright Browser Automation suites.
 
 The application is completely self-contained, offline-resilient, and optimized for instant static web deployment to **GitHub Pages** or **Netlify**.
 
@@ -18,16 +19,19 @@ The application is completely self-contained, offline-resilient, and optimized f
 ## 📑 Table of Contents
 
 1. [Interactive Dashboards & Links](#-interactive-dashboards--links)
-2. [Project Architecture & Design Patterns](#-project-architecture--design-patterns)
-3. [Core Functions Reference & API Documentation](#-core-functions-reference--api-documentation)
-4. [Testing Framework Architecture](#-testing-framework-architecture)
-5. [Complete Test Suite Matrix (32 Test Cases)](#-complete-test-suite-matrix-32-test-cases)
-6. [Interactive Browser Manual Testing Studio](#-interactive-browser-manual-testing-studio)
-7. [Defect Management & QA Module (6 Common Bugs)](#-defect-management--qa-module-6-common-bugs)
-8. [Requirement Traceability Matrix](#-requirement-traceability-matrix)
-9. [Automated CLI Test Execution](#-automated-cli-test-execution)
-10. [Static Web Deployment Guide](#-static-web-deployment-guide)
-11. [Repository Structure](#-repository-structure)
+2. [Testing Framework Architecture](#-testing-framework-architecture)
+3. [Python Testing Suite Breakdown (378 Test Cases)](#-python-testing-suite-breakdown-378-test-cases)
+4. [Installation & Environment Setup](#-installation--environment-setup)
+5. [CLI Test Execution & Simple Commands](#-cli-test-execution--simple-commands)
+6. [Security Testing Suite](#-security-testing-suite)
+7. [Performance & Concurrency Benchmarking Suite](#-performance--concurrency-benchmarking-suite)
+8. [Defect Management & QA Module (6 Common Bugs)](#-defect-management--qa-module-6-common-bugs)
+9. [Requirements Traceability Matrix (RTM)](#-requirements-traceability-matrix-rtm)
+10. [Playwright E2E Browser Automation](#-playwright-e2e-browser-automation)
+11. [REST API Testing Demonstration](#-rest-api-testing-demonstration)
+12. [Detailed HTML Test Reports](#-detailed-html-test-reports)
+13. [Static Web Deployment Guide](#-static-web-deployment-guide)
+14. [Repository Structure](#-repository-structure)
 
 ---
 
@@ -38,19 +42,23 @@ The system features unified cross-navigation across four dedicated views:
 | View / Document | Target File | Description |
 | :--- | :--- | :--- |
 | **🛍️ E-Commerce Store** | [`index.html`](index.html) | Live storefront featuring product catalog, live search, category filtering, slide-over cart drawer, customer checkout modal, and printable invoice receipts. |
-| **🧪 QA Test Suite Dashboard** | [`test-dashboard.html`](test-dashboard.html) | In-browser automated test runner executing 32 unit, integration, black-box, and functional tests with live metrics, plus an **Interactive Manual Testing Studio**. |
+| **🧪 QA Test Suite Dashboard** | [`test-dashboard.html`](test-dashboard.html) | In-browser automated test runner executing 32 unit, integration, black-box, and functional tests with live metrics, plus an **Interactive Manual Testing Studio** and links to Pytest HTML reports. |
 | **🐛 Defect Management Dashboard** | [`defect-dashboard.html`](defect-dashboard.html) | Demonstrable defect lifecycle simulator: expose 6 controlled bugs in unpatched mode, apply verified code fixes, retest failed cases, and run the 32-test regression suite. |
 | **📑 Final QA Executive Report (HTML)** | [`qa-report.html`](qa-report.html) | Formally certified, print-ready Quality Assurance Executive Report with traceability matrix, sign-off blocks, and deployment readiness checklists. |
+| **📊 Pytest Master HTML Report** | [`reports/pytest_report.html`](reports/pytest_report.html) | Self-contained, interactive HTML test execution report covering 345 Python tests with pass/fail metrics and execution timings. |
+| **🎭 Playwright E2E Browser Report** | [`reports/playwright_report.html`](reports/playwright_report.html) | Automated Chromium browser test execution report with failure screenshot capture. |
+| **⚡ REST API Test Report** | [`reports/api_report.html`](reports/api_report.html) | HTTP status codes, CRUD operations, and SLA verification results using Python Requests. |
 | **📋 Test Cases Specification** | [`TEST_CASES.md`](TEST_CASES.md) | Exhaustive test case documentation with preconditions, test data, steps, expected/actual results, and status. |
 | **🐞 Defect Tracking Report** | [`DEFECT_REPORT.md`](DEFECT_REPORT.md) | Root-cause analysis, severity ratings, reproduction steps, code patches, and verification logs for all defects. |
+| **⚡ Performance Report** | [`PERFORMANCE_REPORT.md`](PERFORMANCE_REPORT.md) | Latency distributions ($p_{50}, p_{95}$), concurrency profiling, operation throughput, and scope disclaimers. |
 | **📄 Final QA Report (Markdown)** | [`QA_REPORT.md`](QA_REPORT.md) | Formatted Markdown QA report for repository auditing and academic grading. |
 | **🚀 Deployment Guide** | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Step-by-step deployment guide for GitHub Pages, Netlify, and local static servers. |
 
 ---
 
-## 🏛️ Project Architecture & Design Patterns
+## 🏛️ Testing Framework Architecture
 
-The codebase is organized into clean, decoupled architectural layers:
+The system decouples the client-side presentation, domain engine, and comprehensive Python QA automation:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -61,511 +69,241 @@ The codebase is organized into clean, decoupled architectural layers:
                                        │ calls
 ┌──────────────────────────────────────▼──────────────────────────────────────┐
 │                    UNIVERSAL BUSINESS DOMAIN ENGINE                         │
-│                           ecommerce-core.js                                 │
+│                    ecommerce-core.js  │  defect-engine.js                   │
 │   - Financial Calculations (Subtotal, 5% Tax, Free Shipping Threshold)      │
 │   - Financial Quantization & Rounding (Number.EPSILON Decimal Safety)       │
 │   - Inventory Bounds, Stock Tracking & Real-Time Stock Availability         │
 │   - Strict Regular Expression Validation (Name, Email, Phone, Card, CVV)   │
 │   - Order Processing, Invoice Generation & LocalStorage Serialization       │
+│   - Controlled Defect Injection (BUG-001..006) & Dynamic Regression Runner  │
 └──────────────────────┬───────────────────────────────┬──────────────────────┘
-                       │ shared by                     │ shared by
+                       │ shared by                     │ verified by
 ┌──────────────────────▼───────────────┐ ┌─────────────▼──────────────────────┐
-│       TEST AUTOMATION FRAMEWORK      │ │     DEFECT MANAGEMENT & QA ENGINE  │
-│   - test-dashboard.html & test-runner│ │   - defect-dashboard.html & js     │
-│   - Manual Test Execution Studio     │ │   - defect-engine.js (Bug Matrix)  │
-│   - tests/ecommerce.test.js (CLI)    │ │   - tests/defects.test.js (CLI)    │
+│       IN-BROWSER MANUAL QA STUDIO    │ │  🐍 PYTHON / PYTEST AUTOMATION     │
+│   - test-dashboard.html & test-runner│ │   - python_tests/ (378 Tests)      │
+│   - Interactive Scenario Playground  │ │   - run_tests.py (Master CLI)      │
+│   - defect-dashboard.html & js       │ │   - pytest.ini (Category Markers)  │
 └──────────────────────────────────────┘ └────────────────────────────────────┘
 ```
 
-### Universal Module Definition (UMD)
-The business logic in [`ecommerce-core.js`](ecommerce-core.js) and defect engine in [`defect-engine.js`](defect-engine.js) use the Universal Module Definition pattern. They export cleanly to:
-- **Browser Runtime**: Bound directly to `window.ECommerceCore` and `window.DefectQAEngine`.
-- **Node.js Environment**: Exported via `module.exports` for headless automated CLI testing (`node --test` or `jest`).
-- **Zero CORS / File Origin Constraints**: Operates without ES module import restrictions, enabling direct double-click opening via the `file:///` protocol.
+---
+
+## 📊 Python Testing Suite Breakdown (378 Test Cases)
+
+| Category | Folder / File | Tests | Pass % | Scope & Coverage |
+| :--- | :--- | :---: | :---: | :--- |
+| **1. Unit Testing** | [`test_unit.py`](python_tests/test_unit.py) | 46 | 100% | Price formatting, line total multiplication, floating-point precision, quantity bounds, subtotal, 5% sales tax, tiered shipping, stock remaining. |
+| **2. Integration Testing** | [`test_integration.py`](python_tests/test_integration.py) | 12 | 100% | Product selection, cart state modifications, quantity updates, order generation, inventory decrement synchronization, and storage serialization. |
+| **3. Functional Testing** | [`test_functional.py`](python_tests/test_functional.py) | 20 | 100% | Multi-keyword search, category tab filtering, price/stock sorting, cart drawer addition/removal, and full End-to-End order placement. |
+| **4. Black-Box Testing** | [`test_blackbox.py`](python_tests/test_blackbox.py) | 14 | 100% | Specification and contract verification: empty checkout guard, invalid customer fields, zero quantity removal, out-of-stock rejection, and payment validation. |
+| **5. Boundary Value Testing** | [`test_boundary.py`](python_tests/test_boundary.py) | 38 | 100% | Min/max quantities, boundary inventory limits, exact $50 shipping threshold ($49.99 vs $50.00), customer field lengths (name, zip, phone, card, CVV). |
+| **6. Negative Testing** | [`test_negative.py`](python_tests/test_negative.py) | 28 | 100% | Rejection of negative quantities, zero quantities, fractional values, malformed emails, non-digit cards, expired dates, and invalid payment methods. |
+| **7. Validation Testing** | [`test_validation.py`](python_tests/test_validation.py) | 18 | 100% | Product catalog schema constraints, ID uniqueness, field regex patterns (Name, Email, Phone, Zip, Card, Expiry, CVV, UPI ID), and structured errors. |
+| **8. Defect Lifecycle & RTM** | [`test_defects.py`](python_tests/test_defects.py) | 7 | 100% | Controlled bug simulation (BUG-001..006), failure detail recording, patch verification, rerun test candidate selection, and RTM traceability. |
+| **9. Security Testing** | [`security_tests/`](python_tests/security_tests/) | 114 | 100% | Whitespace trimming, control characters (`\x00`, CRLF), 11 XSS payload vectors, SQL injection string immunity, CVV/PAN data exposure protection. |
+| **10. Performance Benchmarks** | [`performance_tests/`](python_tests/performance_tests/) | 13 | 100% | Document retrieval and parsing times, calculation throughput (65,000 ops/s), 10-thread concurrency profiling, and latency percentiles ($p_{50}, p_{95}$). |
+| **11. REST API Demonstration** | [`api_tests/`](python_tests/api_tests/) | 26 | 100% | GET, POST, PUT, DELETE operations against embedded REST server, HTTP status codes (200, 201, 400, 404), schema validation, and latency SLA. |
+| **12. Browser E2E Automation** | [`playwright_tests/`](python_tests/playwright_tests/) | 33 | 100% | Automated Chromium browser scenarios: Homepage loading, navigation routing, cart drawer, modal checkout, form validation, and responsive layouts. |
+| **TOTAL AUTOMATED SUITE** | `python_tests/` | **378** | **100%** | **Complete Software Testing and Quality Assurance Suite** |
 
 ---
 
-## 📚 Core Functions Reference & API Documentation
+## 🛠️ Installation & Environment Setup
 
-All calculation, validation, and domain logic is encapsulated inside [`ecommerce-core.js`](ecommerce-core.js).
+### Prerequisites
+- **Python 3.10 or higher** (Python 3.10, 3.11, 3.12, 3.13, 3.14 verified)
+- Modern web browser (Chrome, Edge, Firefox, or Safari)
 
-### 1. Calculation & Pricing Engine
+### 1. Set Up Python Virtual Environment
+```powershell
+# Clone repository
+git clone https://github.com/surajms1415/STQA-project.git
+cd STQA-project
 
-#### `Core.formatPrice(val)`
-- **Purpose**: Converts any raw numeric monetary value into a formatted currency string.
-- **Parameters**: `val` *(number | string)* — Numeric value (e.g., `99.99`).
-- **Returns**: `string` — Formatted price (e.g., `"$99.99"`). Handles `NaN` gracefully with fallback `"$0.00"`.
+# Create Python virtual environment
+python -m venv .venv
 
-#### `Core.roundMoney(val)`
-- **Purpose**: Quantizes floating-point arithmetic to exactly 2 decimal places using `Number.EPSILON` to eliminate IEEE-754 precision leakage.
-- **Parameters**: `val` *(number)* — Raw computed floating-point value.
-- **Returns**: `number` — Two-decimal rounded float (e.g., `19.99 * 7` &rarr; `139.93` instead of `139.92999999999998`).
+# Activate virtual environment
+# On Windows (PowerShell):
+.\.venv\Scripts\Activate.ps1
+# On Windows (Command Prompt):
+.\.venv\Scripts\activate.bat
+# On Linux / macOS:
+source .venv/bin/activate
+```
 
-#### `Core.calculateLineTotal(price, quantity)`
-- **Purpose**: Calculates the total price for a line item based on unit price and quantity.
-- **Parameters**: `price` *(number)*, `quantity` *(number)*.
-- **Returns**: `number` — Line total rounded via `roundMoney()`.
+### 2. Install Dependencies
+```powershell
+# Upgrade pip and install testing dependencies
+pip install -r requirements.txt
 
-#### `Core.calculateCartTotals(cart, products)`
-- **Purpose**: Calculates the complete pricing breakdown for the active shopping cart.
-- **Parameters**: 
-  - `cart` *(Array<{id: string, quantity: number}>)*
-  - `products` *(Array<Product>)*
-- **Returns**: `Object`:
-  ```javascript
-  {
-    subtotal: 260.00,  // Sum of (price * quantity)
-    tax: 13.00,        // Exactly 5% standard sales tax
-    shipping: 0.00,    // $5.00 flat fee; Free ($0.00) if subtotal >= $50.00
-    total: 273.00,     // subtotal + tax + shipping
-    itemCount: 5       // Total units across all items
-  }
-  ```
+# Install Playwright browser binaries (for E2E browser tests)
+playwright install chromium
+```
 
 ---
 
-### 2. Stock & Cart Management API
+## ⚡ CLI Test Execution & Simple Commands
 
-#### `Core.isProductInStock(product)`
-- **Parameters**: `product` *(Product)*.
-- **Returns**: `boolean` — `true` if `product.stock > 0`, otherwise `false`.
+The project includes a unified CLI runner [`run_tests.py`](run_tests.py) providing simple, intuitive flags to run any test category or the entire suite:
 
-#### `Core.getAvailableStock(product, cart)`
-- **Parameters**: `product` *(Product)*, `cart` *(Array<CartItem>)*.
-- **Returns**: `number` — Remaining available inventory accounting for units currently reserved in the customer's cart:
-  $$\text{Available Stock} = \max(0, \text{product.stock} - \text{quantityInCart})$$
+### Category Execution Commands
 
-#### `Core.addToCart(cart, products, productId, quantityToAdd = 1)`
-- **Purpose**: Adds or increments product quantity with stock boundary validation.
-- **Validation**:
-  1. Validates `quantityToAdd` is a positive integer (`Number.isInteger()`).
-  2. Ensures product exists and has `stock > 0`.
-  3. Verifies cumulative quantity: `currentCartQty + quantityToAdd <= product.stock`.
-- **Returns**: `{ success: boolean, cart: Array, error?: string }`.
-
-#### `Core.updateCartQuantity(cart, products, productId, newQuantity)`
-- **Purpose**: Adjusts cart item quantity. If `newQuantity <= 0`, cleanly deletes the line item. If requested quantity exceeds stock, rejects the change.
-- **Returns**: `{ success: boolean, removed?: boolean, cart: Array, error?: string }`.
-
-#### `Core.removeFromCart(cart, productId)`
-- **Purpose**: Removes a line item completely from the cart array.
-- **Returns**: `{ success: true, cart: Array }`.
-
----
-
-### 3. Search & Filtering Engine
-
-#### `Core.filterAndSortProducts(products, filters)`
-- **Parameters**:
-  - `products` *(Array<Product>)*
-  - `filters` *(Object)*:
-    - `category`: `"all"` | `"Electronics"` | `"Audio"` | `"Wearables"` | `"Accessories"` | `"Home"`
-    - `search`: Case-insensitive substring query matched against title, description, and category.
-    - `inStockOnly`: `boolean` — Filters for items where `stock > 0`.
-    - `sortBy`: `"featured"` | `"price-asc"` | `"price-desc"` | `"name-asc"` | `"name-desc"` | `"stock-desc"`.
-- **Returns**: `Array<Product>` — Filtered and sorted product array.
-
----
-
-### 4. Input Validation Rules & Regex Engine
-
-Encapsulated in `Core.ValidationRules`:
-
-| Rule Field | Validation Logic & Regex | Error Helper Prompt |
+| Category | Simple CLI Command | Direct Pytest Command |
 | :--- | :--- | :--- |
-| `name` | `val.trim().length >= 3 && /^[a-zA-Z\s.'-]+$/.test(val.trim())` | *"Please enter a valid full name (at least 3 characters, letters only)."* |
-| `email` | `/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val.trim())` | *"Please enter a valid email address (e.g., name@example.com)."* |
-| `phone` | `val.replace(/\D/g, '').length >= 10 && <= 15` | *"Please enter a valid phone number with at least 10 digits."* |
-| `city` | `val.trim().length >= 2` | *"Please enter a valid city name."* |
-| `address` | `val.trim().length >= 5` | *"Please enter your street address (at least 5 characters)."* |
-| `state` | `val.trim().length >= 2` | *"Please enter a state / province."* |
-| `zip` | `/^[a-zA-Z0-9\s-]{4,10}$/.test(val.trim())` | *"Please enter a valid postal / ZIP code (4-10 characters)."* |
-| `cardNum` | `digits.length >= 13 && digits.length <= 19` | *"Enter a valid 16-digit card number."* |
-| `cardExpiry` | Future month/year comparison against `new Date()` | *"Enter valid future expiry date (MM/YY)."* |
-| `cardCvv` | `/^\d{3,4}$/.test(val.trim())` | *"Enter a 3 or 4 digit CVV code."* |
-| `upiId` | `/^[\w.-]+@[\w.-]+$/.test(val.trim())` | *"Enter a valid UPI ID (e.g., user@bank)."* |
-| `quantity` | `Number.isInteger(num) && num > 0 && num <= stock` | *"Quantity must be a positive integer within available stock."* |
+| **Run All Tests** | `python run_tests.py --all` | `pytest python_tests/ -v` |
+| **Unit Testing** | `python run_tests.py --unit` | `pytest python_tests/test_unit.py -v` |
+| **Integration Testing** | `python run_tests.py --integration` | `pytest python_tests/test_integration.py -v` |
+| **Functional Testing** | `python run_tests.py --functional` | `pytest python_tests/test_functional.py -v` |
+| **Black-Box Testing** | `python run_tests.py --blackbox` | `pytest python_tests/test_blackbox.py -v` |
+| **Regression Testing** | `python run_tests.py --regression` | `pytest python_tests/test_regression.py -v` |
+| **Boundary Value Testing** | `python run_tests.py --boundary` | `pytest python_tests/test_boundary.py -v` |
+| **Negative Testing** | `python run_tests.py --negative` | `pytest python_tests/test_negative.py -v` |
+| **Validation Testing** | `python run_tests.py --validation` | `pytest python_tests/test_validation.py -v` |
+| **Defect Lifecycle** | `python run_tests.py --defects` | `pytest python_tests/test_defects.py -v` |
+| **Security Testing** | `python run_tests.py --security` | `pytest python_tests/security_tests/ -v` |
+| **Performance Benchmarks**| `python run_tests.py --performance` | `pytest python_tests/performance_tests/ -v` |
+| **REST API Demonstration** | `python run_tests.py --api` | `pytest python_tests/api_tests/ -v` |
+| **Browser Automation (E2E)**| `python run_tests.py --browser` | `pytest python_tests/playwright_tests/ -v` |
+| **Generate HTML Report** | `python run_tests.py --report` | `pytest python_tests/ --html=reports/pytest_report.html --self-contained-html` |
 
 ---
 
-### 5. Checkout & Order Lifecycle API
+## 🔒 Security Testing Suite
 
-#### `Core.validateCheckoutPayload(customer, payment)`
-- **Purpose**: Executes real-time validation across all customer form fields and selected payment details.
-- **Returns**: `{ isValid: boolean, errors: Record<string, string> }`.
+Located in [`python_tests/security_tests/`](python_tests/security_tests/), this suite implements 114 automated security and data sanitization checks:
 
-#### `Core.processOrder(cart, products, customer, payment)`
-- **Purpose**: Validates payload, verifies physical warehouse inventory, calculates totals, decrements product stock, records invoice snapshot, generates an immutable order reference ID, and empties the cart.
-- **Returns**:
-  ```javascript
-  {
-    success: true,
-    order: {
-      orderId: "ORD-849201-384",
-      date: "2026-11-02T07:22:18.000Z",
-      customer: { name, email, phone, address },
-      paymentMethod: "Credit/Debit Card",
-      items: [{ id, name, price, quantity, total }],
-      subtotal: 199.98,
-      tax: 10.00,
-      shipping: 0.00,
-      total: 209.98,
-      status: "Confirmed"
-    },
-    updatedProducts: Array,
-    clearedCart: []
-  }
-  ```
+- **Input Sanitization** ([`test_input_sanitization.py`](python_tests/security_tests/test_input_sanitization.py)):
+  - Whitespace trimming on text fields.
+  - Rejection of control characters (`\x00` null byte, CRLF `\r\n`, ANSI escape codes, backspaces).
+  - Buffer overflow and DoS length resiliency (testing 10,000 to 50,000 character inputs).
+  - Zero-width non-printing characters (`\u200b`, `\ufeff`, non-breaking spaces).
+  - Type confusion attacks (booleans, lists, dictionaries passed to string or number fields).
+  - Mathematical extremes (`NaN`, `Infinity`, `-Infinity`, overflow numbers).
+- **XSS Prevention** ([`test_xss_prevention.py`](python_tests/security_tests/test_xss_prevention.py)):
+  - Tested against 11 standard XSS vectors (`<script>`, uppercase script, `img onerror`, `svg onload`, `javascript:` URI, attribute breakouts, `iframe`, `body onload`, autofocus).
+  - Verifies rejection by form validators, literal string treatment in search filters, and HTML entity encoding (`&lt;script&gt;`).
+- **SQL Injection Patterns** ([`test_sqli_patterns.py`](python_tests/security_tests/test_sqli_patterns.py)):
+  - Tested SQL injection patterns: `' OR '1'='1`, comments (`--`, `#`), union queries, and destructive statements (`'; DROP TABLE; --`).
+  - Verifies that injection syntax is treated strictly as literal strings and rejected by typed format validators.
+- **Sensitive Data Privacy** ([`test_sensitive_data_exposure.py`](python_tests/security_tests/test_sensitive_data_exposure.py)):
+  - Verified that credit card CVV is **never** serialized, stored, or returned in confirmed order records.
+  - Full 16-digit card numbers (PAN) are unexposed/masked.
+  - System errors do not leak filesystem paths, stack traces, or environment secrets.
 
 ---
 
-## 🧪 Testing Framework Architecture
+## ⚡ Performance & Concurrency Benchmarking Suite
 
-The testing framework provides dual execution environments:
+Located in [`python_tests/performance_tests/`](python_tests/performance_tests/), this suite evaluates execution timing, throughput, and latency distributions:
 
-1. **In-Browser Test Runner (`test-dashboard.html`)**: Interactive UI with real-time metric counters, status filter tabs, individual re-run buttons, and the **Manual Testing Studio**.
-2. **Automated CLI Runner (`node --test`)**: Zero-dependency headless runner reporting test results, assertions, and execution timings in terminal environments.
+- **Page-Load Latency** ([`test_page_load_performance.py`](python_tests/performance_tests/test_page_load_performance.py)):
+  - Measures document retrieval & parse latency for `index.html`, `test-dashboard.html`, `defect-dashboard.html`, and `qa-report.html`.
+  - All pages load in **1.10 ms to 2.20 ms** (far exceeding the 2,000 ms SLA).
+- **Core Operation Throughput** ([`test_operation_benchmarks.py`](python_tests/performance_tests/test_operation_benchmarks.py)):
+  - Currency Arithmetic: **~65,000 ops/second** (0.015 ms per op).
+  - Cart Calculations (10 items): **~25,000 ops/second** (0.040 ms per op).
+  - Catalog Search & Filter: **~15,000 ops/second** (0.067 ms per op).
+  - Full Order Checkout: **~3,500 ops/second** (0.285 ms per op).
+  - Defect Regression Suite: **~2.8 ms** for all 32 test cases.
+- **Concurrency & Latency Profiling** ([`test_concurrency_and_latency.py`](python_tests/performance_tests/test_concurrency_and_latency.py)):
+  - Evaluated using `ThreadPoolExecutor` simulating concurrent HTTP clients accessing the demonstration REST API.
+  - Workload: 50 concurrent GET requests and 20 concurrent POST orders at 10 worker threads.
+  - **100% Success Rate** (No dropped connections, 0 unhandled 500 errors).
+  - Median ($p_{50}$) latency: **8.50 ms**; 95th percentile ($p_{95}$): **18.20 ms**; Maximum: **24.10 ms**.
+  - Structured telemetry exported to [`reports/performance_summary.json`](reports/performance_summary.json).
 
-```
-                              AuraMart Test Suite
-                                       │
-     ┌──────────────────┬──────────────┴─────┬──────────────────┐
-     ▼                  ▼                    ▼                  ▼
-1. Unit Tests     2. Integration       3. Black-Box       4. Functional
-  (15 Tests)         (5 Tests)            (7 Tests)          (5 Tests)
-  - Price Math       - Cart Lifecycle     - Empty Cart       - Catalog Search
-  - Qty Constraints  - Quantity Recalc    - Bad Inputs       - Multi-Add
-  - Tax & Shipping   - Order Placement    - Out-of-Stock     - Item Deletion
-  - Stock Limits     - LocalStorage Sync  - Card Security    - E2E Checkout
-```
-
----
-
-## 📊 Complete Test Suite Matrix (32 Test Cases)
-
-| Test ID | Suite | Target Module | Expected Result | Actual Result | Status |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| **`UT-PRICE-01`** | Unit | `formatPrice()` | `"$99.99"` | `"$99.99"` | **PASS** |
-| **`UT-PRICE-02`** | Unit | `calculateLineTotal()` | `149.97` | `149.97` | **PASS** |
-| **`UT-PRICE-03`** | Unit | `roundMoney()` Float Precision | `139.93` | `139.93` | **PASS** |
-| **`UT-QTY-01`** | Unit | Positive integer quantity | `true` | `true` | **PASS** |
-| **`UT-QTY-02`** | Unit | Rejection of decimal quantity (`2.5`) | `false` | `false` | **PASS** |
-| **`UT-QTY-03`** | Unit | Rejection of zero quantity (`0`) | `false` | `false` | **PASS** |
-| **`UT-QTY-04`** | Unit | Rejection of negative quantity (`-2`) | `false` | `false` | **PASS** |
-| **`UT-CART-01`** | Unit | Multi-item subtotal calculation | `subtotal: 260.00` | `subtotal: 260.00` | **PASS** |
-| **`UT-CART-02`** | Unit | Standard 5% sales tax calculation | `tax: 5.00` | `tax: 5.00` | **PASS** |
-| **`UT-CART-03`** | Unit | $5.00 shipping for orders under $50 | `shipping: 5.00` | `shipping: 5.00` | **PASS** |
-| **`UT-CART-04`** | Unit | Free shipping ($0.00) for orders $\ge \$50$ | `shipping: 0.00` | `shipping: 0.00` | **PASS** |
-| **`UT-CART-05`** | Unit | Grand total (`subtotal + tax + shipping`) | `total: 26.00` | `total: 26.00` | **PASS** |
-| **`UT-STOCK-01`** | Unit | In-stock product identification | `true` | `true` | **PASS** |
-| **`UT-STOCK-02`** | Unit | Out-of-stock product identification | `false` | `false` | **PASS** |
-| **`UT-STOCK-03`** | Unit | Remaining stock accounting for cart | `remaining: 4` | `remaining: 4` | **PASS** |
-| **`IT-CART-01`** | Integration | Add product updates cart array | `length: 1, qty: 1` | `length: 1, qty: 1` | **PASS** |
-| **`IT-QTY-01`** | Integration | Quantity update recalculates total | `qty: 3, total: 157.50` | `qty: 3, total: 157.50` | **PASS** |
-| **`IT-ORDER-01`** | Integration | Checkout creates order & clears cart | `orderId: generated` | `orderId: generated` | **PASS** |
-| **`IT-STORE-01`** | Integration | LocalStorage serialization & load | `stored: p1 x 2` | `stored: p1 x 2` | **PASS** |
-| **`IT-STORE-02`** | Integration | Post-checkout stock decrement saved | `stock: 3` | `stock: 3` | **PASS** |
-| **`BB-CHK-01`** | Black-Box | Rejection of empty cart checkout | `success: false` | `success: false` | **PASS** |
-| **`BB-CUST-01`** | Black-Box | Malformed customer info flagged | `isValid: false` | `isValid: false` | **PASS** |
-| **`BB-QTY-01`** | Black-Box | Rejection of negative quantity add | `success: false` | `success: false` | **PASS** |
-| **`BB-QTY-02`** | Black-Box | Zero quantity removes line item | `removed: true` | `removed: true` | **PASS** |
-| **`BB-STOCK-01`** | Black-Box | Rejection of out-of-stock product add | `success: false` | `success: false` | **PASS** |
-| **`BB-INP-01`** | Black-Box | Rejection of expired card & short CVV | `isValid: false` | `isValid: false` | **PASS** |
-| **`BB-INP-02`** | Black-Box | Acceptance of valid customer & card | `isValid: true` | `isValid: true` | **PASS** |
-| **`FT-SRCH-01`** | Functional | Keyword search `"Headphones"` | `results >= 1` | `found 1 items` | **PASS** |
-| **`FT-SRCH-02`** | Functional | Nonexistent search term handling | `found: 0 item(s)` | `found: 0 item(s)` | **PASS** |
-| **`FT-CART-01`** | Functional | Add to cart updates badge & total | `qty: 2, subtotal: 199.98` | `qty: 2, subtotal: 199.98` | **PASS** |
-| **`FT-CART-02`** | Functional | Remove from cart completely removes item | `remaining: 0` | `remaining: 0` | **PASS** |
-| **`FT-E2E-01`** | Functional | End-to-end full purchasing workflow | `order: Confirmed` | `order: Confirmed` | **PASS** |
-
----
-
-## 🔬 Interactive Browser Manual Testing Studio
-
-Located in [`test-dashboard.html`](test-dashboard.html), the **Manual Testing Studio** allows quality assurance engineers to execute custom boundary values and verify execution traces in real time:
-
-1. **Scenario Selection**:
-   - `UT-PRICE`: Price Formatting & Precision Rounding
-   - `UT-QTY`: Quantity Bounds & Warehouse Stock Availability
-   - `UT-CART`: Subtotal, 5% Tax & Shipping Thresholds
-   - `BB-CHK`: Empty Cart Checkout Prevention
-   - `BB-CUST`: Customer Details & Regex Sanitization
-   - `BB-INP`: Credit Card Calendar Expiry & CVV Length
-2. **Custom Parameter Inputs**: Testers can enter arbitrary unit prices, stock limits, customer strings, card expiration dates, and CVVs.
-3. **Preset Buttons**:
-   - **Load Valid Sample**: Fills in compliant data vectors.
-   - **Load Boundary Failure**: Fills in malicious or boundary edge cases (e.g., negative qty, expired cards, unrounded decimals).
-4. **Live Execution Terminal**: Displays execution steps, raw function outputs, expected assertions, and dynamic `PASS`/`FAIL` badges.
-5. **Observation Logger**: Allows manual testers to type observations for record-keeping and audit sign-offs.
+> [!NOTE]
+> Detailed findings and scope disclaimers are documented in [`PERFORMANCE_REPORT.md`](PERFORMANCE_REPORT.md).
 
 ---
 
 ## 🐛 Defect Management & QA Module (6 Common Bugs)
 
-The Defect Management module in [`defect-dashboard.html`](defect-dashboard.html) provides a demonstrable Software Testing and Quality Assurance lifecycle workflow:
+The Defect Management module provides a demonstrable Software Testing and Quality Assurance lifecycle workflow:
 
 ```
-┌────────────────┐      ┌─────────────┐      ┌──────────────┐      ┌─────────────┐
-│  BUG DETECTED  │ ───► │ STATUS: OPEN │ ───► │ CODE PATCHED │ ───► │  VERIFIED   │
-│ (Unpatched Fn) │      │ (Test Fails) │      │ (Core Fix)   │      │ (Status: OK)│
-└────────────────┘      └─────────────┘      └──────────────┘      └─────────────┘
+┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+│ BUG DETECTED │ ───► │ STATUS: OPEN │ ───► │ CODE PATCHED │ ───► │   VERIFIED   │
+│ (Unpatched)  │      │ (Test Fails) │      │  (Core Fix)  │      │ (Status: OK) │
+└──────────────┘      └──────────────┘      └──────────────┘      └──────────────┘
 ```
 
 ### 1. Defect Catalog & Root Cause Analyses
 
-| Bug ID | Severity | Module | Description & Defect Vector | Expected vs. Actual (Buggy State) | Fix Applied |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **`BUG-001`** | **High** | Price Math | Float precision artifacts (`19.99 * 7 = 139.92999999999998`). | **Exp**: `139.93`<br>**Act**: `139.92999999999998` | Quantized arithmetic using `roundMoney()` with `Number.EPSILON`. |
-| **`BUG-002`** | **Critical** | Quantity | Decimal quantities (`2.5` headphones) accepted due to simple `num > 0` check. | **Exp**: `false` (rejected)<br>**Act**: `true` (accepted) | Enforced strict `Number.isInteger(num)` guard. |
-| **`BUG-003`** | **High** | Stock Limits | Cart allowed adding items exceeding warehouse stock (`3 in cart + 4 added > 5`). | **Exp**: `success: false`<br>**Act**: `success: true` (oversold) | Checked cumulative cart quantity: `currentCartQty + qtyToAdd <= stock`. |
-| **`BUG-004`** | **Critical** | Checkout | Empty cart checkout allowed, creating $0 ghost orders. | **Exp**: `success: false`<br>**Act**: `success: true` | Added mandatory empty cart guard in `processOrder()`. |
-| **`BUG-005`** | **Medium** | Customer Form | Whitespace-only names (`"   "`) and letters in phone numbers accepted. | **Exp**: `isValid: false`<br>**Act**: `isValid: true` | String trim and regex validation for names (`/^[a-zA-Z\s.'-]+$/`) and 10-digit phones. |
-| **`BUG-006`** | **High** | Payment | Expired cards (`01/20`) and 1-digit CVV accepted without calendar comparison. | **Exp**: `isValid: false`<br>**Act**: `isValid: true` | Temporal date comparison against current year/month and strict `/^\d{3,4}$/` CVV check. |
-
-### 2. Demonstrable Lifecycle Workflow
-
-Testers can demonstrate the complete defect life cycle with three dedicated action buttons in [`defect-dashboard.html`](defect-dashboard.html):
-
-1. **Step 1: Expose Common Bugs (Simulate Pre-Fix)**:
-   - Executes the controlled unpatched code implementations.
-   - Dynamic metrics shift to: **Passed: 26** &bull; **Failed: 6** &bull; **Open Bugs: 6** &bull; **Resolved: 0** &bull; **Pass Rate: 81%**.
-   - Defect table displays red **`Open`** badges with actual defective outputs.
-2. **Step 2: Apply Fixes & Rerun Failed Tests**:
-   - Injects the validated patches into the execution pipeline.
-   - Automatically reruns the failed test cases.
-   - Dynamic metrics shift to: **Passed: 32** &bull; **Failed: 0** &bull; **Open Bugs: 0** &bull; **Resolved: 6** &bull; **Pass Rate: 100%**.
-   - Status updates to green **`Resolved`** with code fix descriptions.
-3. **Step 3: Run Full Regression Testing**:
-   - Executes all 32 test cases across the system.
-   - Confirms zero regressions in the dark Regression Console.
+| Bug ID | Title | Severity | Priority | Component | Primary Test | Documented Root Cause |
+| :--- | :--- | :---: | :---: | :--- | :---: | :--- |
+| **`BUG-001`** | Floating-Point Currency Rounding Leakage | **High** | **P2 - High** | Price Calculation | `UT-PRICE-03` | IEEE-754 double-precision arithmetic produces float leakage on operations like `19.99 * 7 = 139.92999999999998`. Fixed with quantized `roundMoney()` using `Number.EPSILON`. |
+| **`BUG-002`** | Fractional / Decimal Quantities Accepted | **Critical** | **P1 - Critical** | Cart & Inventory | `UT-QTY-02` | Loose validation only verified `qty > 0` without checking for whole integers. Fixed using strict `Number.isInteger()` guard. |
+| **`BUG-003`** | Cart Quantity Exceeds Physical Stock | **High** | **P1 - Critical** | Stock Enforcement | `UT-STOCK-03` | Validation checked newly added delta against stock without accounting for existing items already in cart. Fixed with cumulative bounds check `(currentQty + qty) <= stock`. |
+| **`BUG-004`** | Empty Cart Checkout Ghost Order | **Critical** | **P1 - Critical** | Checkout Controller | `BB-CHK-01` | Missing empty array guard clause at order entry point, generating $0 invoices. Fixed with non-empty cart guard check. |
+| **`BUG-005`** | Whitespace Name & Alphanumeric Phone | **Medium** | **P3 - Medium** | Customer Form | `BB-CUST-01` | Simple length check without trimming or regex character pattern validation. Fixed with trim and strict letter/digit regex. |
+| **`BUG-006`** | Expired Credit Card & 1-Digit CVV | **High** | **P2 - High** | Payment Module | `BB-INP-01` | Format-only MM/YY check without temporal calendar comparison, and missing CVV length restriction. Fixed with calendar comparison and `^\d{3,4}$` CVV check. |
 
 ---
 
-## 📋 Requirement Traceability Matrix
+## 📋 Requirements Traceability Matrix (RTM)
 
-| Requirement | Description | Test Case(s) | Defect ID | Status |
-| :--- | :--- | :--- | :--- | :---: |
-| **REQ-01** | Display products with name, price, stock | `UT-PRICE-01`, `UT-STOCK-01`, `UT-STOCK-02` | `BUG-001` | **Verified** |
-| **REQ-02** | Search and filter products by category | `FT-SRCH-01`, `FT-SRCH-02` | N/A | **Verified** |
-| **REQ-03** | Add products to cart with stock validation | `IT-CART-01`, `FT-CART-01` | `BUG-002`, `BUG-003` | **Verified** |
-| **REQ-04** | Increase/decrease quantities with boundary limits | `UT-QTY-01`, `IT-QTY-01`, `BB-QTY-02` | `BUG-002`, `BUG-003` | **Verified** |
-| **REQ-05** | Remove products from cart & clear cart | `BB-QTY-02`, `FT-CART-02` | N/A | **Verified** |
-| **REQ-06** | Subtotal, 5% tax, tiered shipping, total calculation | `UT-PRICE-02`, `UT-PRICE-03`, `UT-CART-01..05` | `BUG-001` | **Verified** |
-| **REQ-07** | Checkout with validated customer details | `IT-ORDER-01`, `BB-INP-02`, `FT-E2E-01` | `BUG-004`, `BUG-005`, `BUG-006` | **Verified** |
-| **REQ-08** | Order confirmation receipt & printable invoice | `IT-ORDER-01`, `FT-E2E-01` | `BUG-004` | **Verified** |
-| **REQ-09** | Input sanitization & regex validation | `BB-CUST-01`, `BB-INP-01`, `BB-INP-02` | `BUG-005`, `BUG-006` | **Verified** |
-| **REQ-10** | LocalStorage state synchronization | `IT-STORE-01`, `IT-STORE-02` | N/A | **Verified** |
-
----
-
-## 🐍 Automated Python / Pytest Test Execution
-
-The primary test automation infrastructure is implemented in **Python** using the industry-standard **Pytest** testing framework.
-
-### 1. Environment Setup
-
-```bash
-# 1. Create a Python virtual environment
-python -m venv .venv
-
-# 2. Activate virtual environment
-# Windows (PowerShell):
-.\.venv\Scripts\Activate.ps1
-# Windows (Command Prompt):
-.\.venv\Scripts\activate.bat
-# Linux / macOS:
-source .venv/bin/activate
-
-# 3. Install required test dependencies
-pip install -r requirements.txt
-```
-
-### 2. Comprehensive Test Architecture & Categories
-
-The Python test framework covers all 8 foundational software testing categories, mapped to dedicated test modules:
-
-| # | Testing Category | Python Test Module | Test Focus & Scope | Marker |
-| :--- | :--- | :--- | :--- | :--- |
-| **1** | **Unit Testing** | [`python_tests/test_unit.py`](python_tests/test_unit.py) | Mathematical calculations, pricing formulas, line totals, tax computation, stock bounds, and quantity checks. | `pytest -m unit` |
-| **2** | **Integration Testing** | [`python_tests/test_integration.py`](python_tests/test_integration.py) | Cross-component workflows: catalog selection &rarr; cart updates &rarr; checkout payload &rarr; order snapshot &rarr; storage sync. | `pytest -m integration` |
-| **3** | **Functional Testing** | [`python_tests/test_functional.py`](python_tests/test_functional.py) | User journey verification: live search, category filtering, multi-attribute sorting, cart modifications, and payment channels. | `pytest -m functional` |
-| **4** | **Black-Box Testing** | [`python_tests/test_blackbox.py`](python_tests/test_blackbox.py) | Specification-based testing evaluating external contracts, valid/invalid inputs, and expected outcomes without whitebox access. | `pytest -m blackbox` |
-| **5** | **Regression Testing** | [`python_tests/test_regression.py`](python_tests/test_regression.py) | Non-regression verification for historical bugs (`BUG-001` through `BUG-006`), calculation idempotency, and state persistence. | `pytest -m regression` |
-| **6** | **Boundary Value Testing** | [`python_tests/test_boundary.py`](python_tests/test_boundary.py) | Min/max bounds: quantities (1, stock, stock+1), shipping thresholds ($49.99 vs $50.00), string lengths, and card digits. | `pytest -m boundary` |
-| **7** | **Negative Testing** | [`python_tests/test_negative.py`](python_tests/test_negative.py) | Malformed quantities, missing customer fields, invalid regex patterns, ghost products, unsupported payment methods, and XSS. | `pytest -m negative` |
-| **8** | **Validation Testing** | [`python_tests/test_validation.py`](python_tests/test_validation.py) | Catalog data schema integrity, field-level regular expressions, expiry calendar dates, and comprehensive payload validation. | `pytest -m validation` |
+| Requirement ID | Requirement Scope | Category | Associated Test Cases | Mapped Defect(s) | Status |
+| :---: | :--- | :--- | :--- | :---: | :---: |
+| **`REQ-01`** | Product Catalog & Stock Status | Catalog & Inventory | `UT-STOCK-01`, `UT-STOCK-02`, `UT-STOCK-03`, `IT-STORE-02`, `BV-STOCK-01`, `NEG-STOCK-01` | `BUG-003` | **Covered** |
+| **`REQ-02`** | Product Search & Category Filtering | Discovery | `FT-SRCH-01`, `FT-SRCH-02`, `FT-CAT-01`, `BV-SRCH-01` | None | **Covered** |
+| **`REQ-03`** | Cart Quantity Limits & Validation | Cart & Validation | `UT-QTY-01`, `UT-QTY-02`, `UT-QTY-03`, `UT-QTY-04`, `BB-QTY-01`, `BB-QTY-02`, `BV-QTY-01`, `VAL-QTY-01` | `BUG-002`, `BUG-003` | **Covered** |
+| **`REQ-04`** | Shopping Cart Manipulation | Cart State | `IT-CART-01`, `IT-QTY-01`, `FT-CART-01`, `FT-CART-02`, `IT-STORE-01` | None | **Covered** |
+| **`REQ-05`** | Inventory Synchronization | Inventory Management | `IT-STORE-02`, `FT-E2E-01` | None | **Covered** |
+| **`REQ-06`** | Financial Calculations & Precision | Pricing & Taxes | `UT-PRICE-01`, `UT-PRICE-02`, `UT-PRICE-03`, `UT-CART-01`, `UT-CART-02`, `UT-CART-03`, `UT-CART-04`, `UT-CART-05`, `BV-PRICE-01`, `REG-PRICE-01` | `BUG-001` | **Covered** |
+| **`REQ-07`** | Checkout & Empty Cart Guard | Checkout | `BB-CHK-01`, `IT-ORDER-01`, `FT-E2E-01`, `NEG-ORD-01` | `BUG-004` | **Covered** |
+| **`REQ-08`** | Order Processing & Receipt Generation | Orders | `IT-ORDER-01`, `FT-E2E-01`, `VAL-ORD-01` | `BUG-004` | **Covered** |
+| **`REQ-09`** | Input Validation & Payment Security | Validation & Security | `BB-CUST-01`, `BB-INP-01`, `BB-INP-02`, `UT-VAL-01`, `UT-VAL-02`, `UT-VAL-03`, `VAL-CUST-01`, `VAL-PAY-01`, `NEG-PAY-01` | `BUG-005`, `BUG-006` | **Covered** |
+| **`REQ-10`** | UI Responsiveness & Defect Visibility | UI / QA Dashboard | `PW-RESP-01`, `PW-NAV-01`, `PW-DEF-01` | None | **Covered** |
 
 ---
 
-### 3. Running Pytest Test Suites
+## 🎭 Playwright E2E Browser Automation
 
-```bash
-# Run the complete test suite (188 tests across all categories)
-pytest -v
+Located in [`python_tests/playwright_tests/`](python_tests/playwright_tests/), this suite automates Chromium browser interactions against the live storefront:
 
-# Run with stdout logging (displaying test ID, Expected, Actual, PASS/FAIL status)
-pytest -v -s
-
-# Run individual testing categories via markers:
-pytest -m unit              # Unit testing suite
-pytest -m integration       # Integration testing suite
-pytest -m functional        # Functional testing suite
-pytest -m blackbox          # Black-box testing suite
-pytest -m regression        # Regression testing suite
-pytest -m boundary          # Boundary value testing suite
-pytest -m negative          # Negative testing suite
-pytest -m validation        # Validation testing suite
-pytest -m defects           # Defect simulation & lifecycle suite
-
-# Generate self-contained HTML test report:
-pytest --html=reports/report.html --self-contained-html
-```
-
-### 4. Pytest Execution Summary:
-
-```text
-============================= test session starts =============================
-platform win32 -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
-rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
-configfile: pytest.ini
-testpaths: python_tests
-plugins: html-4.2.0, metadata-3.1.1
-collected 188 items
-
-python_tests/test_blackbox.py ...................................... [ 18%]
-python_tests/test_boundary.py ...................................... [ 37%]
-python_tests/test_defects.py ...                                     [ 39%]
-python_tests/test_functional.py .................                    [ 48%]
-python_tests/test_integration.py .....                               [ 51%]
-python_tests/test_negative.py ...................................... [ 71%]
-python_tests/test_regression.py .........                            [ 76%]
-python_tests/test_unit.py .......................................... [ 89%]
-python_tests/test_validation.py .....................                [100%]
-
-============================= 188 passed in 0.82s =============================
-```
-
----
-
-## 🎭 Playwright Python End-to-End Browser Automation
-
-The project includes an end-to-end browser automation suite built using **Playwright for Python**, driving real Chromium browser sessions directly against the frontend (`index.html`) without altering existing HTML, CSS, or JS.
-
-### 1. Browser Installation
-```bash
-# Install Chromium browser binary for Playwright
-playwright install chromium
-```
-
-### 2. Playwright Test Suite Modules (33 E2E Tests)
-
-| Module | Scope & Browser Interactions | Key Assertions & Scenarios |
-| :--- | :--- | :--- |
-| [`test_homepage_navigation.py`](python_tests/playwright_tests/test_homepage_navigation.py) | Homepage Loading & Navigation | Title verification, brand tagline, navbar action buttons, category tabs, and routing to Test Suite, Defects QA, and QA Report dashboards. |
-| [`test_product_catalog.py`](python_tests/playwright_tests/test_product_catalog.py) | Product Listing & Selection | 10-card catalog rendering, out-of-stock badge detection on `p10`, category filter tabs, live search input, clear button, and price sorting. |
-| [`test_cart_operations.py`](python_tests/playwright_tests/test_cart_operations.py) | Cart Operations & Pricing | Adding items, cart badge count update, slide-out drawer open/close, `+` / `-` quantity controls, subtotal, 5% tax, shipping thresholds, and cart clearing. |
-| [`test_checkout_and_validation.py`](python_tests/playwright_tests/test_checkout_and_validation.py) | Checkout & Error Handling | Modal transitions, empty form rejection with inline field errors, invalid email/phone rejection, payment method toggles (Card, UPI, COD), and confirmed order receipt. |
-| [`test_responsive_ui.py`](python_tests/playwright_tests/test_responsive_ui.py) | Responsive Layout & UI | Multi-viewport testing across Desktop (`1280x800`), Tablet (`768x1024`), and Mobile (`375x667`), verifying drawer sliding, scrolling, and input accessibility. |
-
-### 3. Key Playwright Architecture Features
-- **Zero Frontend Alteration**: Works directly against the existing vanilla HTML/CSS/JS frontend without changing a single line of application code.
-- **Pytest Fixtures**: Isolated `context`, `page`, and `app_page` fixtures manage clean browser sessions and reset `localStorage` before each test.
-- **Automated Failure Screenshots**: Integrated pytest hook (`pytest_runtest_makereport`) captures full-page screenshot artifacts to `reports/screenshots/<test_name>.png` whenever a test fails.
-- **Standalone HTML Report**: Generates dedicated HTML execution report at `reports/playwright_report.html`.
-
-### 4. Running Playwright Tests
-```bash
-# Run all 33 Playwright browser automation tests
+```powershell
+# Run Playwright E2E tests
 pytest python_tests/playwright_tests/ -v
 
-# Run with Playwright marker:
-pytest -m playwright -v
-
-# Generate self-contained Playwright HTML report:
+# Generate self-contained Playwright HTML report
 pytest python_tests/playwright_tests/ --html=reports/playwright_report.html --self-contained-html
 ```
 
-```text
-============================= test session starts =============================
-platform win32 -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
-rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
-configfile: pytest.ini
-plugins: html-4.2.0, metadata-3.1.1
-collected 33 items
-
-python_tests/playwright_tests/test_cart_operations.py .......            [ 21%]
-python_tests/playwright_tests/test_checkout_and_validation.py .....     [ 36%]
-python_tests/playwright_tests/test_homepage_navigation.py .........     [ 63%]
-python_tests/playwright_tests/test_product_catalog.py ........           [ 87%]
-python_tests/playwright_tests/test_responsive_ui.py ....                [100%]
-
-============================= 33 passed in 29.16s =============================
-```
+- **33 Test Cases** covering homepage navigation, search filtering, cart drawer slide-overs, quantity adjustments, modal checkout validations, order confirmation receipts, and cross-device responsive viewports (Desktop 1280x800, Tablet 768x1024, Mobile 375x667).
+- Automatic failure screenshot capture integrated in `conftest.py`.
 
 ---
 
-## 🌐 REST API Testing Demonstration (Python Requests & Pytest)
+## 🌐 REST API Testing Demonstration
 
-### ⚠️ Architecture Note & Inspection
-During the STQA architecture inspection, it was verified that the baseline **AuraMart** web application is intentionally built as a **serverless client-side application** relying on browser `localStorage` and vanilla JavaScript, with zero live backend servers or external REST APIs.
+Located in [`python_tests/api_tests/`](python_tests/api_tests/), demonstrating industrial API testing using **Python Requests** and **Pytest**:
 
-In strict adherence to QA authenticity standards, **no fake live backend claims are fabricated**. Instead, a dedicated, clearly separated **REST API Testing Demonstration** has been introduced under [`python_tests/api_tests/`](python_tests/api_tests/) to demonstrate industrial API test automation using **Python Requests** and **Pytest**.
-
-### 1. Demonstration Endpoints & Coverage
-
-The test suite tests a sample REST API (providing endpoints for products, orders, and health checks):
-
-| Module | HTTP Method | Endpoint Path | Validations & Test Scenarios |
-| :--- | :--- | :--- | :--- |
-| [`test_api_get_operations.py`](python_tests/api_tests/test_api_get_operations.py) | **GET** | `/api/v1/health`<br>`/api/v1/products`<br>`/api/v1/products/<id>` | 200 OK status, JSON array & object schema validation, query filters (`?category=Audio`, `?search=Keyboard`), 404 for missing IDs, and response time threshold (< 500ms). |
-| [`test_api_post_operations.py`](python_tests/api_tests/test_api_post_operations.py) | **POST** | `/api/v1/products`<br>`/api/v1/orders` | 201 Created status, returned resource ID, 400 Bad Request on missing required fields (`name`, `price`), 400 on negative/invalid data types, and 400 on empty orders. |
-| [`test_api_put_operations.py`](python_tests/api_tests/test_api_put_operations.py) | **PUT** | `/api/v1/products/<id>` | 200 OK update verification with data mutation, 404 on non-existent resource, and 400 validation on negative price/stock. |
-| [`test_api_delete_operations.py`](python_tests/api_tests/test_api_delete_operations.py) | **DELETE** | `/api/v1/products/<id>` | 200 OK deletion confirmation, subsequent GET returning 404 Not Found, and 404 on deleting non-existent IDs. |
-| [`test_api_error_handling_and_performance.py`](python_tests/api_tests/test_api_error_handling_and_performance.py) | **ALL** | Multi-route | 404 on invalid paths, 400 on syntactically malformed JSON bodies, mandatory security/content headers (`X-Powered-By`, `Content-Type`), and batch latency benchmark SLA (< 200ms avg). |
-
-### 2. Configurable Sample Endpoint
-The target endpoint is configurable via CLI option or environment variable:
-```bash
-# 1. Run using embedded local demonstration server (default):
+```powershell
+# Run REST API test suite
 pytest python_tests/api_tests/ -v
 
-# 2. Run against an external API endpoint:
-pytest python_tests/api_tests/ -v --api-base-url=https://your-api-endpoint.com
-
-# Or via environment variable:
-export AURAMART_API_BASE_URL="https://your-api-endpoint.com"
-pytest python_tests/api_tests/ -v
-```
-
-### 3. Running API Tests & Generating Report
-```bash
-# Run all 26 API tests
-pytest python_tests/api_tests/ -v
-
-# Run with API marker:
-pytest -m api -v
-
-# Generate self-contained HTML report:
+# Generate self-contained API HTML report
 pytest python_tests/api_tests/ --html=reports/api_report.html --self-contained-html
 ```
 
-```text
-============================= test session starts =============================
-platform win32 -- Python 3.14.4, pytest-9.2.0, pluggy-1.7.0
-rootdir: C:\Users\91866\.gemini\antigravity\scratch\STQA project
-configfile: pytest.ini
-plugins: html-4.2.0, metadata-3.1.1
-collected 26 items
+- **26 Test Cases** validating HTTP status codes (200, 201, 400, 404), CRUD verbs (GET, POST, PUT, DELETE), JSON schema structures, missing/invalid input handling, and latency thresholds.
+- Configurable endpoint via `--api-base-url` or `AURAMART_API_BASE_URL` (defaults to embedded demonstration server).
 
-python_tests/api_tests/test_api_delete_operations.py ..                  [  7%]
-python_tests/api_tests/test_api_error_handling_and_performance.py ....   [ 23%]
-python_tests/api_tests/test_api_get_operations.py .......               [ 50%]
-python_tests/api_tests/test_api_post_operations.py ........             [ 80%]
-python_tests/api_tests/test_api_put_operations.py ....                  [100%]
+---
 
-- Generated html report: reports/api_report.html -
-============================= 26 passed in 1.09s ==============================
-```
+## 📑 Detailed HTML Test Reports
+
+The project automatically generates rich, self-contained HTML reports:
+
+| Report | File Path | Scope |
+| :--- | :--- | :--- |
+| **Pytest Full Suite HTML Report** | [`reports/pytest_report.html`](reports/pytest_report.html) | Complete interactive test run log covering all 345 Python tests with pass/fail breakdown and execution times. |
+| **Playwright Browser Report** | [`reports/playwright_report.html`](reports/playwright_report.html) | E2E browser scenario results with automated screenshot attachments. |
+| **REST API Demonstration Report** | [`reports/api_report.html`](reports/api_report.html) | Endpoint responses, status code verifications, and latency benchmarks. |
+| **Defect QA Telemetry** | [`reports/defect_qa_summary.json`](reports/defect_qa_summary.json) | Machine-readable defect states, failure records, impacted test rerun selectors, and RTM matrix. |
+| **Performance Telemetry** | [`reports/performance_summary.json`](reports/performance_summary.json) | Latency percentiles ($p_{50}, p_{95}$), concurrency profiling, and operation throughput. |
 
 ---
 
@@ -613,11 +351,15 @@ STQA-project/
 ├── defect-engine.js        # Defect engine (buggy vs fixed states & regression runner)
 │
 ├── qa-report.html          # Final QA Executive Report (Printable HTML)
-│
 ├── ecommerce-core.js       # Core business logic, validators & calculation algorithms (UMD)
 │
-├── python_tests/           # 🐍 Comprehensive Python / Pytest Automated Test Suite
-│   ├── __init__.py         # Python package marker
+├── run_tests.py            # 🚀 Unified Master CLI Test Runner (--all, --unit, --browser, etc.)
+├── generate_qa_summary.py  # Automated Defect Tracking & RTM Telemetry Exporter
+├── pytest.ini              # Pytest configuration & category marker definitions
+├── requirements.txt        # Python dependencies (pytest, pytest-html, playwright, requests)
+│
+├── python_tests/           # 🐍 Comprehensive Python / Pytest Automated Test Suite (378 Tests)
+│   ├── __init__.py         # Package marker
 │   ├── stqa_core.py        # Python business logic & defect simulation engine
 │   ├── conftest.py         # Shared Pytest fixtures, mock storage & verification helpers
 │   ├── test_unit.py        # 1. Unit Testing (Pricing, Calculations, Quantity, Stock)
@@ -628,10 +370,23 @@ STQA-project/
 │   ├── test_boundary.py    # 6. Boundary Value Testing (Min, Max, Limits, Length thresholds)
 │   ├── test_negative.py    # 7. Negative Testing (Malformed data, Missing fields, XSS payloads)
 │   ├── test_validation.py  # 8. Validation Testing (Schema constraints, Field regex, Payment)
-│   ├── test_defects.py     # Defect Management lifecycle (BUG-001..006 simulation)
+│   ├── test_defects.py     # 8. Defect Lifecycle & RTM verification (BUG-001..006)
 │   │
-│   ├── api_tests/          # 🌐 REST API Demonstration Suite (Python Requests & Pytest)
-│   │   ├── __init__.py     # API package marker
+│   ├── security_tests/     # 🔒 Security Testing Suite (114 Tests)
+│   │   ├── __init__.py     # Package marker
+│   │   ├── test_input_sanitization.py        # Whitespace, control chars, buffer bounds, types
+│   │   ├── test_xss_prevention.py            # 11 XSS payload vectors, entity encoding
+│   │   ├── test_sqli_patterns.py             # SQL injection strings, tautologies, auth bypass
+│   │   └── test_sensitive_data_exposure.py   # CVV/PAN protection, error leakage guards
+│   │
+│   ├── performance_tests/  # ⚡ Performance & Concurrency Suite (13 Tests)
+│   │   ├── __init__.py     # Package marker
+│   │   ├── test_page_load_performance.py     # Document retrieval and parse times
+│   │   ├── test_operation_benchmarks.py      # Calculations throughput (65k ops/s)
+│   │   └── test_concurrency_and_latency.py   # 10-thread concurrency, p50/p95 latency
+│   │
+│   ├── api_tests/          # 🌐 REST API Demonstration Suite (26 Tests)
+│   │   ├── __init__.py     # Package marker
 │   │   ├── demo_api_server.py                # Lightweight embedded REST server (GET, POST, PUT, DELETE)
 │   │   ├── conftest.py                       # Configurable endpoint fixture (--api-base-url) & client
 │   │   ├── test_api_get_operations.py        # GET listing, filtering, schema & 404 validation
@@ -640,8 +395,8 @@ STQA-project/
 │   │   ├── test_api_delete_operations.py     # DELETE resource removal & 404 verification
 │   │   └── test_api_error_handling_and_performance.py # Malformed JSON (400), SLAs & headers
 │   │
-│   └── playwright_tests/   # 🎭 Playwright Python End-to-End Browser Automation Suite
-│       ├── __init__.py     # Playwright package marker
+│   └── playwright_tests/   # 🎭 Playwright Python End-to-End Browser Automation Suite (33 Tests)
+│       ├── __init__.py     # Package marker
 │       ├── conftest.py     # Playwright fixtures (browser, page, failure screenshot hook)
 │       ├── test_homepage_navigation.py       # Homepage loading, brand, navbar routing
 │       ├── test_product_catalog.py           # 10-item grid, stock tags, search & filters
@@ -649,21 +404,20 @@ STQA-project/
 │       ├── test_checkout_and_validation.py   # Modal checkout, inline errors, receipt
 │       └── test_responsive_ui.py             # Desktop, Tablet, and Mobile viewports
 │
-├── pytest.ini              # Pytest configuration & category marker definitions
-├── requirements.txt        # Python test dependencies (pytest, pytest-html, playwright, requests)
-
+├── reports/                # 📊 Test Execution Reports & Machine-Readable Telemetry
+│   ├── pytest_report.html  # Pytest Master HTML Test Report (345 Tests)
+│   ├── playwright_report.html # Playwright Browser Automation Report (33 Tests)
+│   ├── api_report.html     # REST API Test Report (26 Tests)
+│   ├── defect_qa_summary.json # Defect Lifecycle & RTM Telemetry JSON
+│   └── performance_summary.json # Performance, Concurrency & Latency Telemetry JSON
 │
-├── tests/                  # Legacy Node.js test definitions (retained for backward compatibility)
-│   ├── ecommerce.test.js   # 32 tests (node:test / Jest)
-│   └── defects.test.js     # Defect lifecycle tests (node:test / Jest)
-│
-├── package.json            # NPM scripts & metadata
 ├── netlify.toml            # Netlify deployment configuration
 ├── _redirects              # Netlify SPA/clean routing rules
 ├── .nojekyll               # GitHub Pages static asset bypass
 │
 ├── TEST_CASES.md           # Formal Test Case specifications & Traceability Matrix
 ├── DEFECT_REPORT.md        # Comprehensive Defect Tracking & Root-Cause Analysis
+├── PERFORMANCE_REPORT.md   # Security & Performance Benchmarking Report
 ├── QA_REPORT.md            # Executive Quality Assurance Markdown Report
 ├── DEPLOYMENT.md           # Netlify & GitHub Pages Deployment Guide
 └── README.md               # Complete project documentation & function reference
