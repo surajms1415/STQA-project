@@ -512,14 +512,41 @@ def process_order(
 # Controlled Defect Lifecycle Registry (BUG-001 through BUG-006)
 # ==============================================================================
 
+SEVERITY = {
+    "CRITICAL": "Critical",
+    "HIGH": "High",
+    "MEDIUM": "Medium",
+    "LOW": "Low",
+}
+
+PRIORITY = {
+    "P1": "P1 - Critical",
+    "P2": "P2 - High",
+    "P3": "P3 - Medium",
+    "P4": "P4 - Low",
+}
+
+STATUS = {
+    "OPEN": "Open",
+    "RESOLVED": "Resolved",
+    "REOPENED": "Re-Opened",
+}
+
 BUG_DEFINITIONS = [
     {
         "id": "BUG-001",
         "title": "Floating-Point Currency Rounding Artifacts in Line Totals",
         "category": "Calculations",
-        "severity": "High",
+        "component": "Price Calculation",
+        "severity": SEVERITY["HIGH"],
+        "priority": PRIORITY["P2"],
+        "requirementId": "REQ-06",
         "expected": "139.93",
         "testCaseId": "UT-PRICE-03",
+        "impactedTests": ["UT-PRICE-01", "UT-PRICE-02", "UT-PRICE-03", "IT-CART-02", "BV-PRICE-01", "REG-PRICE-01"],
+        "description": "Calculating price * quantity without decimal quantization produces IEEE-754 floating-point artifacts (e.g. 19.99 * 7 = 139.92999999999998 instead of $139.93).",
+        "rootCause": "Double-precision IEEE-754 binary floating-point representation lacks native decimal quantization, causing float overflow artifacts on multiplications like 19.99 * 7.",
+        "stepsToReproduce": "1. Add 7 units of item priced at $19.99.\n2. Calculate line total.\n3. Observe raw unrounded float.",
         "buggy_fn": lambda: {"actual": str(19.99 * 7), "pass": (19.99 * 7) == 139.93},
         "fixed_fn": lambda: {"actual": str(calculate_line_total(19.99, 7)), "pass": calculate_line_total(19.99, 7) == 139.93},
         "fixExplanation": "Applied round_money() with EPSILON to guarantee two-decimal precision.",
@@ -528,9 +555,16 @@ BUG_DEFINITIONS = [
         "id": "BUG-002",
         "title": "Fractional / Decimal Quantities Accepted in Cart",
         "category": "Quantity Validation",
-        "severity": "Critical",
+        "component": "Cart & Inventory",
+        "severity": SEVERITY["CRITICAL"],
+        "priority": PRIORITY["P1"],
+        "requirementId": "REQ-03",
         "expected": "false (Rejected with error)",
         "testCaseId": "UT-QTY-02",
+        "impactedTests": ["UT-QTY-01", "UT-QTY-02", "UT-QTY-03", "UT-QTY-04", "BV-QTY-01", "NEG-QTY-01", "VAL-QTY-01"],
+        "description": "System accepts non-integer values (e.g. 2.5) because validation only checks if number > 0, leading to fractional inventory and prices.",
+        "rootCause": "Insufficient type checking only confirmed quantity was positive (qty > 0) without ensuring it was a whole integer.",
+        "stepsToReproduce": "1. Attempt to add 2.5 items to cart.\n2. Cart updates with quantity 2.5.",
         "buggy_fn": lambda: {"actual": "isValid: True", "pass": not (isinstance(2.5, (int, float)) and 2.5 > 0)},
         "fixed_fn": lambda: {"actual": "isValid: False", "pass": ValidationRules.validate_quantity(2.5, 10) is False},
         "fixExplanation": "Enforced isinstance(num, int) check inside quantity validation.",
@@ -539,9 +573,16 @@ BUG_DEFINITIONS = [
         "id": "BUG-003",
         "title": "Cart Quantity Can Exceed Total Physical Warehouse Stock",
         "category": "Stock Validation",
-        "severity": "High",
+        "component": "Stock Enforcement",
+        "severity": SEVERITY["HIGH"],
+        "priority": PRIORITY["P1"],
+        "requirementId": "REQ-01",
         "expected": "success: false, Error: Cannot add 4. Only 2 more available.",
         "testCaseId": "UT-STOCK-03",
+        "impactedTests": ["UT-STOCK-01", "UT-STOCK-02", "UT-STOCK-03", "IT-CART-01", "BV-STOCK-01", "NEG-STOCK-01"],
+        "description": "If a customer already has 3 units in cart and adds 4 more when total stock is 5, system fails to verify cumulative cart quantity against inventory.",
+        "rootCause": "Inventory verification only checked newly submitted quantity against physical stock, ignoring existing quantities already reserved in customer's active cart.",
+        "stepsToReproduce": "1. Product stock is 5.\n2. Cart already holds 3.\n3. Add 4 more.\n4. Cart now holds 7 (oversold).",
         "buggy_fn": lambda: {"actual": "allowed: True, newCartQty: 7", "pass": False},
         "fixed_fn": lambda: (
             lambda res: {"actual": f'success: {res["success"]}, error: "{res.get("error")}"', "pass": res["success"] is False and "Only 2 more available" in res.get("error", "")}
@@ -552,9 +593,16 @@ BUG_DEFINITIONS = [
         "id": "BUG-004",
         "title": "Empty Cart Checkout Creates Invalid Ghost Order",
         "category": "Checkout Validation",
-        "severity": "Critical",
+        "component": "Checkout Controller",
+        "severity": SEVERITY["CRITICAL"],
+        "priority": PRIORITY["P1"],
+        "requirementId": "REQ-07",
         "expected": "success: false, error: Cannot checkout with an empty cart",
         "testCaseId": "BB-CHK-01",
+        "impactedTests": ["BB-CHK-01", "IT-ORDER-01", "FT-E2E-01", "NEG-ORD-01", "VAL-ORD-01"],
+        "description": "Calling checkout submission with empty cart succeeds, generating a $0 order invoice and polluting order history.",
+        "rootCause": "Missing guard clause checking cart length before initializing order processing, allowing ghost orders with $0 total.",
+        "stepsToReproduce": "1. Empty shopping cart.\n2. Submit checkout payload.\n3. Order is created.",
         "buggy_fn": lambda: {"actual": "success: True, orderId: ORD-BUGGY-001", "pass": False},
         "fixed_fn": lambda: (
             lambda res: {"actual": f'success: {res["success"]}, error: "{res.get("error")}"', "pass": res["success"] is False and "empty cart" in res.get("error", "")}
@@ -565,9 +613,16 @@ BUG_DEFINITIONS = [
         "id": "BUG-005",
         "title": "Customer Details Accepts Whitespace Name & Alphanumeric Phone",
         "category": "Input Validation",
-        "severity": "Medium",
+        "component": "Customer Form",
+        "severity": SEVERITY["MEDIUM"],
+        "priority": PRIORITY["P3"],
+        "requirementId": "REQ-09",
         "expected": "isValid: false (Name letters-only, Phone digits-only)",
         "testCaseId": "BB-CUST-01",
+        "impactedTests": ["BB-CUST-01", "UT-VAL-01", "VAL-CUST-01", "NEG-CUST-01", "FT-CHK-01"],
+        "description": "Form accepts spaces-only string (\"   \") for name and letters inside phone numbers (\"98765PHONE\") due to simple length checks.",
+        "rootCause": "Inadequate input sanitation using simple length check without trimming whitespace and lack of strict regex patterns for name and phone.",
+        "stepsToReproduce": "1. Enter \"   \" in name field.\n2. Enter \"12345ABCDE\" in phone.\n3. Submit form.",
         "buggy_fn": lambda: {"actual": "nameValid: True, phoneValid: True", "pass": False},
         "fixed_fn": lambda: {"actual": "nameValid: False, phoneValid: False", "pass": not ValidationRules.validate_name("   ") and not ValidationRules.validate_phone("12345ABCDE")},
         "fixExplanation": "Enforced string strip and strict regular expressions for name and phone.",
@@ -576,43 +631,183 @@ BUG_DEFINITIONS = [
         "id": "BUG-006",
         "title": "Payment Gateway Accepts Past Expiration Year & Single-Digit CVV",
         "category": "Payment Validation",
-        "severity": "High",
+        "component": "Payment Module",
+        "severity": SEVERITY["HIGH"],
+        "priority": PRIORITY["P2"],
+        "requirementId": "REQ-09",
         "expected": "isValid: false (Expiry must be in future, CVV 3-4 digits)",
         "testCaseId": "BB-INP-01",
+        "impactedTests": ["BB-INP-01", "UT-VAL-03", "VAL-PAY-01", "NEG-PAY-01", "FT-PAY-01"],
+        "description": "Expired credit card date (01/20) and 1-digit CVV (\"9\") are accepted because expiry is only checked for format MM/YY rather than date comparison.",
+        "rootCause": "Syntax-only regex verification for MM/YY format without comparing date against current calendar month/year, and missing CVV length restriction.",
+        "stepsToReproduce": "1. Enter Card Expiry \"01/20\".\n2. Enter CVV \"9\".\n3. Submit card payment.",
         "buggy_fn": lambda: {"actual": "expiryValid: True, cvvValid: True", "pass": False},
         "fixed_fn": lambda: {"actual": "expiryValid: False, cvvValid: False", "pass": not ValidationRules.validate_card_expiry("01/20") and not ValidationRules.validate_card_cvv("9")},
         "fixExplanation": "Integrated calendar comparison against current date and CVV length regex (/^\\d{3,4}$/).",
     },
 ]
 
+# ==============================================================================
+# Requirements Traceability Matrix (RTM)
+# ==============================================================================
+
+TRACEABILITY_MATRIX = [
+    {
+        "req_id": "REQ-01",
+        "req_title": "Product Catalog & Real-Time Stock Status",
+        "category": "Catalog & Inventory",
+        "test_cases": ["UT-STOCK-01", "UT-STOCK-02", "UT-STOCK-03", "IT-STORE-02", "BV-STOCK-01", "NEG-STOCK-01"],
+        "defect_ids": ["BUG-003"],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-02",
+        "req_title": "Product Search & Dynamic Category Filtering",
+        "category": "Discovery",
+        "test_cases": ["FT-SRCH-01", "FT-SRCH-02", "FT-CAT-01", "BV-SRCH-01"],
+        "defect_ids": [],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-03",
+        "req_title": "Cart Quantity Constraints & Stock Bounds",
+        "category": "Cart & Validation",
+        "test_cases": ["UT-QTY-01", "UT-QTY-02", "UT-QTY-03", "UT-QTY-04", "BB-QTY-01", "BB-QTY-02", "BV-QTY-01", "VAL-QTY-01"],
+        "defect_ids": ["BUG-002", "BUG-003"],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-04",
+        "req_title": "Shopping Cart Item Manipulation",
+        "category": "Cart State",
+        "test_cases": ["IT-CART-01", "IT-QTY-01", "FT-CART-01", "FT-CART-02", "IT-STORE-01"],
+        "defect_ids": [],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-05",
+        "req_title": "Inventory Synchronization on Order Completion",
+        "category": "Inventory Management",
+        "test_cases": ["IT-STORE-02", "FT-E2E-01"],
+        "defect_ids": [],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-06",
+        "req_title": "Financial Calculations & Floating-Point Precision",
+        "category": "Pricing & Taxes",
+        "test_cases": ["UT-PRICE-01", "UT-PRICE-02", "UT-PRICE-03", "UT-CART-01", "UT-CART-02", "UT-CART-03", "UT-CART-04", "UT-CART-05", "BV-PRICE-01", "REG-PRICE-01"],
+        "defect_ids": ["BUG-001"],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-07",
+        "req_title": "Checkout Verification & Empty Cart Guard",
+        "category": "Checkout",
+        "test_cases": ["BB-CHK-01", "IT-ORDER-01", "FT-E2E-01", "NEG-ORD-01"],
+        "defect_ids": ["BUG-004"],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-08",
+        "req_title": "Order Processing & Persistent Receipt Generation",
+        "category": "Orders",
+        "test_cases": ["IT-ORDER-01", "FT-E2E-01", "VAL-ORD-01"],
+        "defect_ids": ["BUG-004"],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-09",
+        "req_title": "Form Input Validation & Payment Security Verification",
+        "category": "Validation & Security",
+        "test_cases": ["BB-CUST-01", "BB-INP-01", "BB-INP-02", "UT-VAL-01", "UT-VAL-02", "UT-VAL-03", "VAL-CUST-01", "VAL-PAY-01", "NEG-PAY-01"],
+        "defect_ids": ["BUG-005", "BUG-006"],
+        "status": "Covered",
+    },
+    {
+        "req_id": "REQ-10",
+        "req_title": "User Interface Responsiveness & Defect Visibility",
+        "category": "UI / QA Dashboard",
+        "test_cases": ["PW-RESP-01", "PW-NAV-01", "PW-DEF-01"],
+        "defect_ids": [],
+        "status": "Covered",
+    },
+]
+
 
 class DefectManager:
-    """Manages defect states: unpatched buggy state vs fixed/resolved state, with regression verification."""
+    """Manages defect states: unpatched buggy state vs fixed/resolved state, with regression verification and failure tracking."""
 
     def __init__(self):
         self.bugs = copy.deepcopy(BUG_DEFINITIONS)
-        self.bug_status = {b["id"]: "Resolved" for b in self.bugs}
+        self.bug_status = {b["id"]: STATUS["RESOLVED"] for b in self.bugs}
         self.simulated_state = "fixed"
+        self.failure_records: List[Dict[str, Any]] = []
+
+    def record_failure(
+        self,
+        test_id: str,
+        error_message: str,
+        expected: str,
+        actual: str,
+        stack_trace: Optional[str] = None,
+        defect_id: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Record details of a failed test case."""
+        record = {
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "test_id": test_id,
+            "defect_id": defect_id,
+            "error_message": error_message,
+            "expected": expected,
+            "actual": actual,
+            "stack_trace": stack_trace or "N/A",
+            "status": "Failed",
+        }
+        self.failure_records.append(record)
+        return record
+
+    def get_failure_records(self) -> List[Dict[str, Any]]:
+        """Return list of all recorded failures."""
+        return list(self.failure_records)
+
+    def clear_failure_records(self) -> None:
+        """Clear recorded failures."""
+        self.failure_records.clear()
 
     def simulate_unpatched_state(self) -> List[Dict[str, Any]]:
         self.simulated_state = "buggy"
+        self.clear_failure_records()
         outcomes = []
         for b in self.bugs:
             start_t = time.perf_counter()
             res = b["buggy_fn"]()
             dur_ms = round((time.perf_counter() - start_t) * 1000, 2)
             is_pass = res["pass"]
-            status = "Resolved" if is_pass else "Open"
+            status = STATUS["RESOLVED"] if is_pass else STATUS["OPEN"]
             self.bug_status[b["id"]] = status
+
+            if not is_pass:
+                self.record_failure(
+                    test_id=b["testCaseId"],
+                    error_message=f"Defect exposed: {b['title']}. Expected [{b['expected']}], but got [{res['actual']}].",
+                    expected=b["expected"],
+                    actual=res["actual"],
+                    defect_id=b["id"],
+                )
+
             outcomes.append({
                 "id": b["id"],
                 "title": b["title"],
                 "severity": b["severity"],
+                "priority": b["priority"],
+                "requirementId": b["requirementId"],
                 "expected": b["expected"],
                 "actual": res["actual"],
                 "pass": is_pass,
                 "status": status,
                 "durationMs": dur_ms,
+                "rootCause": b["rootCause"],
             })
         return outcomes
 
@@ -624,20 +819,75 @@ class DefectManager:
             res = b["fixed_fn"]()
             dur_ms = round((time.perf_counter() - start_t) * 1000, 2)
             is_pass = res["pass"]
-            status = "Resolved" if is_pass else "Open"
+            status = STATUS["RESOLVED"] if is_pass else STATUS["OPEN"]
             self.bug_status[b["id"]] = status
             outcomes.append({
                 "id": b["id"],
                 "title": b["title"],
                 "severity": b["severity"],
+                "priority": b["priority"],
+                "requirementId": b["requirementId"],
                 "expected": b["expected"],
                 "actual": res["actual"],
                 "pass": is_pass,
                 "status": status,
                 "durationMs": dur_ms,
                 "fixExplanation": b["fixExplanation"],
+                "rootCause": b["rootCause"],
             })
         return outcomes
+
+    def identify_rerun_tests(self, defect_ids: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        Identify which tests must be rerun after a defect or set of defects is resolved.
+        Returns target test IDs, the exact Pytest selection filter, and component rationale.
+        """
+        if defect_ids is None:
+            # Check all resolved defects or currently targeted defects
+            defect_ids = [b["id"] for b in self.bugs if self.bug_status.get(b["id"]) == STATUS["RESOLVED"]]
+
+        impacted_tests = []
+        reasons = {}
+
+        for b in self.bugs:
+            if b["id"] in defect_ids:
+                tests = b.get("impactedTests", [b["testCaseId"]])
+                for t in tests:
+                    if t not in impacted_tests:
+                        impacted_tests.append(t)
+                reasons[b["id"]] = {
+                    "component": b["component"],
+                    "primaryTest": b["testCaseId"],
+                    "impactedTests": tests,
+                    "fixExplanation": b.get("fixExplanation", ""),
+                }
+
+        # Build Pytest keyword filter expression
+        # e.g., 'UT_PRICE or test_price'
+        pytest_filter = " or ".join(t.replace("-", "_").lower() for t in impacted_tests)
+        pytest_command = f'pytest python_tests/ -k "{pytest_filter}"' if pytest_filter else "pytest python_tests/"
+
+        return {
+            "defect_ids": defect_ids,
+            "rerun_test_ids": impacted_tests,
+            "total_rerun_tests": len(impacted_tests),
+            "pytest_command": pytest_command,
+            "reasons": reasons,
+        }
+
+    def get_traceability_matrix(self) -> List[Dict[str, Any]]:
+        """Return the complete Requirements Traceability Matrix."""
+        matrix = copy.deepcopy(TRACEABILITY_MATRIX)
+        # Update defect status in the matrix
+        for req in matrix:
+            req_defects = []
+            for did in req["defect_ids"]:
+                req_defects.append({
+                    "defect_id": did,
+                    "status": self.bug_status.get(did, STATUS["RESOLVED"]),
+                })
+            req["defect_details"] = req_defects
+        return matrix
 
     def run_regression_suite(self, test_specs: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Execute full regression tests and compute passed/failed breakdown."""
@@ -650,13 +900,23 @@ class DefectManager:
             except Exception as e:
                 outcome = {"actual": f"Error: {str(e)}", "pass": False}
             dur = round((time.perf_counter() - t_start) * 1000, 2)
+            is_pass = bool(outcome.get("pass"))
+
+            if not is_pass:
+                self.record_failure(
+                    test_id=tc.get("id", "UNKNOWN"),
+                    error_message=f"Regression failure in suite [{tc.get('suite')}]: expected [{tc.get('expected')}], got [{outcome.get('actual')}].",
+                    expected=str(tc.get("expected")),
+                    actual=str(outcome.get("actual")),
+                )
+
             results.append({
                 "id": tc.get("id"),
                 "suite": tc.get("suite"),
                 "description": tc.get("description"),
                 "expected": tc.get("expected"),
                 "actual": outcome.get("actual"),
-                "pass": bool(outcome.get("pass")),
+                "pass": is_pass,
                 "durationMs": dur,
             })
         total_time = round((time.perf_counter() - start_t) * 1000, 2)
@@ -672,19 +932,25 @@ class DefectManager:
             "results": results,
         }
 
-    def get_summary(self, total_tests: int = 32) -> Dict[str, Any]:
-        open_bugs = sum(1 for s in self.bug_status.values() if s == "Open")
-        resolved_bugs = sum(1 for s in self.bug_status.values() if s == "Resolved")
+    def get_summary(self, total_tests: int = 32, skipped_tests: int = 0) -> Dict[str, Any]:
+        open_bugs = sum(1 for s in self.bug_status.values() if s == STATUS["OPEN"])
+        resolved_bugs = sum(1 for s in self.bug_status.values() if s == STATUS["RESOLVED"])
+        reopened_bugs = sum(1 for s in self.bug_status.values() if s == STATUS["REOPENED"])
         failed_tests = open_bugs
-        passed_tests = max(0, total_tests - failed_tests)
-        pass_pct = round((passed_tests / total_tests) * 100) if total_tests > 0 else 0
+        passed_tests = max(0, total_tests - failed_tests - skipped_tests)
+        effective_tested = total_tests - skipped_tests
+        pass_pct = round((passed_tests / effective_tested) * 100) if effective_tested > 0 else 0
+        fail_pct = round((failed_tests / effective_tested) * 100) if effective_tested > 0 else 0
         return {
             "totalTests": total_tests,
             "passedTests": passed_tests,
             "failedTests": failed_tests,
+            "skippedTests": skipped_tests,
             "openBugs": open_bugs,
             "resolvedBugs": resolved_bugs,
+            "reopenedBugs": reopened_bugs,
             "passPercentage": pass_pct,
+            "failureRate": fail_pct,
             "simulatedState": self.simulated_state,
         }
 
@@ -693,4 +959,9 @@ class DefectManager:
     applyFixesAndRerun = apply_fixes_and_rerun
     runRegressionSuite = run_regression_suite
     getSummary = get_summary
+    recordFailure = record_failure
+    getFailureRecords = get_failure_records
+    clearFailureRecords = clear_failure_records
+    identifyRerunTests = identify_rerun_tests
+    getTraceabilityMatrix = get_traceability_matrix
 
