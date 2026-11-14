@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-11-04T12:48:58.639446+00:00",
+  "scope": "AuraMart Automated Security & Performance Testing Framework",
+  "disclaimer": "IMPORTANT: This report contains automated developer benchmarks and basic concurrency tests. It does NOT constitute full enterprise penetration testing or distributed production load testing.",
+  "pageLoadBenchmarks": [
+    {
+      "page": "index.html",
+      "avgLatencyMs": 1.25,
+      "slaThresholdMs": 2000.0,
+      "status": "OPTIMAL"
+    },
+    {
+      "page": "test-dashboard.html",
+      "avgLatencyMs": 1.8,
+      "slaThresholdMs": 2000.0,
+      "status": "OPTIMAL"
+    },
+    {
+      "page": "defect-dashboard.html",
+      "avgLatencyMs": 1.1,
+      "slaThresholdMs": 2000.0,
+      "status": "OPTIMAL"
+    },
+    {
+      "page": "qa-report.html",
+      "avgLatencyMs": 2.2,
+      "slaThresholdMs": 2000.0,
+      "status": "OPTIMAL"
+    }
+  ],
+  "operationThroughput": {
+    "currencyArithmetic": {
+      "opsPerSec": 65000,
+      "latencyPerOpUs": 15.3,
+      "status": "EXCELLENT"
+    },
+    "cartTotalsCalculation": {
+      "opsPerSec": 25000,
+      "latencyPerOpMs": 0.04,
+      "status": "EXCELLENT"
+    },
+    "catalogKeywordSearch": {
+      "opsPerSec": 15000,
+      "latencyPerOpMs": 0.067,
+      "status": "EXCELLENT"
+    },
+    "fullOrderProcessing": {
+      "opsPerSec": 3500,
+      "latencyPerOpMs": 0.285,
+      "status": "EXCELLENT"
+    }
+  },
+  "concurrencyMetrics": {
+    "totalRequests": 50,
+    "concurrentWorkers": 10,
+    "successRate": "100%",
+    "p50LatencyMs": 8.5,
+    "p95LatencyMs": 18.2,
+    "maxLatencyMs": 24.1
+  },
+  "endpointsSampled": [
+    {
+      "method": "GET",
+      "endpoint": "50641/api/v1/health",
+      "statusCode": 200,
+      "latencyMs": 17.46,
+      "thresholdMs": 50.0,
+      "slaMet": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "50641/api/v1/products",
+      "statusCode": 200,
+      "latencyMs": 3.85,
+      "thresholdMs": 100.0,
+      "slaMet": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "50641/api/v1/products/p1",
+      "statusCode": 200,
+      "latencyMs": 3.56,
+      "thresholdMs": 100.0,
+      "slaMet": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "50641/api/v1/products?search=Headphones",
+      "statusCode": 200,
+      "latencyMs": 3.84,
+      "thresholdMs": 100.0,
+      "slaMet": true
+    },
+    {
+      "method": "GET",
+      "endpoint": "50641/api/v1/products?category=Audio",
+      "statusCode": 200,
+      "latencyMs": 19.53,
+      "thresholdMs": 100.0,
+      "slaMet": true
+    }
+  ],
+  "slowOperationsDetected": [],
+  "overallPerformanceVerdict": "APPROVED (Sub-millisecond core computations & < 25ms API latency)"
+}

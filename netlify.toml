@@ -11,6 +11,22 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+[[headers]]
+  for = "/reports/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/*.md"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+
 [[redirects]]
   from = "/test-dashboard"
   to = "/test-dashboard.html"
@@ -24,4 +40,19 @@
 [[redirects]]
   from = "/qa-report"
   to = "/qa-report.html"
+  status = 200
+
+[[redirects]]
+  from = "/reports/pytest-report"
+  to = "/reports/pytest_report.html"
+  status = 200
+
+[[redirects]]
+  from = "/reports/playwright-report"
+  to = "/reports/playwright_report.html"
+  status = 200
+
+[[redirects]]
+  from = "/reports/api-report"
+  to = "/reports/api_report.html"
   status = 200

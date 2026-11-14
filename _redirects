@@ -1,3 +1,6 @@
-/test-dashboard    /test-dashboard.html    200
-/defect-dashboard  /defect-dashboard.html  200
-/qa-report         /qa-report.html         200
+/test-dashboard            /test-dashboard.html             200
+/defect-dashboard          /defect-dashboard.html           200
+/qa-report                 /qa-report.html                  200
+/reports/pytest-report     /reports/pytest_report.html      200
+/reports/playwright-report /reports/playwright_report.html  200
+/reports/api-report        /reports/api_report.html         200

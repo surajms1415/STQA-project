@@ -9,7 +9,8 @@ __pycache__/
 */__pycache__/
 *.pyc
 .pytest_cache/
-reports/
+# Keep public test reports and telemetry tracked for live static web deployments (Netlify/GitHub Pages)
+# reports/ is tracked
 .DS_Store
 Thumbs.db
 *.log
