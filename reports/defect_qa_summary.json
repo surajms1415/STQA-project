@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-14T06:00:26.106333+00:00",
+  "generatedAt": "2026-11-14T08:43:45.970128+00:00",
   "application": "AuraMart Pure Vanilla E-Commerce",
   "framework": "Python / Pytest & JavaScript Dual Engine",
   "defectSummary": {
@@ -511,7 +511,7 @@
   },
   "sampleFailureLog": [
     {
-      "timestamp": "2026-11-14T06:00:26.104542+00:00",
+      "timestamp": "2026-11-14T08:43:45.968094+00:00",
       "test_id": "UT-PRICE-03",
       "defect_id": "BUG-001",
       "error_message": "Defect exposed: Floating-Point Currency Rounding Artifacts in Line Totals. Expected [139.93], but got [139.92999999999998].",
@@ -521,7 +521,7 @@
       "status": "Failed"
     },
     {
-      "timestamp": "2026-11-14T06:00:26.104757+00:00",
+      "timestamp": "2026-11-14T08:43:45.968144+00:00",
       "test_id": "UT-QTY-02",
       "defect_id": "BUG-002",
       "error_message": "Defect exposed: Fractional / Decimal Quantities Accepted in Cart. Expected [false (Rejected with error)], but got [isValid: True].",
@@ -531,7 +531,7 @@
       "status": "Failed"
     },
     {
-      "timestamp": "2026-11-14T06:00:26.104787+00:00",
+      "timestamp": "2026-11-14T08:43:45.968164+00:00",
       "test_id": "UT-STOCK-03",
       "defect_id": "BUG-003",
       "error_message": "Defect exposed: Cart Quantity Can Exceed Total Physical Warehouse Stock. Expected [success: false, Error: Cannot add 4. Only 2 more available.], but got [allowed: True, newCartQty: 7].",
@@ -541,7 +541,7 @@
       "status": "Failed"
     },
     {
-      "timestamp": "2026-11-14T06:00:26.104798+00:00",
+      "timestamp": "2026-11-14T08:43:45.968176+00:00",
       "test_id": "BB-CHK-01",
       "defect_id": "BUG-004",
       "error_message": "Defect exposed: Empty Cart Checkout Creates Invalid Ghost Order. Expected [success: false, error: Cannot checkout with an empty cart], but got [success: True, orderId: ORD-BUGGY-001].",
@@ -551,7 +551,7 @@
       "status": "Failed"
     },
     {
-      "timestamp": "2026-11-14T06:00:26.104808+00:00",
+      "timestamp": "2026-11-14T08:43:45.968185+00:00",
       "test_id": "BB-CUST-01",
       "defect_id": "BUG-005",
       "error_message": "Defect exposed: Customer Details Accepts Whitespace Name & Alphanumeric Phone. Expected [isValid: false (Name letters-only, Phone digits-only)], but got [nameValid: True, phoneValid: True].",
@@ -561,7 +561,7 @@
       "status": "Failed"
     },
     {
-      "timestamp": "2026-11-14T06:00:26.104820+00:00",
+      "timestamp": "2026-11-14T08:43:45.968196+00:00",
       "test_id": "BB-INP-01",
       "defect_id": "BUG-006",
       "error_message": "Defect exposed: Payment Gateway Accepts Past Expiration Year & Single-Digit CVV. Expected [isValid: false (Expiry must be in future, CVV 3-4 digits)], but got [expiryValid: True, cvvValid: True].",
@@ -576,6 +576,6 @@
     "passedTests": 16,
     "failedTests": 0,
     "passPercentage": 100,
-    "durationMs": 0.68
+    "durationMs": 0.76
   }
 }

@@ -1,37 +1,47 @@
 # AuraMart E-Commerce - Defect & Bug Tracking Report
 
-**Document ID**: `STQA-DEF-REP-2026-V2`  
+**Document ID**: `STQA-DEF-REP-2026-V3`  
 **Application**: AuraMart Pure Vanilla E-Commerce  
 **Testing Framework**: Python / Pytest & JavaScript Dual Engine  
 **Defect Management Lead**: QA & Defect Triage Engineering  
-**Total Defects Tracked**: 6  
-**Defects Resolved & Verified**: 6 (100%)  
-**Active Open Defects**: 0  
+**Total Defects Tracked & Injectable**: 16  
+**Defects Resolved & Verified**: 16 (100%)  
+**Active Open Defects (Default)**: 0  
 
 ---
 
 ## 1. Executive Defect Triage & Quality Metrics
 
-### 1.1 Breakdown by Severity & Priority
+### 1.1 Complete 16-Defect Registry by Section & Violated Testing Category
 
-| Defect ID | Title | Severity | Priority | Status | Requirement | Primary Test |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **`BUG-001`** | Floating-Point Rounding Leakage | **High** | **P2 - High** | Resolved | `REQ-06` | `UT-PRICE-03` |
-| **`BUG-002`** | Fractional / Decimal Quantities Accepted | **Critical** | **P1 - Critical** | Resolved | `REQ-03` | `UT-QTY-02` |
-| **`BUG-003`** | Cart Exceeds Physical Stock Bounds | **High** | **P1 - Critical** | Resolved | `REQ-01` | `UT-STOCK-03` |
-| **`BUG-004`** | Empty Cart Checkout Ghost Order | **Critical** | **P1 - Critical** | Resolved | `REQ-07` | `BB-CHK-01` |
-| **`BUG-005`** | Whitespace Name & Alphanumeric Phone | **Medium** | **P3 - Medium** | Resolved | `REQ-09` | `BB-CUST-01` |
-| **`BUG-006`** | Expired Credit Card & Short CVV | **High** | **P2 - High** | Resolved | `REQ-09` | `BB-INP-01` |
+| Defect ID | Section | Title | Severity | Priority | Violated Testing Category | Primary Test | Status |
+| :--- | :--- | :--- | :---: | :---: | :--- | :---: | :---: |
+| **`BUG-001`** | Pricing & Calculations | Floating-Point Rounding Leakage | **High** | **P2** | Unit & Boundary Testing | `UT-PRICE-03` | Resolved |
+| **`BUG-002`** | Cart & Inventory | Fractional / Decimal Quantities Accepted | **Critical** | **P1** | Unit, Negative & Validation | `UT-QTY-02` | Resolved |
+| **`BUG-003`** | Cart & Inventory | Cart Quantity Exceeds Stock Bounds | **High** | **P1** | Unit, Boundary & Integration | `UT-STOCK-03` | Resolved |
+| **`BUG-004`** | Checkout & Orders | Empty Cart Checkout Ghost Order | **Critical** | **P1** | Black-Box, Integration & Functional | `BB-CHK-01` | Resolved |
+| **`BUG-005`** | Form Validation | Whitespace Name & Alphanumeric Phone | **Medium** | **P3** | Black-Box & Validation | `BB-CUST-01` | Resolved |
+| **`BUG-006`** | Payment & Security | Expired Credit Card Date & Short CVV | **High** | **P2** | Security, Black-Box & Validation | `BB-INP-01` | Resolved |
+| **`BUG-007`** | Pricing & Calculations | Free Shipping Boundary on Exactly $50.00 | **Medium** | **P2** | Boundary Value & Unit Testing | `UT-CART-04` | Resolved |
+| **`BUG-008`** | Pricing & Calculations | Standard 5% Sales Tax Omission | **High** | **P2** | Unit & Integration Testing | `UT-CART-02` | Resolved |
+| **`BUG-009`** | Cart & Inventory | Negative Quantity Manipulation Allowed | **Critical** | **P1** | Negative & Black-Box Testing | `BB-QTY-01` | Resolved |
+| **`BUG-010`** | Cart & Inventory | Setting Quantity to Zero Leaves Phantom Item | **Medium** | **P3** | Boundary Value & Black-Box | `BB-QTY-02` | Resolved |
+| **`BUG-011`** | Cart & Inventory | Out-of-Stock Product Addition Allowed | **High** | **P1** | Integration & Black-Box Testing | `BB-STOCK-01` | Resolved |
+| **`BUG-012`** | Form Validation | Malformed Email Syntax Without Domain/@ | **Medium** | **P3** | Validation & Negative Testing | `BB-CUST-01` | Resolved |
+| **`BUG-013`** | Form Validation | Postal Zip Code Accepts Letters & Short Len | **Low** | **P4** | Boundary Value & Validation | `BB-CUST-01` | Resolved |
+| **`BUG-014`** | Payment & Security | Sensitive Plaintext CVV Stored in Orders | **Critical** | **P1** | Security & Negative Testing | `BB-INP-01` | Resolved |
+| **`BUG-015`** | Payment & Security | XSS Script Payload Accepted in Name | **High** | **P1** | Security & Negative Testing | `BB-CUST-01` | Resolved |
+| **`BUG-016`** | Discovery & Search | Search Filter Case-Sensitivity Failure | **Medium** | **P3** | Functional & Black-Box Testing | `FT-SRCH-01` | Resolved |
 
 ### 1.2 Severity Distribution
 
-| Severity | Total Count | Resolved | Open | Resolution Rate |
+| Severity | Total Count | Resolved | Open (Default) | Resolution Rate |
 | :--- | :---: | :---: | :---: | :---: |
-| **Critical** | 2 | 2 | 0 | 100% |
-| **High** | 3 | 3 | 0 | 100% |
-| **Medium** | 1 | 1 | 0 | 100% |
-| **Low** | 0 | 0 | 0 | N/A |
-| **Total** | **6** | **6** | **0** | **100%** |
+| **Critical** | 4 | 4 | 0 | 100% |
+| **High** | 6 | 6 | 0 | 100% |
+| **Medium** | 5 | 5 | 0 | 100% |
+| **Low** | 1 | 1 | 0 | 100% |
+| **Total** | **16** | **16** | **0** | **100%** |
 
 ---
 

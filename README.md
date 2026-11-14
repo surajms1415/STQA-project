@@ -218,27 +218,44 @@ Located in [`python_tests/performance_tests/`](python_tests/performance_tests/),
 
 ---
 
-## 🐛 Defect Management & QA Module (6 Common Bugs)
+## 🐛 Defect Management & QA Studio (16 Controlled Scenarios & Interactive Injection)
 
-The Defect Management module provides a demonstrable Software Testing and Quality Assurance lifecycle workflow:
+The Defect Management module provides a demonstrable Software Testing and Quality Assurance lifecycle workflow paired with an **Interactive Defect Injection Studio** on [`defect-dashboard.html`](defect-dashboard.html):
 
 ```
-┌──────────────┐      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-│ BUG DETECTED │ ───► │ STATUS: OPEN │ ───► │ CODE PATCHED │ ───► │   VERIFIED   │
-│ (Unpatched)  │      │ (Test Fails) │      │  (Core Fix)  │      │ (Status: OK) │
-└──────────────┘      └──────────────┘      └──────────────┘      └──────────────┘
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│ SELECT SECTION  │ ───► │ INJECT ERROR(S) │ ───► │ OBSERVE VIOLATED│ ───► │ FIX ALL ERRORS  │
+│ & Error Type    │      │ (Status: OPEN)  │      │ TESTING TYPES   │      │ (100% Verified) │
+└─────────────────┘      └─────────────────┘      └─────────────────┘      └─────────────────┘
 ```
 
-### 1. Defect Catalog & Root Cause Analyses
+### Features of the Defect Studio:
+1. **Application Section Selector**: Choose from 6 business sections: *Pricing & Calculations*, *Cart & Inventory Operations*, *Checkout & Order Processing*, *Customer Form Validation*, *Payment Security & Data Privacy*, and *Product Discovery & Search*.
+2. **Defect Selector**: Choose any of the 16 real-world software errors to introduce on-demand.
+3. **Live Violation Mapping**: Real-time display indicating which **Software Testing Categories** (Unit, Boundary Value, Negative, Black-Box, Validation, Security, Integration) and specific test case IDs are violated.
+4. **1-Click "Fix All Errors & Verify"**: Immediately applies all verified patches, reruns the 32-case regression suite, and displays an animated celebration report with 100% pass rate.
+5. **Interactive Manual Playground (`🔬 Test`)**: Side-by-side comparative inspection modal verifying unpatched buggy behavior versus patched clean behavior with real-time test evaluations.
 
-| Bug ID | Title | Severity | Priority | Component | Primary Test | Documented Root Cause |
-| :--- | :--- | :---: | :---: | :--- | :---: | :--- |
-| **`BUG-001`** | Floating-Point Currency Rounding Leakage | **High** | **P2 - High** | Price Calculation | `UT-PRICE-03` | IEEE-754 double-precision arithmetic produces float leakage on operations like `19.99 * 7 = 139.92999999999998`. Fixed with quantized `roundMoney()` using `Number.EPSILON`. |
-| **`BUG-002`** | Fractional / Decimal Quantities Accepted | **Critical** | **P1 - Critical** | Cart & Inventory | `UT-QTY-02` | Loose validation only verified `qty > 0` without checking for whole integers. Fixed using strict `Number.isInteger()` guard. |
-| **`BUG-003`** | Cart Quantity Exceeds Physical Stock | **High** | **P1 - Critical** | Stock Enforcement | `UT-STOCK-03` | Validation checked newly added delta against stock without accounting for existing items already in cart. Fixed with cumulative bounds check `(currentQty + qty) <= stock`. |
-| **`BUG-004`** | Empty Cart Checkout Ghost Order | **Critical** | **P1 - Critical** | Checkout Controller | `BB-CHK-01` | Missing empty array guard clause at order entry point, generating $0 invoices. Fixed with non-empty cart guard check. |
-| **`BUG-005`** | Whitespace Name & Alphanumeric Phone | **Medium** | **P3 - Medium** | Customer Form | `BB-CUST-01` | Simple length check without trimming or regex character pattern validation. Fixed with trim and strict letter/digit regex. |
-| **`BUG-006`** | Expired Credit Card & 1-Digit CVV | **High** | **P2 - High** | Payment Module | `BB-INP-01` | Format-only MM/YY check without temporal calendar comparison, and missing CVV length restriction. Fixed with calendar comparison and `^\d{3,4}$` CVV check. |
+### 1. Defect Catalog & Root Cause Analyses (16 Scenarios)
+
+| Bug ID | Section | Title | Severity | Violated Testing Types | Ref Test | Documented Root Cause |
+| :--- | :--- | :--- | :---: | :--- | :---: | :--- |
+| **`BUG-001`** | Pricing | Floating-Point Rounding Leakage | **High** | Unit & Boundary Testing | `UT-PRICE-03` | IEEE-754 binary float leakage on multiplications like `19.99 * 7 = 139.92999999999998`. Fixed with quantized `roundMoney()`. |
+| **`BUG-002`** | Cart & Stock | Fractional / Decimal Quantities Accepted | **Critical** | Unit, Negative & Validation | `UT-QTY-02` | Loose validation only verified `qty > 0` without checking for integers. Fixed using strict `Number.isInteger()`. |
+| **`BUG-003`** | Cart & Stock | Cart Quantity Exceeds Physical Stock | **High** | Unit, Boundary & Integration | `UT-STOCK-03` | Adds delta without cumulative check against items already in cart. Fixed with `(inCart + addQty) <= stock`. |
+| **`BUG-004`** | Checkout | Empty Cart Checkout Ghost Order | **Critical** | Black-Box, Integration & Functional | `BB-CHK-01` | Missing empty array guard clause at order entry point, generating $0 invoices. Fixed with non-empty cart guard. |
+| **`BUG-005`** | Validation | Whitespace Name & Alphanumeric Phone | **Medium** | Black-Box & Validation | `BB-CUST-01` | Acceptance of `"   "` and letters in phone digits without pattern regex. Fixed with trim and strict regex patterns. |
+| **`BUG-006`** | Payment | Expired Credit Card & 1-Digit CVV | **High** | Security, Black-Box & Validation | `BB-INP-01` | Format-only MM/YY check without calendar comparison, and missing CVV length restriction. Fixed with temporal date check & `/^\d{3,4}$/`. |
+| **`BUG-007`** | Pricing | Free Shipping Glitch on Exactly $50.00 | **Medium** | Boundary Value & Unit Testing | `UT-CART-04` | Operator `subtotal > 50` charges $5 shipping on $50.00 orders. Fixed with `subtotal >= 50.00`. |
+| **`BUG-008`** | Pricing | Standard 5% Sales Tax Omission | **High** | Unit & Integration Testing | `UT-CART-02` | Omission of 0.05 sales tax multiplier, producing $0 tax. Fixed with `roundMoney(subtotal * 0.05)`. |
+| **`BUG-009`** | Cart & Stock | Negative Quantity Manipulation Allowed | **Critical** | Negative & Black-Box Testing | `BB-QTY-01` | Missing negative number guard allows `-3` quantity. Fixed with `if (qty <= 0) return false`. |
+| **`BUG-010`** | Cart & Stock | Setting Quantity 0 Leaves Phantom Item | **Medium** | Boundary Value & Black-Box | `BB-QTY-02` | Updating item quantity to 0 leaves object in cart. Fixed with automatic array removal filter. |
+| **`BUG-011`** | Cart & Stock | Out-of-Stock Product Addition Allowed | **High** | Integration & Black-Box Testing | `BB-STOCK-01` | Products with `stock: 0` can be added to cart. Fixed with `if (product.stock <= 0)` guard clause. |
+| **`BUG-012`** | Validation | Malformed Email Syntax Without Domain/@ | **Medium** | Validation & Negative Testing | `BB-CUST-01` | Length check allows `invalidemail` without `@` or top-level domain. Fixed with RFC-5322 regex. |
+| **`BUG-013`** | Validation | Postal Zip Code Accepts Letters & Short Len | **Low** | Boundary Value & Validation | `BB-CUST-01` | Non-numeric characters and short lengths accepted. Fixed with strict `/^\d{5}(-\d{4})?$/` pattern. |
+| **`BUG-014`** | Payment | Sensitive Plaintext CVV Stored in Orders | **Critical** | Security & Negative Testing | `BB-INP-01` | Full credit card CVV saved in plaintext in order record. Fixed with explicit sanitization & CVV omission. |
+| **`BUG-015`** | Payment | XSS Script Payload Accepted in Name | **High** | Security & Negative Testing | `BB-CUST-01` | `<script>alert(1)</script>` accepted raw without sanitization. Fixed with HTML entity encoding & regex validation. |
+| **`BUG-016`** | Discovery | Search Filter Case-Sensitivity Failure | **Medium** | Functional & Black-Box Testing | `FT-SRCH-01` | Exact case check causes "HEADPHONES" to fail. Fixed with `.toLowerCase()` normalization. |
 
 ---
 
