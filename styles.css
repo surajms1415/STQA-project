@@ -1474,13 +1474,15 @@ body {
    Print Styles for Receipts
    ========================================================================== */
 @media print {
-  body * {
+  /* Only apply receipt isolation when not on executive reports or dashboards */
+  body:not(.qa-report-body):not(.test-dashboard-body) * {
     visibility: hidden;
   }
-  #order-receipt, #order-receipt * {
+  body:not(.qa-report-body):not(.test-dashboard-body) #order-receipt, 
+  body:not(.qa-report-body):not(.test-dashboard-body) #order-receipt * {
     visibility: visible;
   }
-  #order-receipt {
+  body:not(.qa-report-body):not(.test-dashboard-body) #order-receipt {
     position: absolute;
     left: 0;
     top: 0;

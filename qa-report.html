@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraMart E-Commerce - Final QA &amp; Deployment Report</title>
+  <title>AuraMart | Final QA &amp; Deployment Readiness Report</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     /* Executive Print & Report Specific Styling */
@@ -195,9 +195,68 @@
       font-size: 0.85rem;
     }
     @media print {
-      body { background: #fff; padding: 0; }
-      .test-navbar, .print-btn, .nav-actions, .reports-link-grid { display: none !important; }
-      .report-paper { border: none; box-shadow: none; margin: 0; padding: 0; max-width: 100%; }
+      @page {
+        margin: 1.2cm;
+        size: portrait;
+      }
+      html, body.qa-report-body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+        height: auto !important;
+        display: block !important;
+        font-size: 10.5pt !important;
+      }
+      body.qa-report-body * {
+        visibility: visible !important;
+      }
+      .test-navbar, .print-btn, .nav-actions, .reports-link-grid, a[href="DEFECT_REPORT.md"] {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+      .report-paper {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        display: block !important;
+      }
+      .report-header {
+        border-bottom: 2px solid #0f172a !important;
+        padding-bottom: 1rem !important;
+        margin-bottom: 1.5rem !important;
+      }
+      .report-section {
+        margin-bottom: 1.8rem !important;
+        page-break-inside: auto;
+        break-inside: auto;
+      }
+      .report-section-title {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      .checklist-table {
+        page-break-inside: auto;
+        break-inside: auto;
+      }
+      .checklist-table tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .summary-badge-strip, .approval-grid, .report-meta-grid {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
     }
   </style>
 </head>
