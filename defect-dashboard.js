@@ -899,13 +899,29 @@
         if (e.target === modal) closeManualModal();
       });
     }
+    // Listen to cross-tab / storefront defect synchronization
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'auramart_active_defects') {
+        manager.loadFromStorage();
+        renderMetrics();
+        renderDefectTable();
+        renderStudioPreview();
+        runFullRegression();
+      }
+    });
+
+    window.addEventListener('auramart_defects_changed', () => {
+      renderMetrics();
+      renderDefectTable();
+      renderStudioPreview();
+    });
   }
 
   // Self Initialization
   document.addEventListener('DOMContentLoaded', () => {
     setupEvents();
     populateStudioBugSelect('all');
-    manager.applyFixesAndRerun();
+    manager.loadFromStorage();
     renderMetrics();
     renderDefectTable();
     runFullRegression();

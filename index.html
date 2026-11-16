@@ -91,6 +91,30 @@
     </div>
   </header>
 
+  <!-- Live Defect Simulation Alert Banner -->
+  <aside id="defect-alert-banner" class="defect-alert-banner hidden" aria-live="polite">
+    <div class="defect-alert-container">
+      <div class="defect-alert-main">
+        <span class="defect-alert-pulse">⚡</span>
+        <div>
+          <strong id="defect-alert-title">QA Defect Simulation Active</strong>
+          <p id="defect-alert-subtitle">The live storefront is currently exhibiting simulated defects injected from Defect Management.</p>
+        </div>
+      </div>
+      <div id="defect-alert-pills" class="defect-alert-pills">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="defect-alert-actions">
+        <a href="defect-dashboard.html" class="btn btn-sm btn-outline-warning" title="Open Defect Management &amp; QA Studio">
+          🛠️ Defect Studio
+        </a>
+        <button id="defect-alert-reset-btn" class="btn btn-sm btn-success" title="Fix all defects and restore clean certified behavior">
+          ✨ Fix All Defects
+        </button>
+      </div>
+    </div>
+  </aside>
+
   <!-- Sub-navigation: Categories & Controls -->
   <section class="controls-bar">
     <div class="controls-container">
@@ -483,6 +507,7 @@
 
   <!-- Application Scripts -->
   <script src="ecommerce-core.js"></script>
+  <script src="defect-engine.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

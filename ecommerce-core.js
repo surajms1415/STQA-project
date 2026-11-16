@@ -22,6 +22,51 @@
     ORDERS: 'auramart_orders_v1'
   };
 
+  const STORAGE_KEY_DEFECTS = 'auramart_active_defects';
+
+  function isDefectActive(bugId) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(STORAGE_KEY_DEFECTS);
+        if (stored) {
+          const list = JSON.parse(stored);
+          return Array.isArray(list) && list.includes(bugId);
+        }
+      }
+    } catch (e) {
+      // fallback
+    }
+    return false;
+  }
+
+  function getActiveDefects() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(STORAGE_KEY_DEFECTS);
+        if (stored) {
+          const list = JSON.parse(stored);
+          if (Array.isArray(list)) return list;
+        }
+      }
+    } catch (e) {
+      // fallback
+    }
+    return [];
+  }
+
+  function fixAllDefects() {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY_DEFECTS, JSON.stringify([]));
+        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('auramart_defects_changed', { detail: { activeDefects: [] } }));
+        }
+      }
+    } catch (e) {
+      // fallback
+    }
+  }
+
   const INITIAL_PRODUCTS = [
     {
       id: 'p1',
@@ -123,6 +168,14 @@
     name: {
       validate: function (val) {
         if (typeof val !== 'string') return false;
+        if (isDefectActive('BUG-015')) {
+          // Buggy: allows HTML/script injection in name
+          return val.length >= 3;
+        }
+        if (isDefectActive('BUG-005')) {
+          // Buggy: allows whitespace-only string without trim
+          return val.length >= 3;
+        }
         const trimmed = val.trim();
         return trimmed.length >= 3 && /^[a-zA-Z\s.'-]+$/.test(trimmed);
       },
@@ -131,6 +184,10 @@
     email: {
       validate: function (val) {
         if (typeof val !== 'string') return false;
+        if (isDefectActive('BUG-012')) {
+          // Buggy: length check > 5 only, accepts "bademail"
+          return val.trim().length > 5;
+        }
         return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val.trim());
       },
       error: 'Please enter a valid email address (e.g., name@example.com).'
@@ -138,6 +195,10 @@
     phone: {
       validate: function (val) {
         if (typeof val !== 'string' && typeof val !== 'number') return false;
+        if (isDefectActive('BUG-005')) {
+          // Buggy: allows letters in phone e.g. "12345ABCDE"
+          return String(val).length >= 10;
+        }
         const digits = String(val).replace(/\D/g, '');
         return digits.length >= 10 && digits.length <= 15;
       },
@@ -167,6 +228,10 @@
     zip: {
       validate: function (val) {
         if (typeof val !== 'string' && typeof val !== 'number') return false;
+        if (isDefectActive('BUG-013')) {
+          // Buggy: accepts "12" or "ABC" (length > 0)
+          return String(val).trim().length > 0;
+        }
         return /^[a-zA-Z0-9\s-]{4,10}$/.test(String(val).trim());
       },
       error: 'Please enter a valid postal / ZIP code (4-10 characters).'
@@ -183,6 +248,10 @@
       validate: function (val) {
         if (typeof val !== 'string') return false;
         const trimmed = val.trim();
+        if (isDefectActive('BUG-006')) {
+          // Buggy: syntax format regex only, allows expired dates e.g. "01/20"
+          return /^\d{2}\/\d{2}$/.test(trimmed);
+        }
         if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(trimmed)) return false;
         const parts = trimmed.split('/');
         const month = parseInt(parts[0], 10);
@@ -197,6 +266,10 @@
     cardCvv: {
       validate: function (val) {
         if (typeof val !== 'string' && typeof val !== 'number') return false;
+        if (isDefectActive('BUG-006')) {
+          // Buggy: single-digit CVV allowed
+          return String(val).trim().length > 0;
+        }
         return /^\d{3,4}$/.test(String(val).trim());
       },
       error: 'Enter a 3 or 4 digit CVV code.'
@@ -211,6 +284,12 @@
     quantity: {
       validate: function (val, stock) {
         const num = Number(val);
+        if (isDefectActive('BUG-002')) {
+          // Buggy: allows decimal quantities (e.g. 2.5)
+          if (isNaN(num) || num <= 0) return false;
+          if (typeof stock === 'number' && num > stock) return false;
+          return true;
+        }
         if (!Number.isInteger(num)) return false;
         if (num <= 0) return false;
         if (typeof stock === 'number' && num > stock) return false;
@@ -227,6 +306,11 @@
   function formatPrice(val) {
     const num = Number(val);
     if (isNaN(num)) return '$0.00';
+    if (isDefectActive('BUG-001')) {
+      if (num.toString().includes('.') && num.toString().split('.')[1].length > 2) {
+        return `$${num}`;
+      }
+    }
     return `$${num.toFixed(2)}`;
   }
 
@@ -238,6 +322,9 @@
     const p = Number(price);
     const q = Number(quantity);
     if (isNaN(p) || isNaN(q) || q <= 0) return 0;
+    if (isDefectActive('BUG-001')) {
+      return p * q; // IEEE-754 unrounded float leakage
+    }
     return roundMoney(p * q);
   }
 
@@ -256,10 +343,26 @@
       });
     }
 
-    subtotal = roundMoney(subtotal);
-    const tax = roundMoney(subtotal * 0.05); // 5% Standard Tax
-    const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 5.00; // Free on >= $50
-    const total = roundMoney(subtotal + tax + shipping);
+    if (!isDefectActive('BUG-001')) {
+      subtotal = roundMoney(subtotal);
+    }
+
+    let tax = 0;
+    if (isDefectActive('BUG-008')) {
+      tax = 0.00; // Buggy: 5% sales tax omitted
+    } else {
+      tax = roundMoney(subtotal * 0.05); // 5% Standard Tax
+    }
+
+    let shipping = 0;
+    if (isDefectActive('BUG-007')) {
+      // Buggy: strict greater-than charges $5.00 on exactly $50.00 order
+      shipping = subtotal > 50 || subtotal === 0 ? 0 : 5.00;
+    } else {
+      shipping = subtotal >= 50 || subtotal === 0 ? 0 : 5.00; // Free on >= $50
+    }
+
+    const total = isDefectActive('BUG-001') ? (subtotal + tax + shipping) : roundMoney(subtotal + tax + shipping);
 
     return {
       subtotal,
@@ -288,7 +391,10 @@
 
   function addToCart(cart, products, productId, quantityToAdd = 1) {
     const qty = Number(quantityToAdd);
-    if (!Number.isInteger(qty) || qty <= 0) {
+    if (!isDefectActive('BUG-009') && qty <= 0) {
+      return { success: false, error: 'Invalid quantity to add', cart };
+    }
+    if (!isDefectActive('BUG-002') && !Number.isInteger(qty)) {
       return { success: false, error: 'Invalid quantity to add', cart };
     }
 
@@ -297,7 +403,7 @@
       return { success: false, error: 'Product not found', cart };
     }
 
-    if (product.stock <= 0) {
+    if (!isDefectActive('BUG-011') && product.stock <= 0) {
       return { success: false, error: 'Product is out of stock', cart };
     }
 
@@ -305,12 +411,23 @@
     const cartItem = newCart.find(i => i.id === productId);
     const currentQty = cartItem ? cartItem.quantity : 0;
 
-    if (currentQty + qty > product.stock) {
-      return {
-        success: false,
-        error: `Cannot add ${qty}. Only ${product.stock - currentQty} more available.`,
-        cart: newCart
-      };
+    if (isDefectActive('BUG-003')) {
+      // Buggy: checks only qtyToAdd against stock, ignores cumulative cart quantity
+      if (qty > product.stock) {
+        return {
+          success: false,
+          error: `Cannot add ${qty}. Only ${product.stock} available.`,
+          cart: newCart
+        };
+      }
+    } else {
+      if (currentQty + qty > product.stock) {
+        return {
+          success: false,
+          error: `Cannot add ${qty}. Only ${product.stock - currentQty} more available.`,
+          cart: newCart
+        };
+      }
     }
 
     if (cartItem) {
@@ -341,15 +458,20 @@
     }
 
     if (qty <= 0) {
+      if (isDefectActive('BUG-010')) {
+        // Buggy: sets quantity to 0 but keeps item in cart array
+        newCart[index].quantity = 0;
+        return { success: true, removed: false, cart: newCart, item: newCart[index] };
+      }
       newCart.splice(index, 1);
       return { success: true, removed: true, cart: newCart };
     }
 
-    if (!Number.isInteger(qty)) {
+    if (!isDefectActive('BUG-002') && !Number.isInteger(qty)) {
       return { success: false, error: 'Quantity must be an integer', cart: newCart };
     }
 
-    if (qty > product.stock) {
+    if (!isDefectActive('BUG-003') && qty > product.stock) {
       return {
         success: false,
         error: `Requested quantity (${qty}) exceeds stock (${product.stock})`,
@@ -382,12 +504,22 @@
 
     // Filter by Search Query
     if (search && search.trim()) {
-      const q = search.trim().toLowerCase();
-      list = list.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q)
-      );
+      if (isDefectActive('BUG-016')) {
+        // Buggy: case-sensitive search
+        const rawQ = search.trim();
+        list = list.filter(p =>
+          p.name.includes(rawQ) ||
+          p.description.includes(rawQ) ||
+          p.category.includes(rawQ)
+        );
+      } else {
+        const q = search.trim().toLowerCase();
+        list = list.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+        );
+      }
     }
 
     // Filter by In-Stock Only
@@ -478,17 +610,19 @@
   }
 
   function processOrder(cart, products, customer, payment) {
-    if (!Array.isArray(cart) || cart.length === 0) {
-      return { success: false, error: 'Cannot checkout with an empty cart' };
+    if (!isDefectActive('BUG-004')) {
+      if (!Array.isArray(cart) || cart.length === 0) {
+        return { success: false, error: 'Cannot checkout with an empty cart' };
+      }
     }
 
     // Verify stock availability
-    for (const item of cart) {
+    for (const item of (cart || [])) {
       const prod = (products || []).find(p => p.id === item.id);
       if (!prod) {
         return { success: false, error: `Product ID "${item.id}" does not exist` };
       }
-      if (prod.stock < item.quantity) {
+      if (!isDefectActive('BUG-003') && prod.stock < item.quantity) {
         return {
           success: false,
           error: `Insufficient stock for "${prod.name}". Available: ${prod.stock}, requested: ${item.quantity}`
@@ -506,7 +640,7 @@
     const updatedProducts = JSON.parse(JSON.stringify(products));
 
     // Decrement stock
-    cart.forEach(item => {
+    (cart || []).forEach(item => {
       const prod = updatedProducts.find(p => p.id === item.id);
       if (prod) {
         prod.stock = Math.max(0, prod.stock - item.quantity);
@@ -514,7 +648,7 @@
     });
 
     // Create order items snapshot
-    const orderedItems = cart.map(item => {
+    const orderedItems = (cart || []).map(item => {
       const prod = products.find(p => p.id === item.id);
       return {
         id: prod.id,
@@ -537,7 +671,7 @@
       orderId,
       date: new Date().toISOString(),
       customer: {
-        name: customer.name.trim(),
+        name: isDefectActive('BUG-015') ? customer.name : customer.name.trim(),
         email: customer.email.trim(),
         phone: String(customer.phone).trim(),
         address: `${customer.address.trim()}, ${customer.city.trim()}, ${customer.state.trim()} ${customer.zip.trim()}`
@@ -550,6 +684,13 @@
       total: totals.total,
       status: 'Confirmed'
     };
+
+    if (isDefectActive('BUG-014') && payment.method === 'card' && payment.cardCvv) {
+      order.paymentDetails = {
+        cardNum: payment.cardNum,
+        cvv: payment.cardCvv
+      };
+    }
 
     return {
       success: true,
@@ -565,6 +706,7 @@
 
   return {
     STORAGE_KEYS,
+    STORAGE_KEY_DEFECTS,
     INITIAL_PRODUCTS,
     ValidationRules,
     formatPrice,
@@ -578,6 +720,9 @@
     removeFromCart,
     filterAndSortProducts,
     validateCheckoutPayload,
-    processOrder
+    processOrder,
+    isDefectActive,
+    getActiveDefects,
+    fixAllDefects
   };
 });

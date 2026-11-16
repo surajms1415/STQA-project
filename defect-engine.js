@@ -55,6 +55,23 @@
     'Product Discovery & Search'
   ];
 
+  const STORAGE_KEY_DEFECTS = 'auramart_active_defects';
+
+  function isDefectActive(bugId) {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(STORAGE_KEY_DEFECTS);
+        if (stored) {
+          const list = JSON.parse(stored);
+          return Array.isArray(list) && list.includes(bugId);
+        }
+      }
+    } catch (e) {
+      // fallback
+    }
+    return false;
+  }
+
   // Comprehensive 16 Controlled Bug Specifications across all E-Commerce & QA Sections
   const BUG_DEFINITIONS = [
     {
@@ -704,12 +721,66 @@
       this.lastTestResults = [];
       this.failureRecords = [];
       this.initStatus();
+      this.loadFromStorage();
     }
 
     initStatus() {
       BUG_DEFINITIONS.forEach(b => {
         this.bugStatusMap.set(b.id, STATUS.RESOLVED);
       });
+    }
+
+    loadFromStorage() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const raw = localStorage.getItem(STORAGE_KEY_DEFECTS);
+          if (raw) {
+            const activeIds = JSON.parse(raw);
+            if (Array.isArray(activeIds)) {
+              BUG_DEFINITIONS.forEach(b => {
+                if (activeIds.includes(b.id)) {
+                  this.bugStatusMap.set(b.id, STATUS.OPEN);
+                } else {
+                  this.bugStatusMap.set(b.id, STATUS.RESOLVED);
+                }
+              });
+              this.simulatedState = activeIds.length > 0 ? 'buggy' : 'fixed';
+            }
+          }
+        }
+      } catch (e) {
+        // fallback
+      }
+    }
+
+    saveToStorage() {
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const activeIds = [];
+          this.bugStatusMap.forEach((status, bugId) => {
+            if (status === STATUS.OPEN) {
+              activeIds.push(bugId);
+            }
+          });
+          localStorage.setItem(STORAGE_KEY_DEFECTS, JSON.stringify(activeIds));
+          if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+            window.dispatchEvent(new CustomEvent('auramart_defects_changed', { detail: { activeDefects: activeIds } }));
+          }
+        }
+      } catch (e) {
+        // fallback
+      }
+    }
+
+    getActiveBugs() {
+      const active = [];
+      this.bugStatusMap.forEach((status, bugId) => {
+        if (status === STATUS.OPEN) {
+          const bug = BUG_DEFINITIONS.find(b => b.id === bugId);
+          if (bug) active.push(bug);
+        }
+      });
+      return active;
     }
 
     recordFailure(testId, errorMessage, expected, actual, stackTrace = null, defectId = null) {
@@ -761,6 +832,7 @@
       // Update status
       const newStatus = isPass ? STATUS.RESOLVED : STATUS.OPEN;
       this.bugStatusMap.set(bug.id, newStatus);
+      this.saveToStorage();
 
       if (!isPass) {
         this.recordFailure(
@@ -981,6 +1053,8 @@
     SECTIONS,
     BUG_DEFINITIONS,
     TRACEABILITY_MATRIX,
-    DefectManager
+    DefectManager,
+    isDefectActive,
+    STORAGE_KEY_DEFECTS
   };
 });

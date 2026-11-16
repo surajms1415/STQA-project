@@ -257,11 +257,32 @@
   }
 
   /* ==========================================================================
-     5. Formatting & Calculation Helpers
+     5. Formatting & Calculation Helpers & Defect Synchronization
      ========================================================================== */
 
+  function isDefectActive(bugId) {
+    if (window.ECommerceCore && typeof window.ECommerceCore.isDefectActive === 'function') {
+      return window.ECommerceCore.isDefectActive(bugId);
+    }
+    try {
+      const stored = localStorage.getItem('auramart_active_defects');
+      if (stored) {
+        const list = JSON.parse(stored);
+        return Array.isArray(list) && list.includes(bugId);
+      }
+    } catch (e) {}
+    return false;
+  }
+
   function formatPrice(val) {
-    return `$${Number(val).toFixed(2)}`;
+    const num = Number(val);
+    if (isNaN(num)) return '$0.00';
+    if (isDefectActive('BUG-001')) {
+      if (num.toString().includes('.') && num.toString().split('.')[1].length > 2) {
+        return `$${num}`;
+      }
+    }
+    return `$${num.toFixed(2)}`;
   }
 
   function getProductById(id) {
@@ -285,9 +306,26 @@
       }
     });
 
-    const tax = subtotal * 0.05; // 5% Standard Sales Tax
-    const shipping = subtotal > 50 || subtotal === 0 ? 0 : 5.00; // Free shipping over $50
-    const total = subtotal + tax + shipping;
+    if (!isDefectActive('BUG-001')) {
+      subtotal = Math.round((subtotal + Number.EPSILON) * 100) / 100;
+    }
+
+    let tax = 0;
+    if (isDefectActive('BUG-008')) {
+      tax = 0.00; // Buggy: 5% sales tax omitted
+    } else {
+      tax = Math.round((subtotal * 0.05 + Number.EPSILON) * 100) / 100; // 5% Standard Sales Tax
+    }
+
+    let shipping = 0;
+    if (isDefectActive('BUG-007')) {
+      // Buggy: strictly greater than, charges $5.00 on exactly $50
+      shipping = subtotal > 50 || subtotal === 0 ? 0 : 5.00;
+    } else {
+      shipping = subtotal >= 50 || subtotal === 0 ? 0 : 5.00; // Free shipping at or above $50
+    }
+
+    const total = isDefectActive('BUG-001') ? (subtotal + tax + shipping) : Math.round((subtotal + tax + shipping + Number.EPSILON) * 100) / 100;
 
     return {
       subtotal,
@@ -312,12 +350,22 @@
 
     // Filter by search query
     if (AppState.filter.search.trim()) {
-      const q = AppState.filter.search.trim().toLowerCase();
-      list = list.filter(p =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q)
-      );
+      if (isDefectActive('BUG-016')) {
+        // Buggy: Case-sensitive search
+        const rawQ = AppState.filter.search.trim();
+        list = list.filter(p =>
+          p.name.includes(rawQ) ||
+          p.description.includes(rawQ) ||
+          p.category.includes(rawQ)
+        );
+      } else {
+        const q = AppState.filter.search.trim().toLowerCase();
+        list = list.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q)
+        );
+      }
     }
 
     // Filter by in-stock only
@@ -384,15 +432,15 @@
     gridEl.innerHTML = filtered.map(product => {
       const cartQty = getCartItemQuantity(product.id);
       const remainingStock = product.stock - cartQty;
-      const isOutOfStock = product.stock === 0;
-      const isMaxInCart = remainingStock <= 0;
+      const isOutOfStock = isDefectActive('BUG-011') ? false : (product.stock === 0);
+      const isMaxInCart = isDefectActive('BUG-003') ? false : (remainingStock <= 0);
 
       let stockTagClass = 'in-stock';
       let stockTagText = `${product.stock} in stock`;
 
-      if (isOutOfStock) {
+      if (product.stock === 0) {
         stockTagClass = 'out-stock';
-        stockTagText = 'Out of Stock';
+        stockTagText = isDefectActive('BUG-011') ? 'Out of Stock (Add Allowed - Buggy)' : 'Out of Stock';
       } else if (product.stock <= 3) {
         stockTagClass = 'low-stock';
         stockTagText = `Only ${product.stock} left`;
@@ -407,7 +455,7 @@
       }
 
       return `
-        <article class="product-card ${isOutOfStock ? 'out-of-stock' : ''}" data-product-id="${product.id}">
+        <article class="product-card ${product.stock === 0 && !isDefectActive('BUG-011') ? 'out-of-stock' : ''}" data-product-id="${product.id}">
           <div class="product-image-box">
             <span class="badge-tag">${escapeHtml(product.category)}</span>
             <span class="stock-tag ${stockTagClass}">${stockTagText}</span>
@@ -447,7 +495,7 @@
     const product = getProductById(productId);
     if (!product) return;
 
-    if (product.stock <= 0) {
+    if (!isDefectActive('BUG-011') && product.stock <= 0) {
       showToast(`${product.name} is out of stock.`, 'warning');
       return;
     }
@@ -455,7 +503,7 @@
     const cartItem = AppState.cart.find(c => c.id === productId);
 
     if (cartItem) {
-      if (cartItem.quantity >= product.stock) {
+      if (!isDefectActive('BUG-003') && cartItem.quantity >= product.stock) {
         showToast(`Cannot add more: only ${product.stock} items available in stock.`, 'warning');
         return;
       }
@@ -476,7 +524,7 @@
 
     if (!product || !cartItem) return;
 
-    if (cartItem.quantity >= product.stock) {
+    if (!isDefectActive('BUG-003') && cartItem.quantity >= product.stock) {
       showToast(`Cannot increase: maximum stock of ${product.stock} reached.`, 'warning');
       return;
     }
@@ -493,13 +541,29 @@
 
     if (cartItemIndex === -1) return;
 
+    if (isDefectActive('BUG-009')) {
+      // Buggy: allows decrementing past 0 into negative quantities!
+      AppState.cart[cartItemIndex].quantity -= 1;
+      saveStorage(STORAGE_KEYS.CART, AppState.cart);
+      updateCartUI();
+      renderProducts();
+      showToast(`Quantity decremented to ${AppState.cart[cartItemIndex].quantity}`, 'warning');
+      return;
+    }
+
     if (AppState.cart[cartItemIndex].quantity > 1) {
       AppState.cart[cartItemIndex].quantity -= 1;
     } else {
-      // If quantity is 1 and user decreases, remove item
-      const removedName = product ? product.name : 'Item';
-      AppState.cart.splice(cartItemIndex, 1);
-      showToast(`Removed "${removedName}" from cart.`, 'info');
+      if (isDefectActive('BUG-010')) {
+        // Buggy: sets quantity to 0 but keeps phantom item in cart!
+        AppState.cart[cartItemIndex].quantity = 0;
+        showToast(`Quantity set to 0 (phantom item retained in cart).`, 'warning');
+      } else {
+        // Clean: removes item
+        const removedName = product ? product.name : 'Item';
+        AppState.cart.splice(cartItemIndex, 1);
+        showToast(`Removed "${removedName}" from cart.`, 'info');
+      }
     }
 
     saveStorage(STORAGE_KEYS.CART, AppState.cart);
@@ -656,7 +720,7 @@
   }
 
   function openCheckoutModal() {
-    if (AppState.cart.length === 0) {
+    if (AppState.cart.length === 0 && !isDefectActive('BUG-004')) {
       showToast('Your cart is empty. Add items before checking out.', 'warning');
       return;
     }
@@ -695,17 +759,21 @@
     const totals = calculateCartTotals();
 
     if (itemsContainer) {
-      itemsContainer.innerHTML = AppState.cart.map(item => {
-        const product = getProductById(item.id);
-        if (!product) return '';
-        return `
-          <div class="checkout-item-row">
-            <span class="checkout-item-title">${escapeHtml(product.name)}</span>
-            <span class="checkout-item-qty">&times; ${item.quantity}</span>
-            <span><strong>${formatPrice(product.price * item.quantity)}</strong></span>
-          </div>
-        `;
-      }).join('');
+      if (AppState.cart.length === 0 && isDefectActive('BUG-004')) {
+        itemsContainer.innerHTML = `<div style="color: #dc2626; font-size: 0.8rem; font-weight: 700; padding: 0.5rem 0;">⚠️ Defect Active (BUG-004): Empty Cart Checkout Allowed!</div>`;
+      } else {
+        itemsContainer.innerHTML = AppState.cart.map(item => {
+          const product = getProductById(item.id);
+          if (!product) return '';
+          return `
+            <div class="checkout-item-row">
+              <span class="checkout-item-title">${escapeHtml(product.name)}</span>
+              <span class="checkout-item-qty">&times; ${item.quantity}</span>
+              <span><strong>${formatPrice(product.price * item.quantity)}</strong></span>
+            </div>
+          `;
+        }).join('');
+      }
     }
 
     if (subtotalEl) subtotalEl.textContent = formatPrice(totals.subtotal);
@@ -721,16 +789,27 @@
 
   const ValidationRules = {
     name: {
-      validate: (val) => val.trim().length >= 3 && /^[a-zA-Z\s.'-]+$/.test(val.trim()),
+      validate: (val) => {
+        if (typeof val !== 'string') return false;
+        if (isDefectActive('BUG-015')) return val.length > 3;
+        if (isDefectActive('BUG-005')) return val.length >= 3;
+        return val.trim().length >= 3 && /^[a-zA-Z\s.'-]+$/.test(val.trim());
+      },
       error: 'Please enter a valid full name (at least 3 characters, letters only).'
     },
     email: {
-      validate: (val) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val.trim()),
+      validate: (val) => {
+        if (typeof val !== 'string') return false;
+        if (isDefectActive('BUG-012')) return val.trim().length > 5;
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val.trim());
+      },
       error: 'Please enter a valid email address (e.g., name@example.com).'
     },
     phone: {
       validate: (val) => {
-        const digits = val.replace(/\D/g, '');
+        if (typeof val !== 'string' && typeof val !== 'number') return false;
+        if (isDefectActive('BUG-005')) return String(val).length >= 10;
+        const digits = String(val).replace(/\D/g, '');
         return digits.length >= 10 && digits.length <= 15;
       },
       error: 'Please enter a valid phone number with at least 10 digits.'
@@ -748,7 +827,11 @@
       error: 'Please enter a state / province.'
     },
     zip: {
-      validate: (val) => /^[a-zA-Z0-9\s-]{4,10}$/.test(val.trim()),
+      validate: (val) => {
+        if (typeof val !== 'string' && typeof val !== 'number') return false;
+        if (isDefectActive('BUG-013')) return String(val).trim().length > 0;
+        return /^[a-zA-Z0-9\s-]{4,10}$/.test(String(val).trim());
+      },
       error: 'Please enter a valid postal / ZIP code (4-10 characters).'
     },
     cardNum: {
@@ -760,6 +843,8 @@
     },
     cardExpiry: {
       validate: (val) => {
+        if (typeof val !== 'string') return false;
+        if (isDefectActive('BUG-006')) return /^\d{2}\/\d{2}$/.test(val.trim());
         if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(val.trim())) return false;
         const [monthStr, yearStr] = val.split('/');
         const month = parseInt(monthStr, 10);
@@ -772,7 +857,11 @@
       error: 'Enter valid future expiry date (MM/YY).'
     },
     cardCvv: {
-      validate: (val) => /^\d{3,4}$/.test(val.trim()),
+      validate: (val) => {
+        if (typeof val !== 'string' && typeof val !== 'number') return false;
+        if (isDefectActive('BUG-006')) return String(val).trim().length > 0;
+        return /^\d{3,4}$/.test(String(val).trim());
+      },
       error: 'Enter a 3 or 4 digit CVV code.'
     },
     upiId: {
@@ -902,17 +991,19 @@
   function handleCheckoutSubmit(e) {
     e.preventDefault();
 
-    if (AppState.cart.length === 0) {
+    if (AppState.cart.length === 0 && !isDefectActive('BUG-004')) {
       showToast('Your cart is empty!', 'warning');
       return;
     }
 
     // Verify current stock availability before submitting order
-    for (const item of AppState.cart) {
-      const prod = getProductById(item.id);
-      if (!prod || prod.stock < item.quantity) {
-        showToast(`Sorry, ${prod ? prod.name : 'an item'} only has ${prod ? prod.stock : 0} in stock. Please adjust your cart.`, 'error');
-        return;
+    if (!isDefectActive('BUG-003')) {
+      for (const item of AppState.cart) {
+        const prod = getProductById(item.id);
+        if (!prod || prod.stock < item.quantity) {
+          showToast(`Sorry, ${prod ? prod.name : 'an item'} only has ${prod ? prod.stock : 0} in stock. Please adjust your cart.`, 'error');
+          return;
+        }
       }
     }
 
@@ -923,7 +1014,7 @@
     }
 
     // Collect Customer Data
-    const name = document.getElementById('cust-name').value.trim();
+    const name = document.getElementById('cust-name').value;
     const email = document.getElementById('cust-email').value.trim();
     const phone = document.getElementById('cust-phone').value.trim();
     const address = document.getElementById('cust-address').value.trim();
@@ -943,11 +1034,11 @@
     const orderedItems = AppState.cart.map(item => {
       const product = getProductById(item.id);
       return {
-        id: product.id,
-        name: product.name,
-        price: product.price,
+        id: product ? product.id : 'unknown',
+        name: product ? product.name : 'Unknown Item',
+        price: product ? product.price : 0,
         quantity: item.quantity,
-        total: product.price * item.quantity
+        total: product ? (product.price * item.quantity) : 0
       };
     });
 
@@ -969,7 +1060,7 @@
         timeStyle: 'short'
       }),
       customer: {
-        name,
+        name: isDefectActive('BUG-015') ? name : name.trim(),
         email,
         phone,
         address: `${address}, ${city}, ${state} ${zip}`
@@ -981,6 +1072,15 @@
       shipping: totals.shipping,
       total: totals.total
     };
+
+    if (isDefectActive('BUG-014') && paymentMethod === 'card') {
+      const rawCvv = document.getElementById('card-cvv').value.trim();
+      const rawCard = document.getElementById('card-num').value.trim();
+      newOrder.paymentDetails = {
+        cardNum: rawCard,
+        cvv: rawCvv // Buggy: Sensitive plaintext CVV stored in localStorage!
+      };
+    }
 
     // 3. Save Order to History in LocalStorage
     AppState.orders.unshift(newOrder);
@@ -1011,11 +1111,55 @@
   function displayOrderConfirmation(order) {
     document.getElementById('receipt-order-id').textContent = `#${order.orderId}`;
     document.getElementById('receipt-date').textContent = order.date;
-    document.getElementById('receipt-name').textContent = order.customer.name;
+
+    if (isDefectActive('BUG-015')) {
+      // Buggy: renders unescaped HTML directly in receipt!
+      document.getElementById('receipt-name').innerHTML = order.customer.name;
+    } else {
+      document.getElementById('receipt-name').textContent = order.customer.name;
+    }
+
     document.getElementById('receipt-email').textContent = order.customer.email;
     document.getElementById('receipt-phone').textContent = order.customer.phone;
     document.getElementById('receipt-payment').textContent = order.paymentMethod;
     document.getElementById('receipt-address').textContent = order.customer.address;
+
+    // Items table
+    const itemsTable = document.getElementById('receipt-items-table');
+    itemsTable.innerHTML = order.items.map(item => `
+      <div class="receipt-item-row">
+        <span>${escapeHtml(item.name)} <small class="text-muted">(&times;${item.quantity})</small></span>
+        <strong>${formatPrice(item.total)}</strong>
+      </div>
+    `).join('');
+
+    // Totals table
+    const totalsTable = document.getElementById('receipt-totals-table');
+    totalsTable.innerHTML = `
+      <div class="price-row">
+        <span>Subtotal</span>
+        <span>${formatPrice(order.subtotal)}</span>
+      </div>
+      <div class="price-row">
+        <span>Sales Tax (5%)</span>
+        <span>${formatPrice(order.tax)}</span>
+      </div>
+      <div class="price-row">
+        <span>Shipping</span>
+        <span>${order.shipping === 0 ? 'Free' : formatPrice(order.shipping)}</span>
+      </div>
+      <div class="price-row total-row">
+        <span>Total Paid</span>
+        <span>${formatPrice(order.total)}</span>
+      </div>
+    `;
+
+    const successModal = document.getElementById('order-success-modal');
+    if (successModal) {
+      successModal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+  }
 
     // Items table
     const itemsTable = document.getElementById('receipt-items-table');
@@ -1104,6 +1248,11 @@
             </div>
             <div><strong>Shipped to:</strong> ${escapeHtml(order.customer.name)} - ${escapeHtml(order.customer.address)}</div>
             <div><strong>Payment:</strong> ${escapeHtml(order.paymentMethod)}</div>
+            ${order.paymentDetails && order.paymentDetails.cvv ? `
+              <div style="font-size: 0.775rem; color: #dc2626; background: #fee2e2; border: 1px solid #fca5a5; padding: 0.35rem 0.65rem; border-radius: 4px; margin-top: 0.4rem; font-weight: 700;">
+                ⚠️ Security Defect (BUG-014 Active): Stored Plaintext CVV: <code>${escapeHtml(order.paymentDetails.cvv)}</code> (Card: ${escapeHtml(order.paymentDetails.cardNum)})
+              </div>
+            ` : ''}
             <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 0.35rem;">
               Total: ${formatPrice(order.total)}
             </div>
@@ -1495,6 +1644,38 @@
     const resetAllBtn = document.getElementById('reset-all-demo-btn');
     if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllDemoData);
 
+    // Defect Simulation Alert Banner Quick Reset
+    const defectResetBtn = document.getElementById('defect-alert-reset-btn');
+    if (defectResetBtn) {
+      defectResetBtn.addEventListener('click', () => {
+        if (window.ECommerceCore && typeof window.ECommerceCore.fixAllDefects === 'function') {
+          window.ECommerceCore.fixAllDefects();
+        } else {
+          localStorage.setItem('auramart_active_defects', JSON.stringify([]));
+          window.dispatchEvent(new CustomEvent('auramart_defects_changed', { detail: { activeDefects: [] } }));
+        }
+        renderDefectAlertBanner();
+        renderProducts();
+        updateCartUI();
+        showToast('All 16 defects resolved! Storefront certified clean.', 'success');
+      });
+    }
+
+    // Cross-tab and in-page defect synchronization listeners
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'auramart_active_defects') {
+        renderDefectAlertBanner();
+        renderProducts();
+        updateCartUI();
+      }
+    });
+
+    window.addEventListener('auramart_defects_changed', () => {
+      renderDefectAlertBanner();
+      renderProducts();
+      updateCartUI();
+    });
+
     // Close Modals on Escape Key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -1507,12 +1688,57 @@
   }
 
   /* ==========================================================================
-     14. App Bootstrap
+     14. Defect Simulation Banner Controller
+     ========================================================================== */
+
+  function renderDefectAlertBanner() {
+    const banner = document.getElementById('defect-alert-banner');
+    const pillsContainer = document.getElementById('defect-alert-pills');
+    const titleEl = document.getElementById('defect-alert-title');
+    const subEl = document.getElementById('defect-alert-subtitle');
+    if (!banner) return;
+
+    let activeBugs = [];
+    if (window.ECommerceCore && typeof window.ECommerceCore.getActiveDefects === 'function') {
+      activeBugs = window.ECommerceCore.getActiveDefects();
+    } else {
+      try {
+        const raw = localStorage.getItem('auramart_active_defects');
+        if (raw) activeBugs = JSON.parse(raw) || [];
+      } catch (e) {}
+    }
+
+    if (!Array.isArray(activeBugs) || activeBugs.length === 0) {
+      banner.classList.add('hidden');
+      return;
+    }
+
+    banner.classList.remove('hidden');
+    if (titleEl) {
+      titleEl.textContent = `⚠️ QA Defect Simulation Active (${activeBugs.length} Defect${activeBugs.length === 1 ? '' : 's'} Injected)`;
+    }
+    if (subEl) {
+      subEl.textContent = `The live storefront behavior is actively modified according to the selected QA defect(s).`;
+    }
+
+    if (pillsContainer) {
+      const bugDefs = window.DefectQAEngine ? window.DefectQAEngine.BUG_DEFINITIONS : [];
+      pillsContainer.innerHTML = activeBugs.map(bid => {
+        const def = bugDefs.find(b => b.id === bid);
+        const name = def ? def.title : bid;
+        return `<span class="defect-active-pill" title="${escapeHtml(name)}">🔴 ${bid}</span>`;
+      }).join('');
+    }
+  }
+
+  /* ==========================================================================
+     15. App Bootstrap
      ========================================================================== */
 
   function initApp() {
     initializeState();
     setupEventListeners();
+    renderDefectAlertBanner();
     renderProducts();
     updateCartUI();
     updateOrdersBadge();
