@@ -290,6 +290,10 @@
           if (typeof stock === 'number' && num > stock) return false;
           return true;
         }
+        if (isDefectActive('BUG-009')) {
+          // Buggy: allows negative quantities (e.g. -2)
+          return true;
+        }
         if (!Number.isInteger(num)) return false;
         if (num <= 0) return false;
         if (typeof stock === 'number' && num > stock) return false;

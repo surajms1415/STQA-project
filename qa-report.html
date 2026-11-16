@@ -212,7 +212,7 @@
       body.qa-report-body * {
         visibility: visible !important;
       }
-      .test-navbar, .print-btn, .nav-actions, .reports-link-grid, a[href="DEFECT_REPORT.md"] {
+      .test-navbar, .print-btn, .nav-actions, .reports-link-grid, a[href="DEFECT_REPORT.md"], #qa-report-alert-banner button, #qa-report-alert-banner a {
         display: none !important;
         visibility: hidden !important;
       }
@@ -315,7 +315,7 @@
           <p class="text-muted">Comprehensive evaluation of functionality, unit/integration test matrices, browser automation, security, performance, controlled defect reproduction, and zero-regression deployment sign-off.</p>
         </div>
         <div style="text-align: right;">
-          <span class="badge-check" style="font-size: 0.9rem; padding: 0.35rem 0.85rem;">Status: READY FOR PRODUCTION</span>
+          <span id="report-status-badge" class="badge-check" style="font-size: 0.9rem; padding: 0.35rem 0.85rem;">Status: READY FOR PRODUCTION</span>
           <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.35rem;">Document Ref: <strong>QA-REP-STQA-2026</strong></div>
         </div>
       </div>
@@ -326,8 +326,33 @@
         <div><strong>Core Architecture:</strong> Vanilla HTML5, CSS3, ES6 JavaScript</div>
         <div><strong>Test Framework:</strong> Python 3.10+, Pytest, Playwright &amp; Requests</div>
         <div><strong>Release Version:</strong> v1.0.0 (Production Candidate)</div>
-        <div><strong>Total Automated Tests:</strong> 378 Tests (100% Passed)</div>
-        <div><strong>Defect Status:</strong> 6 Identified &bull; 6 Resolved &bull; 0 Open</div>
+        <div id="report-meta-automated-tests"><strong>Total Automated Tests:</strong> 378 Tests (100% Passed)</div>
+        <div id="report-meta-defect-status"><strong>Defect Status:</strong> 16 Identified &bull; 16 Resolved &bull; 0 Open</div>
+      </div>
+
+      <!-- Active Defect / Regression Alert Banner (Dynamic) -->
+      <div id="qa-report-alert-banner" class="report-alert-banner" style="display: none; background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #be123c; font-weight: 800; font-size: 1.05rem;">
+              <span style="font-size: 1.25rem;">⚠️</span> Active Regressions Detected: Production Deployment Blocked!
+            </div>
+            <p style="margin: 0.35rem 0 0.6rem; font-size: 0.85rem; color: #4b5563;">
+              The system currently has <strong id="alert-open-count" style="color: #be123c;">0</strong> defect(s) injected from the Defect Studio. QA metrics below are dynamically updated to reflect the live regression state.
+            </p>
+            <div id="alert-open-pills" style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+              <!-- Pills rendered dynamically -->
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-report-fix-all" class="btn btn-sm btn-primary" style="background: #059669; border-color: #059669; color: #fff; cursor: pointer;">
+              ✨ Fix All Defects (Restore 100%)
+            </button>
+            <a href="defect-dashboard.html" class="btn btn-sm btn-outline" style="border-color: #be123c; color: #be123c; text-decoration: none;">
+              🛠️ Defect Studio &rarr;
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- 1. Executive Summary -->
@@ -340,32 +365,32 @@
         <div class="summary-badge-strip">
           <div class="summary-badge-item">
             <span class="text-muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Total Tests</span>
-            <span class="val blue">378</span>
+            <span id="report-total-tests" class="val blue">378</span>
           </div>
           <div class="summary-badge-item">
             <span class="text-muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Passed Tests</span>
-            <span class="val green">378</span>
+            <span id="report-passed-tests" class="val green">378</span>
           </div>
           <div class="summary-badge-item">
             <span class="text-muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Failed Tests</span>
-            <span class="val gray">0</span>
+            <span id="report-failed-tests" class="val gray">0</span>
           </div>
           <div class="summary-badge-item">
             <span class="text-muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Skipped Tests</span>
-            <span class="val gray">0</span>
+            <span id="report-skipped-tests" class="val gray">0</span>
           </div>
           <div class="summary-badge-item">
             <span class="text-muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Pass Rate</span>
-            <span class="val green">100%</span>
+            <span id="report-pass-rate" class="val green">100%</span>
           </div>
           <div class="summary-badge-item">
             <span class="text-muted" style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Defects Resolved</span>
-            <span class="val purple">6 / 6</span>
+            <span id="report-defects-resolved" class="val purple">16 / 16</span>
           </div>
         </div>
 
-        <p class="report-lead">
-          <strong>Key Finding:</strong> All 378 automated test specifications pass with zero breaking regressions. All 6 controlled boundary defects (including IEEE-754 precision leakage, fractional quantities, inventory overselling, and empty cart checkouts) have been systematically resolved and verified.
+        <p id="report-key-finding" class="report-lead">
+          <strong>Key Finding:</strong> All 378 automated test specifications pass with zero breaking regressions. All 16 controlled boundary defects (including IEEE-754 precision leakage, fractional quantities, inventory overselling, and empty cart checkouts) have been systematically resolved and verified.
         </p>
       </section>
 
@@ -385,121 +410,121 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr data-category="Unit Testing">
               <td><strong>1. Unit Testing</strong></td>
               <td>Price format, Line totals, Float precision, Qty checks, Subtotal, 5% Tax, Shipping tiers</td>
               <td>46</td>
-              <td>46</td>
-              <td>0</td>
+              <td class="cat-passed">46</td>
+              <td class="cat-failed">0</td>
               <td>~0.24 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Integration Testing">
               <td><strong>2. Integration Testing</strong></td>
               <td>Cart state transitions, Qty updates, Order processing, Storage serialization, Stock sync</td>
               <td>12</td>
-              <td>12</td>
-              <td>0</td>
+              <td class="cat-passed">12</td>
+              <td class="cat-failed">0</td>
               <td>~0.08 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Functional Testing">
               <td><strong>3. Functional Testing</strong></td>
               <td>Product keyword search, Category tabs, Cart add/remove, End-to-End checkout flow</td>
               <td>20</td>
-              <td>20</td>
-              <td>0</td>
+              <td class="cat-passed">20</td>
+              <td class="cat-failed">0</td>
               <td>~0.12 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Black-Box Testing">
               <td><strong>4. Black-Box Testing</strong></td>
               <td>Empty cart guard, Malformed customer inputs, Negative/Zero qty, Out-of-stock items</td>
               <td>14</td>
-              <td>14</td>
-              <td>0</td>
+              <td class="cat-passed">14</td>
+              <td class="cat-failed">0</td>
               <td>~0.09 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Boundary Value Testing">
               <td><strong>5. Boundary Value Testing</strong></td>
               <td>Min/max quantities, exact $50 shipping boundary ($49.99 vs $50.00), input lengths</td>
               <td>38</td>
-              <td>38</td>
-              <td>0</td>
+              <td class="cat-passed">38</td>
+              <td class="cat-failed">0</td>
               <td>~0.16 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Negative Testing">
               <td><strong>6. Negative Testing</strong></td>
               <td>Rejection of negative quantities, zero values, malformed emails, invalid cards, type confusion</td>
               <td>28</td>
-              <td>28</td>
-              <td>0</td>
+              <td class="cat-passed">28</td>
+              <td class="cat-failed">0</td>
               <td>~0.14 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Validation Testing">
               <td><strong>7. Validation Testing</strong></td>
               <td>Catalog schema constraints, Field regex (Name, Email, Phone, Zip, Card, CVV, UPI)</td>
               <td>18</td>
-              <td>18</td>
-              <td>0</td>
+              <td class="cat-passed">18</td>
+              <td class="cat-failed">0</td>
               <td>~0.11 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Defect Lifecycle &amp; RTM">
               <td><strong>8. Defect Lifecycle &amp; RTM</strong></td>
-              <td>Exposure of BUG-001..006, root-cause verification, patch rerun, and RTM traceability</td>
-              <td>7</td>
-              <td>7</td>
-              <td>0</td>
+              <td>Exposure of BUG-001..016, root-cause verification, patch rerun, and RTM traceability</td>
+              <td>16</td>
+              <td class="cat-passed">16</td>
+              <td class="cat-failed">0</td>
               <td>~0.13 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Security Testing">
               <td><strong>9. Security Testing</strong></td>
               <td>Input sanitization, control characters, XSS vectors (11 types), SQLi strings, CVV/PAN privacy</td>
               <td>114</td>
-              <td>114</td>
-              <td>0</td>
+              <td class="cat-passed">114</td>
+              <td class="cat-failed">0</td>
               <td>~0.48 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Performance Benchmarks">
               <td><strong>10. Performance Benchmarks</strong></td>
               <td>Page load times, currency calculation throughput (65k ops/s), concurrent request profiling</td>
               <td>13</td>
-              <td>13</td>
-              <td>0</td>
+              <td class="cat-passed">13</td>
+              <td class="cat-failed">0</td>
               <td>~1.92 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="REST API Demonstration">
               <td><strong>11. REST API Demonstration</strong></td>
               <td>GET, POST, PUT, DELETE operations, HTTP status codes (200, 201, 400, 404), latency SLA</td>
               <td>26</td>
-              <td>26</td>
-              <td>0</td>
+              <td class="cat-passed">26</td>
+              <td class="cat-failed">0</td>
               <td>~1.12 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
-            <tr>
+            <tr data-category="Browser Automation (Playwright)">
               <td><strong>12. Browser Automation (Playwright)</strong></td>
               <td>E2E Chromium tests: Homepage navigation, Cart drawer, Checkout modal, Form validation</td>
               <td>33</td>
-              <td>33</td>
-              <td>0</td>
+              <td class="cat-passed">33</td>
+              <td class="cat-failed">0</td>
               <td>~34.75 s</td>
-              <td><span class="badge-check">PASS (100%)</span></td>
+              <td class="cat-status"><span class="badge-check">PASS (100%)</span></td>
             </tr>
             <tr style="font-weight: 800; background-color: #f1f5f9; font-size: 0.95rem;">
               <td colspan="2">TOTAL AUTOMATED QA SUITE</td>
               <td>378</td>
-              <td>378</td>
-              <td>0</td>
+              <td id="report-table-total-passed">378</td>
+              <td id="report-table-total-failed">0</td>
               <td>~39.5 s</td>
-              <td><span class="badge-check" style="font-size: 0.85rem; padding: 0.3rem 0.8rem;">100% PASS</span></td>
+              <td id="report-table-total-status"><span class="badge-check" style="font-size: 0.85rem; padding: 0.3rem 0.8rem;">100% PASS</span></td>
             </tr>
           </tbody>
         </table>
@@ -592,59 +617,149 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr data-bug-id="BUG-001">
               <td><strong>BUG-001</strong></td>
               <td><span class="severity-badge high">High</span></td>
               <td><span style="font-weight: 700; color: #d97706;">P2 - High</span></td>
               <td>Calculations</td>
               <td>IEEE-754 binary floating-point precision leakage in line totals (19.99 * 7 = 139.92999999999998).</td>
               <td>Quantized financial rounding helper <code>roundMoney()</code> with <code>Number.EPSILON</code>.</td>
-              <td><span class="badge-check">Resolved</span></td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
             </tr>
-            <tr>
+            <tr data-bug-id="BUG-002">
               <td><strong>BUG-002</strong></td>
               <td><span class="severity-badge critical">Critical</span></td>
               <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
               <td>Quantity</td>
-              <td>Decimal quantities (e.g. 2.5) accepted due to simple <code>num > 0</code> check.</td>
+              <td>Decimal quantities (e.g. 2.5) accepted due to simple <code>num &gt; 0</code> check.</td>
               <td>Strict integer verification using <code>Number.isInteger()</code>.</td>
-              <td><span class="badge-check">Resolved</span></td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
             </tr>
-            <tr>
+            <tr data-bug-id="BUG-003">
               <td><strong>BUG-003</strong></td>
               <td><span class="severity-badge high">High</span></td>
               <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
               <td>Stock Limits</td>
               <td>Cart allowed adding items exceeding warehouse stock (3 in cart + 4 added &gt; 5 stock).</td>
               <td>Cumulative stock bound checks: <code>(currentQty + qty) &le; stock</code>.</td>
-              <td><span class="badge-check">Resolved</span></td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
             </tr>
-            <tr>
+            <tr data-bug-id="BUG-004">
               <td><strong>BUG-004</strong></td>
               <td><span class="severity-badge critical">Critical</span></td>
               <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
               <td>Checkout</td>
               <td>Empty cart checkout allowed, generating $0 invoice and ghost orders.</td>
               <td>Mandatory non-empty guard clause in <code>processOrder()</code>.</td>
-              <td><span class="badge-check">Resolved</span></td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
             </tr>
-            <tr>
+            <tr data-bug-id="BUG-005">
               <td><strong>BUG-005</strong></td>
               <td><span class="severity-badge medium">Medium</span></td>
               <td><span style="font-weight: 700; color: #2563eb;">P3 - Medium</span></td>
               <td>Customer Form</td>
               <td>Whitespace-only names ("   ") and letters in phone numbers accepted.</td>
               <td>String trim and strict regular expression patterns for names and phone digits.</td>
-              <td><span class="badge-check">Resolved</span></td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
             </tr>
-            <tr>
+            <tr data-bug-id="BUG-006">
               <td><strong>BUG-006</strong></td>
               <td><span class="severity-badge high">High</span></td>
               <td><span style="font-weight: 700; color: #d97706;">P2 - High</span></td>
               <td>Payment Security</td>
               <td>Expired card date (01/20) and 1-digit CVV accepted without calendar comparison.</td>
               <td>Temporal calendar comparison against current date and strict <code>/^\d{3,4}$/</code> CVV check.</td>
-              <td><span class="badge-check">Resolved</span></td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-007">
+              <td><strong>BUG-007</strong></td>
+              <td><span class="severity-badge medium">Medium</span></td>
+              <td><span style="font-weight: 700; color: #d97706;">P2 - High</span></td>
+              <td>Calculations</td>
+              <td>Free shipping boundary flaw on orders of exactly $50.00 (strict <code>&gt; 50</code> charged shipping).</td>
+              <td>Corrected comparison operator to <code>subtotal &gt;= 50.00</code>.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-008">
+              <td><strong>BUG-008</strong></td>
+              <td><span class="severity-badge high">High</span></td>
+              <td><span style="font-weight: 700; color: #d97706;">P2 - High</span></td>
+              <td>Calculations</td>
+              <td>Standard 5% sales tax omission in tax helper resulting in zero tax collected.</td>
+              <td>Enforced mandatory 5% tax multiplier <code>subtotal * 0.05</code> with financial precision.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-009">
+              <td><strong>BUG-009</strong></td>
+              <td><span class="severity-badge critical">Critical</span></td>
+              <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
+              <td>Cart Manipulation</td>
+              <td>Negative quantity input (-3) accepted, artificially reducing order subtotal.</td>
+              <td>Enforced strict lower bound check <code>qty &gt; 0</code> and rejection of negative values.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-010">
+              <td><strong>BUG-010</strong></td>
+              <td><span class="severity-badge medium">Medium</span></td>
+              <td><span style="font-weight: 700; color: #2563eb;">P3 - Medium</span></td>
+              <td>Cart State</td>
+              <td>Updating quantity to 0 failed to purge item, leaving phantom zero-quantity item in cart.</td>
+              <td>Automated removal branch triggering <code>cart.filter()</code> when requested quantity is 0.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-011">
+              <td><strong>BUG-011</strong></td>
+              <td><span class="severity-badge high">High</span></td>
+              <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
+              <td>Inventory</td>
+              <td>Adding out-of-stock product (stock = 0) permitted due to missing initial inventory presence guard.</td>
+              <td>Early-exit stock verification checking <code>product.stock &gt; 0</code> before cart mutation.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-012">
+              <td><strong>BUG-012</strong></td>
+              <td><span class="severity-badge medium">Medium</span></td>
+              <td><span style="font-weight: 700; color: #2563eb;">P3 - Medium</span></td>
+              <td>Customer Form</td>
+              <td>Malformed email strings without '@' symbol or top-level domain accepted without validation.</td>
+              <td>Standard RFC 5322 compliant email regex validation: <code>/^[^\s@]+@[^\s@]+\.[^\s@]+$/</code>.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-013">
+              <td><strong>BUG-013</strong></td>
+              <td><span class="severity-badge low">Low</span></td>
+              <td><span style="font-weight: 700; color: #475569;">P4 - Low</span></td>
+              <td>Customer Form</td>
+              <td>Postal ZIP code accepted letters and short 2-digit invalid lengths.</td>
+              <td>Enforced 5-digit US ZIP / alphanumeric postal regex with boundary length guards.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-014">
+              <td><strong>BUG-014</strong></td>
+              <td><span class="severity-badge critical">Critical</span></td>
+              <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
+              <td>Payment Security</td>
+              <td>Sensitive plaintext CVV security code saved to persistent confirmed order records.</td>
+              <td>Sensitive CVV sanitization strip before persisting transaction payload to storage.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-015">
+              <td><strong>BUG-015</strong></td>
+              <td><span class="severity-badge high">High</span></td>
+              <td><span style="font-weight: 700; color: #dc2626;">P1 - Critical</span></td>
+              <td>Security</td>
+              <td>Stored Cross-Site Scripting (XSS) payload in customer name field rendered without HTML entity escaping.</td>
+              <td>Universal HTML sanitization helper using <code>escapeHtml()</code> before DOM injection.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
+            </tr>
+            <tr data-bug-id="BUG-016">
+              <td><strong>BUG-016</strong></td>
+              <td><span class="severity-badge medium">Medium</span></td>
+              <td><span style="font-weight: 700; color: #2563eb;">P3 - Medium</span></td>
+              <td>Discovery</td>
+              <td>Product catalog search failed on uppercase query strings due to case-sensitive substring comparison.</td>
+              <td>Normalized case-insensitive matching using <code>.toLowerCase()</code> on both query and product fields.</td>
+              <td class="bug-verification-status"><span class="badge-check">🟢 Resolved</span></td>
             </tr>
           </tbody>
         </table>
@@ -699,7 +814,7 @@
       <!-- 6. Sign-off & Recommendation -->
       <section class="report-section">
         <h2 class="report-section-title">6. Final Sign-Off &amp; Production Certification</h2>
-        <p class="report-lead">
+        <p id="report-signoff-decision" class="report-lead">
           <strong>Final QA Decision: APPROVED (GO FOR DEPLOYMENT)</strong><br>
           The application meets 100% of functional, non-functional, security, and performance quality assurance criteria. The codebase is clean, modular, and verified safe for public deployment on Netlify or GitHub Pages.
         </p>
@@ -708,17 +823,17 @@
           <div class="approval-box">
             <div class="approval-role">STQA Test Lead</div>
             <div class="approval-name">Lead QA Engineer</div>
-            <div class="approval-status">✓ Certified &bull; 100% Pass Rate (378 Tests)</div>
+            <div id="signoff-qa-status" class="approval-status">✓ Certified &bull; 100% Pass Rate (378 Tests)</div>
           </div>
           <div class="approval-box">
             <div class="approval-role">Lead Developer</div>
             <div class="approval-name">Core Systems Engineer</div>
-            <div class="approval-status">✓ Zero Regressions Confirmed</div>
+            <div id="signoff-dev-status" class="approval-status">✓ Zero Regressions Confirmed</div>
           </div>
           <div class="approval-box">
             <div class="approval-role">Release Manager</div>
             <div class="approval-name">Deployment Engineering</div>
-            <div class="approval-status">✓ Approved for Netlify / GH Pages</div>
+            <div id="signoff-release-status" class="approval-status">✓ Approved for Netlify / GH Pages</div>
           </div>
         </div>
       </section>
@@ -726,5 +841,9 @@
     </article>
   </main>
 
+  <!-- Real-Time Dynamic Synchronization Scripts -->
+  <script src="ecommerce-core.js"></script>
+  <script src="defect-engine.js"></script>
+  <script src="qa-report.js"></script>
 </body>
 </html>

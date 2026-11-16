@@ -89,6 +89,29 @@
         </div>
       </section>
 
+      <!-- Live Defect Simulation Alert Banner (Dynamic) -->
+      <section id="test-defect-alert-banner" class="defect-alert-banner" style="display: none; background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1.15rem 1.35rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #be123c; font-weight: 800; font-size: 0.95rem;">
+              <span>⚠️</span> Active Defect Injection Detected (<span id="test-defect-count">0</span> Open Regressions)
+            </div>
+            <p style="margin: 0.25rem 0 0.5rem; font-size: 0.825rem; color: #475569;">
+              The system is executing tests against simulated defect states injected from the Defect Studio. Impacted tests below fail assertions in real time.
+            </p>
+            <div id="test-defect-pills" style="display: flex; flex-wrap: wrap; gap: 0.4rem;"></div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="btn-fix-all-tests" class="btn btn-sm btn-primary" style="background: #059669; border-color: #059669; color: #fff; cursor: pointer;">
+              ✨ Fix All Defects
+            </button>
+            <a href="defect-dashboard.html" class="btn btn-sm btn-outline" style="border-color: #be123c; color: #be123c; text-decoration: none;">
+              🛠️ Defect Studio &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+
       <!-- Executive Test Metrics -->
       <section class="test-metrics-grid">
         <div class="metric-card">
@@ -331,31 +354,12 @@
         </div>
       </section>
 
-      <!-- CLI Test Execution Instructions Card -->
-      <section class="cli-info-card">
-        <div class="cli-info-header">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="4 17 10 11 4 5"></polyline>
-            <line x1="12" y1="19" x2="20" y2="19"></line>
-          </svg>
-          <h3>Automated CLI Test Runner (Jest &amp; Node Test)</h3>
-        </div>
-        <p>To run automated headless tests via the terminal CLI:</p>
-        <div class="code-terminal">
-          <code>npm test</code>
-          <span class="code-desc"># Runs the comprehensive test suite with Node's native runner (zero-dependency)</span>
-        </div>
-        <div class="code-terminal">
-          <code>npm run test:jest</code>
-          <span class="code-desc"># Runs the suite with Jest or Vitest runner</span>
-        </div>
-      </section>
-
     </div>
   </main>
 
   <!-- Core and Test Runner Scripts -->
   <script src="ecommerce-core.js"></script>
+  <script src="defect-engine.js"></script>
   <script src="test-runner.js"></script>
 </body>
 </html>

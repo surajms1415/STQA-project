@@ -182,10 +182,10 @@
       id: 'UT-CART-04',
       category: 'unit',
       suite: 'Cart Calculations',
-      description: 'Unlocks free shipping ($0.00) when subtotal >= $50 ($100 subtotal)',
+      description: 'Unlocks free shipping ($0.00) on exactly $50.00 threshold ($50.00 subtotal)',
       expected: 'shipping: 0.00',
       fn: function () {
-        const prods = [{ id: 'a', price: 100 }];
+        const prods = [{ id: 'a', price: 50 }];
         const cart = [{ id: 'a', quantity: 1 }];
         const res = Core.calculateCartTotals(cart, prods);
         return {
@@ -501,11 +501,11 @@
       id: 'FT-SRCH-01',
       category: 'functional',
       suite: 'Product Search',
-      description: 'Product search by term "Headphones" finds matching product card',
-      expected: 'results >= 1, includes Headphones',
+      description: 'Product search case-insensitivity: query "HEADPHONES" finds product card',
+      expected: 'results >= 1, includes headphones',
       fn: function () {
-        const results = Core.filterAndSortProducts(Core.INITIAL_PRODUCTS, { search: 'Headphones' });
-        const hasItem = results.some(p => p.name.includes('Headphones'));
+        const results = Core.filterAndSortProducts(Core.INITIAL_PRODUCTS, { search: 'HEADPHONES' });
+        const hasItem = results.some(p => p.name.toLowerCase().includes('headphones'));
         return {
           actual: `found: ${results.length} item(s)`,
           pass: results.length >= 1 && hasItem
@@ -699,6 +699,38 @@
      Metrics & UI Rendering
      ========================================================================== */
 
+  function syncDefectState() {
+    let activeBugs = [];
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem('auramart_active_defects');
+        if (stored) {
+          activeBugs = JSON.parse(stored) || [];
+        }
+      }
+    } catch (e) {}
+
+    const banner = document.getElementById('test-defect-alert-banner');
+    const countEl = document.getElementById('test-defect-count');
+    const pillsEl = document.getElementById('test-defect-pills');
+
+    if (banner) {
+      if (activeBugs.length > 0) {
+        banner.style.display = 'block';
+        if (countEl) countEl.textContent = activeBugs.length;
+        if (pillsEl) {
+          pillsEl.innerHTML = activeBugs.map(id => {
+            return `<span style="background: #ffffff; color: #b91c1c; border: 1px solid #fca5a5; border-radius: 4px; padding: 0.15rem 0.45rem; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.25rem;">
+              <span>🔴</span>${escapeHtml(id)}
+            </span>`;
+          }).join('');
+        }
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+  }
+
   function updateMetrics(duration = null) {
     const total = TEST_REGISTRY.length;
     let passed = 0;
@@ -720,8 +752,16 @@
 
     if (totalEl) totalEl.textContent = total;
     if (passedEl) passedEl.textContent = passed;
-    if (failedEl) failedEl.textContent = failed;
-    if (rateEl) rateEl.textContent = `${passRate}% pass rate`;
+    if (failedEl) passedEl.textContent = failed;
+    if (rateEl) {
+      rateEl.textContent = failed > 0 ? `${passRate}% pass rate (degraded)` : `${passRate}% pass rate`;
+    }
+
+    const failedNote = document.querySelector('.metric-card.metric-fail .metric-note');
+    if (failedNote) {
+      failedNote.textContent = failed > 0 ? `${failed} breaking regression(s)` : '0 breaking regressions';
+      failedNote.style.color = failed > 0 ? '#dc2626' : '';
+    }
 
     if (timeEl && duration !== null) {
       timeEl.textContent = `${duration} ms`;
@@ -730,12 +770,14 @@
     if (statusEl) {
       if (passed === total) {
         statusEl.textContent = 'All 32 tests passed';
-        statusEl.style.color = 'var(--success)';
+        statusEl.style.color = '#059669';
       } else if (failed > 0) {
-        statusEl.textContent = `${failed} test(s) failed`;
-        statusEl.style.color = 'var(--danger)';
+        statusEl.textContent = `${failed} regression(s) detected`;
+        statusEl.style.color = '#dc2626';
       }
     }
+
+    syncDefectState();
   }
 
   function getFilteredResults() {
@@ -794,7 +836,7 @@
       const timeText = res ? `${res.durationMs}ms` : '--';
 
       return `
-        <tr data-test-id="${tc.id}">
+        <tr data-test-id="${tc.id}" style="${!isPass && isExecuted ? 'background-color: #fff5f5; border-left: 3px solid #ef4444;' : ''}">
           <td>
             <span class="test-badge">${tc.id}</span>
           </td>
@@ -808,7 +850,7 @@
             <code class="result-code">${escapeHtml(tc.expected)}</code>
           </td>
           <td>
-            <code class="result-code" style="color: ${isExecuted ? (isPass ? '#059669' : '#dc2626') : 'inherit'};">
+            <code class="result-code" style="color: ${isExecuted ? (isPass ? '#059669' : '#dc2626') : 'inherit'}; font-weight: ${!isPass && isExecuted ? '700' : 'normal'};">
               ${escapeHtml(actualText)}
             </code>
           </td>
@@ -1213,6 +1255,33 @@
     const btnPresetInvalid = document.getElementById('btn-preset-invalid');
     if (btnPresetInvalid) {
       btnPresetInvalid.addEventListener('click', () => loadManualPreset(false));
+    }
+
+    // Real-time synchronization with Defect Studio (cross-tab and in-tab)
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'auramart_active_defects') {
+        runAllTests();
+      }
+    });
+
+    window.addEventListener('auramart_defects_changed', () => {
+      runAllTests();
+    });
+
+    // 1-Click Fix All Defects Button on Dashboard Alert Banner
+    const btnFixAllTests = document.getElementById('btn-fix-all-tests');
+    if (btnFixAllTests) {
+      btnFixAllTests.addEventListener('click', () => {
+        try {
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('auramart_active_defects', JSON.stringify([]));
+          }
+        } catch (e) {}
+        if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
+          window.dispatchEvent(new CustomEvent('auramart_defects_changed', { detail: { activeDefects: [] } }));
+        }
+        runAllTests();
+      });
     }
   }
 
