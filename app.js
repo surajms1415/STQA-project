@@ -1161,43 +1161,6 @@
     }
   }
 
-    // Items table
-    const itemsTable = document.getElementById('receipt-items-table');
-    itemsTable.innerHTML = order.items.map(item => `
-      <div class="receipt-item-row">
-        <span>${escapeHtml(item.name)} <small class="text-muted">(&times;${item.quantity})</small></span>
-        <strong>${formatPrice(item.total)}</strong>
-      </div>
-    `).join('');
-
-    // Totals table
-    const totalsTable = document.getElementById('receipt-totals-table');
-    totalsTable.innerHTML = `
-      <div class="price-row">
-        <span>Subtotal</span>
-        <span>${formatPrice(order.subtotal)}</span>
-      </div>
-      <div class="price-row">
-        <span>Sales Tax (5%)</span>
-        <span>${formatPrice(order.tax)}</span>
-      </div>
-      <div class="price-row">
-        <span>Shipping</span>
-        <span>${order.shipping === 0 ? 'Free' : formatPrice(order.shipping)}</span>
-      </div>
-      <div class="price-row total-row">
-        <span>Total Paid</span>
-        <span>${formatPrice(order.total)}</span>
-      </div>
-    `;
-
-    const successModal = document.getElementById('order-success-modal');
-    if (successModal) {
-      successModal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-  }
-
   function closeOrderConfirmationModal() {
     const successModal = document.getElementById('order-success-modal');
     if (successModal) {
