@@ -816,6 +816,13 @@
       if (!bug) return null;
 
       const mode = forceMode || (this.isBugOpen(bugId) ? 'buggy' : 'fixed');
+
+      // Pre-set status and storage to the target mode before invoking fn()
+      // so that Core runtime methods see the intended defect active/inactive state
+      const targetStatus = mode === 'buggy' ? STATUS.OPEN : STATUS.RESOLVED;
+      this.bugStatusMap.set(bug.id, targetStatus);
+      this.saveToStorage();
+
       const fn = mode === 'buggy' ? bug.buggyFn : bug.fixedFn;
       const startTime = performance.now();
       let outcome = { actual: '', pass: false };
@@ -829,12 +836,15 @@
       const duration = (performance.now() - startTime).toFixed(1);
       const isPass = Boolean(outcome.pass);
 
-      // Update status
-      const newStatus = isPass ? STATUS.RESOLVED : STATUS.OPEN;
+      // Confirm status based on verification outcome
+      const newStatus = (mode === 'fixed')
+        ? (isPass ? STATUS.RESOLVED : STATUS.OPEN)
+        : STATUS.OPEN;
+
       this.bugStatusMap.set(bug.id, newStatus);
       this.saveToStorage();
 
-      if (!isPass) {
+      if (!isPass && mode === 'buggy') {
         this.recordFailure(
           bug.testCaseId,
           `Defect exposed: ${bug.title}. Expected [${bug.expected}], got [${outcome.actual}].`,
@@ -843,9 +853,11 @@
           null,
           bug.id
         );
+      } else if (newStatus === STATUS.RESOLVED) {
+        this.failureRecords = this.failureRecords.filter(f => f.bugId !== bug.id);
       }
 
-      return {
+      const resObj = {
         id: bug.id,
         section: bug.section,
         title: bug.title,
@@ -863,15 +875,28 @@
         fixExplanation: bug.fixExplanation,
         rootCause: bug.rootCause
       };
+
+      const existingIdx = this.lastTestResults.findIndex(r => r.id === bug.id);
+      if (existingIdx >= 0) {
+        this.lastTestResults[existingIdx] = resObj;
+      } else {
+        this.lastTestResults.push(resObj);
+      }
+
+      return resObj;
     }
 
     // Inject a single error
     injectError(bugId) {
+      this.bugStatusMap.set(bugId, STATUS.OPEN);
+      this.saveToStorage();
       return this.executeBugScenario(bugId, 'buggy');
     }
 
     // Fix a single error
     fixError(bugId) {
+      this.bugStatusMap.set(bugId, STATUS.RESOLVED);
+      this.saveToStorage();
       return this.executeBugScenario(bugId, 'fixed');
     }
 
@@ -913,6 +938,10 @@
     applyFixesAndRerun() {
       this.simulatedState = 'fixed';
       this.clearFailureRecords();
+      BUG_DEFINITIONS.forEach(b => {
+        this.bugStatusMap.set(b.id, STATUS.RESOLVED);
+      });
+      this.saveToStorage();
       const results = [];
       BUG_DEFINITIONS.forEach(b => {
         results.push(this.executeBugScenario(b.id, 'fixed'));
