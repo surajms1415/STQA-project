@@ -6,7 +6,7 @@
 [![Total Tests](https://img.shields.io/badge/Total%20Tests-378%20Passed-brightgreen?style=for-the-badge)](reports/pytest_report.html)
 [![Python Version](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)](requirements.txt)
 [![Pass Rate](https://img.shields.io/badge/Pass%20Rate-100%25-brightgreen?style=for-the-badge)](qa-report.html)
-[![Defects](https://img.shields.io/badge/Defects-6%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
+[![Defects](https://img.shields.io/badge/Defects-16%20Resolved%20%2F%200%20Open-blue?style=for-the-badge)](DEFECT_REPORT.md)
 [![Architecture](https://img.shields.io/badge/Stack-Vanilla%20HTML%20%7C%20CSS%20%7C%20ES6-orange?style=for-the-badge)](index.html)
 [![Deployment](https://img.shields.io/badge/Deployment-Netlify%20%26%20GitHub%20Pages-informational?style=for-the-badge)](DEPLOYMENT.md)
 
@@ -41,10 +41,10 @@ The system features unified cross-navigation across four dedicated views:
 
 | View / Document | Target File | Description |
 | :--- | :--- | :--- |
-| **🛍️ E-Commerce Store** | [`index.html`](index.html) | Live storefront featuring product catalog, live search, category filtering, slide-over cart drawer, customer checkout modal, and printable invoice receipts. |
-| **🧪 QA Test Suite Dashboard** | [`test-dashboard.html`](test-dashboard.html) | In-browser automated test runner executing 32 unit, integration, black-box, and functional tests with live metrics, plus an **Interactive Manual Testing Studio** and links to Pytest HTML reports. |
-| **🐛 Defect Management Dashboard** | [`defect-dashboard.html`](defect-dashboard.html) | Demonstrable defect lifecycle simulator: expose 6 controlled bugs in unpatched mode, apply verified code fixes, retest failed cases, and run the 32-test regression suite. |
-| **📑 Final QA Executive Report (HTML)** | [`qa-report.html`](qa-report.html) | Formally certified, print-ready Quality Assurance Executive Report with traceability matrix, sign-off blocks, and deployment readiness checklists. |
+| **🛍️ E-Commerce Store** | [`index.html`](index.html) | Live storefront featuring product catalog, live search, category filtering, slide-over cart drawer, customer checkout modal, printable invoice receipts, and live defect simulation banners. |
+| **🧪 QA Test Suite Dashboard** | [`test-dashboard.html`](test-dashboard.html) | In-browser automated test runner executing 32 unit, integration, black-box, and functional tests with live dynamic defect reactivity, real-time PASS/FAIL updates, and an **Interactive Manual Testing Studio**. |
+| **🐛 Defect Management Dashboard** | [`defect-dashboard.html`](defect-dashboard.html) | Demonstrable defect lifecycle simulator: inject/fix any of 16 controlled bugs on-demand, map testing type violations, run live 32-case regression testing, and inspect comparative bug dossiers. |
+| **📑 Final QA Executive Report (HTML)** | [`qa-report.html`](qa-report.html) | Formally certified, dynamic Quality Assurance Executive Report that recalculates pass rates, category failures, and readiness status (`READY FOR PRODUCTION` vs `DEPLOYMENT BLOCKED`) in real time. |
 | **📊 Pytest Master HTML Report** | [`reports/pytest_report.html`](reports/pytest_report.html) | Self-contained, interactive HTML test execution report covering 345 Python tests with pass/fail metrics and execution timings. |
 | **🎭 Playwright E2E Browser Report** | [`reports/playwright_report.html`](reports/playwright_report.html) | Automated Chromium browser test execution report with failure screenshot capture. |
 | **⚡ REST API Test Report** | [`reports/api_report.html`](reports/api_report.html) | HTTP status codes, CRUD operations, and SLA verification results using Python Requests. |
@@ -235,6 +235,8 @@ The Defect Management module provides a demonstrable Software Testing and Qualit
 3. **Live Violation Mapping**: Real-time display indicating which **Software Testing Categories** (Unit, Boundary Value, Negative, Black-Box, Validation, Security, Integration) and specific test case IDs are violated.
 4. **1-Click "Fix All Errors & Verify"**: Immediately applies all verified patches, reruns the 32-case regression suite, and displays an animated celebration report with 100% pass rate.
 5. **Interactive Manual Playground (`🔬 Test`)**: Side-by-side comparative inspection modal verifying unpatched buggy behavior versus patched clean behavior with real-time test evaluations.
+6. **Real-Time Cross-Tab Synchronization**: Injected defects instantly propagate to the live Storefront (`index.html`), the QA Test Suite (`test-dashboard.html`), and the QA Executive Report (`qa-report.html`) without page reloads via the `auramart_defects_changed` event bus.
+7. **In-Browser Regression Testing Console**: Real-time terminal output showing execution logs, test timings, and pass/fail assertion states across all 32 regression scenarios.
 
 ### 1. Defect Catalog & Root Cause Analyses (16 Scenarios)
 
@@ -367,7 +369,8 @@ STQA-project/
 ├── defect-dashboard.js     # Defect dashboard controller
 ├── defect-engine.js        # Defect engine (buggy vs fixed states & regression runner)
 │
-├── qa-report.html          # Final QA Executive Report (Printable HTML)
+├── qa-report.html          # Final QA Executive Report (Printable & Dynamic HTML)
+├── qa-report.js            # Controller syncing live defect metrics with QA report
 ├── ecommerce-core.js       # Core business logic, validators & calculation algorithms (UMD)
 │
 ├── run_tests.py            # 🚀 Unified Master CLI Test Runner (--all, --unit, --browser, etc.)
